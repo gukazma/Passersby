@@ -1,0 +1,128 @@
+[
+ {
+  "id": "key_art",
+  "size": "1536x1024",
+  "prompt": "Wide pixel art panorama of a fictional East Asian harbor city at golden-hour dusk, game key art: in the foreground an old arcade shophouse street (qilou) with awnings, hanging lanterns and neon shop signs (blank), food stalls of a night market just starting to glow, tiny pedestrians, scooters and a red-and-cream bus; in the middle distance glass office towers; on the right a fishing harbor with boats and cranes; on the left green hills with old houses; a small island in the bay; warm orange and pink sky with soft clouds. Detailed modern pixel art like a high-quality indie game, crisp square pixels, no anti-aliasing, no blur, limited warm palette, contemporary East Asian city (mix of Hong Kong, Taipei, Guangzhou and Shanghai old towns), cozy and lively. Absolutely NO text, NO letters, NO Chinese characters anywhere: signs are blank or use simple icons.",
+  "quality": "high"
+ },
+ {
+  "id": "map",
+  "size": "1536x1024",
+  "prompt": "Pixel art illustrated world map of a fictional East Asian coastal city seen straight from above like a video game world map, no text and no labels: center-left an old town of dense low shophouses with red and grey tile roofs and narrow lanes; at the bottom center a fishing harbor with piers, boats and warehouses; center-right a night market district of colorful stall roofs; top right a modern downtown of glass skyscrapers and a plaza; upper left a green forested hill with winding road and old villas; bottom right a small island with a lighthouse and a beach connected by a dotted ferry route; a river crossing the city with bridges; a metro line; sea on the bottom and right. Detailed modern pixel art like a high-quality indie game, crisp square pixels, no anti-aliasing, no blur, limited warm palette, contemporary East Asian city (mix of Hong Kong, Taipei, Guangzhou and Shanghai old towns), cozy and lively. Absolutely NO text, NO letters, NO Chinese characters anywhere: signs are blank or use simple icons.",
+  "quality": "high"
+ },
+ {
+  "id": "int_wanshi",
+  "size": "1536x1024",
+  "prompt": "Pixel art game interior of ONE room in top-down three-quarter view exactly like classic handheld monster-catching RPG house interiors: the back wall is visible at the top with things hanging on it, the floor is seen from above, furniture drawn as clean sprites, room fills the whole image, the entrance doormat gap at the bottom center of the room, pure black outside the room walls. Leave open floor walking space in the middle. No people, no characters. Room: a small cluttered handyman odd-jobs shop office: a long workbench with tools, a toolbox and a disassembled radio, metal shelves of cardboard boxes and spare parts, an old green sofa, a desk with a laptop and a landline phone, a cork board with notes, photos and a city map pinned, a bicycle parked against the wall, a potted plant, a water dispenser, a rolled-up shutter door at the bottom. Detailed modern pixel art like a high-quality indie game, crisp square pixels, no anti-aliasing, no blur, limited warm palette, contemporary East Asian city (mix of Hong Kong, Taipei, Guangzhou and Shanghai old towns), cozy and lively. Absolutely NO text, NO letters, NO Chinese characters anywhere: signs are blank or use simple icons.",
+  "quality": "high"
+ },
+ {
+  "id": "int_clock",
+  "size": "1536x1024",
+  "prompt": "Pixel art game interior of ONE room in top-down three-quarter view exactly like classic handheld monster-catching RPG house interiors: the back wall is visible at the top with things hanging on it, the floor is seen from above, furniture drawn as clean sprites, room fills the whole image, the entrance doormat gap at the bottom center of the room, pure black outside the room walls. Leave open floor walking space in the middle. No people, no characters. Room: an old family clock and watch repair shop: the back wall covered with many wall clocks and pendulum clocks, a tall grandfather clock in the corner, a glass display counter with wristwatches and pocket watches, a repair desk with a magnifier lamp, tiny tools and watch parts, wooden shelves with clock boxes, a tea set and thermos, an old paper calendar, warm lamp light, wooden floor. Detailed modern pixel art like a high-quality indie game, crisp square pixels, no anti-aliasing, no blur, limited warm palette, contemporary East Asian city (mix of Hong Kong, Taipei, Guangzhou and Shanghai old towns), cozy and lively. Absolutely NO text, NO letters, NO Chinese characters anywhere: signs are blank or use simple icons.",
+  "quality": "high"
+ },
+ {
+  "id": "int_noodle",
+  "size": "1536x1024",
+  "prompt": "Pixel art game interior of ONE room in top-down three-quarter view exactly like classic handheld monster-catching RPG house interiors: the back wall is visible at the top with things hanging on it, the floor is seen from above, furniture drawn as clean sprites, room fills the whole image, the entrance doormat gap at the bottom center of the room, pure black outside the room walls. Leave open floor walking space in the middle. No people, no characters. Room: a small busy family noodle restaurant: an open kitchen counter at the back with big steaming soup pots, bowls and a cutting board, five small square tables with stools, chopstick holders and chili jars on tables, blank menu boards on the wall, red lanterns, a drinks fridge, a cashier corner with a lucky cat, green and white tiled floor. Detailed modern pixel art like a high-quality indie game, crisp square pixels, no anti-aliasing, no blur, limited warm palette, contemporary East Asian city (mix of Hong Kong, Taipei, Guangzhou and Shanghai old towns), cozy and lively. Absolutely NO text, NO letters, NO Chinese characters anywhere: signs are blank or use simple icons.",
+  "quality": "high"
+ },
+ {
+  "id": "int_home",
+  "size": "1536x1024",
+  "prompt": "Pixel art game interior of ONE room in top-down three-quarter view exactly like classic handheld monster-catching RPG house interiors: the back wall is visible at the top with things hanging on it, the floor is seen from above, furniture drawn as clean sprites, room fills the whole image, the entrance doormat gap at the bottom center of the room, pure black outside the room walls. Leave open floor walking space in the middle. No people, no characters. Room: an elderly couple's old apartment living room and dining area: a wooden sofa with crocheted covers, an old CRT television on a cabinet, a round dining table with dishes and a thermos, a wall of framed family photos, a calendar, potted plants and a birdcage by the window, a small shrine shelf, a sewing machine, terrazzo tiled floor. Detailed modern pixel art like a high-quality indie game, crisp square pixels, no anti-aliasing, no blur, limited warm palette, contemporary East Asian city (mix of Hong Kong, Taipei, Guangzhou and Shanghai old towns), cozy and lively. Absolutely NO text, NO letters, NO Chinese characters anywhere: signs are blank or use simple icons.",
+  "quality": "high"
+ },
+ {
+  "id": "por_lin",
+  "size": "1024x1024",
+  "prompt": "Pixel art character portrait for an RPG dialogue box, head and shoulders, three-quarter view facing slightly left, plain flat warm light beige background, crisp chunky pixels like a 96x96 sprite scaled up, clean dark outline, ordinary realistic everyday East Asian person, NOT idealized, NOT pretty-anime, natural face. A 26-year-old man, messy short black hair, tired but kind eyes, light stubble, olive green work jacket over a dark grey t-shirt, a pencil behind the ear. Detailed modern pixel art like a high-quality indie game, crisp square pixels, no anti-aliasing, no blur, limited warm palette, contemporary East Asian city (mix of Hong Kong, Taipei, Guangzhou and Shanghai old towns), cozy and lively. Absolutely NO text, NO letters, NO Chinese characters anywhere: signs are blank or use simple icons.",
+  "quality": "high"
+ },
+ {
+  "id": "por_zhong",
+  "size": "1024x1024",
+  "prompt": "Pixel art character portrait for an RPG dialogue box, head and shoulders, three-quarter view facing slightly left, plain flat warm light beige background, crisp chunky pixels like a 96x96 sprite scaled up, clean dark outline, ordinary realistic everyday East Asian person, NOT idealized, NOT pretty-anime, natural face. A 72-year-old clockmaker man, thin white hair combed back, round wire glasses, a jeweler's loupe pushed up on his forehead, deep wrinkles, gentle sad smile, brown knitted cardigan over a white shirt. Detailed modern pixel art like a high-quality indie game, crisp square pixels, no anti-aliasing, no blur, limited warm palette, contemporary East Asian city (mix of Hong Kong, Taipei, Guangzhou and Shanghai old towns), cozy and lively. Absolutely NO text, NO letters, NO Chinese characters anywhere: signs are blank or use simple icons.",
+  "quality": "high"
+ },
+ {
+  "id": "por_wang",
+  "size": "1024x1024",
+  "prompt": "Pixel art character portrait for an RPG dialogue box, head and shoulders, three-quarter view facing slightly left, plain flat warm light beige background, crisp chunky pixels like a 96x96 sprite scaled up, clean dark outline, ordinary realistic everyday East Asian person, NOT idealized, NOT pretty-anime, natural face. A 52-year-old woman who runs a breakfast stall, short permed black hair with some grey, round face, loud friendly grin, red-checked apron, blue fabric sleeve covers. Detailed modern pixel art like a high-quality indie game, crisp square pixels, no anti-aliasing, no blur, limited warm palette, contemporary East Asian city (mix of Hong Kong, Taipei, Guangzhou and Shanghai old towns), cozy and lively. Absolutely NO text, NO letters, NO Chinese characters anywhere: signs are blank or use simple icons.",
+  "quality": "high"
+ },
+ {
+  "id": "por_zhou",
+  "size": "1024x1024",
+  "prompt": "Pixel art character portrait for an RPG dialogue box, head and shoulders, three-quarter view facing slightly left, plain flat warm light beige background, crisp chunky pixels like a 96x96 sprite scaled up, clean dark outline, ordinary realistic everyday East Asian person, NOT idealized, NOT pretty-anime, natural face. A 78-year-old thin old man, grey crew cut, bushy eyebrows, stubborn expression, old-fashioned grey zip jacket over a white undershirt, holding a wooden walking cane. Detailed modern pixel art like a high-quality indie game, crisp square pixels, no anti-aliasing, no blur, limited warm palette, contemporary East Asian city (mix of Hong Kong, Taipei, Guangzhou and Shanghai old towns), cozy and lively. Absolutely NO text, NO letters, NO Chinese characters anywhere: signs are blank or use simple icons.",
+  "quality": "high"
+ },
+ {
+  "id": "por_chen",
+  "size": "1024x1024",
+  "prompt": "Pixel art character portrait for an RPG dialogue box, head and shoulders, three-quarter view facing slightly left, plain flat warm light beige background, crisp chunky pixels like a 96x96 sprite scaled up, clean dark outline, ordinary realistic everyday East Asian person, NOT idealized, NOT pretty-anime, natural face. A 45-year-old real-estate developer executive, slicked-back hair, gold-rimmed glasses, charcoal suit and dark red tie, polite but cold smile. Detailed modern pixel art like a high-quality indie game, crisp square pixels, no anti-aliasing, no blur, limited warm palette, contemporary East Asian city (mix of Hong Kong, Taipei, Guangzhou and Shanghai old towns), cozy and lively. Absolutely NO text, NO letters, NO Chinese characters anywhere: signs are blank or use simple icons.",
+  "quality": "high"
+ },
+ {
+  "id": "por_xm",
+  "size": "1024x1024",
+  "prompt": "Pixel art character portrait for an RPG dialogue box, head and shoulders, three-quarter view facing slightly left, plain flat warm light beige background, crisp chunky pixels like a 96x96 sprite scaled up, clean dark outline, ordinary realistic everyday East Asian person, NOT idealized, NOT pretty-anime, natural face. A 24-year-old female local newspaper reporter, ponytail, determined eyes, plain denim jacket, a camera strap over the shoulder, press badge. Detailed modern pixel art like a high-quality indie game, crisp square pixels, no anti-aliasing, no blur, limited warm palette, contemporary East Asian city (mix of Hong Kong, Taipei, Guangzhou and Shanghai old towns), cozy and lively. Absolutely NO text, NO letters, NO Chinese characters anywhere: signs are blank or use simple icons.",
+  "quality": "high"
+ },
+ {
+  "id": "ev_typhoon",
+  "size": "1536x1024",
+  "prompt": "Pixel art game scene: a narrow old-town shophouse street at night during a typhoon with a power blackout, heavy slanted rain, bent street trees, a fallen shop sign, flooded puddles, residents in raincoats with flashlights helping each other carry sandbags, one window lit by candle. Detailed modern pixel art like a high-quality indie game, crisp square pixels, no anti-aliasing, no blur, limited warm palette, contemporary East Asian city (mix of Hong Kong, Taipei, Guangzhou and Shanghai old towns), cozy and lively. Absolutely NO text, NO letters, NO Chinese characters anywhere: signs are blank or use simple icons.",
+  "quality": "high"
+ },
+ {
+  "id": "ev_fire",
+  "size": "1536x1024",
+  "prompt": "Pixel art game scene: a crowded night market street with colorful stalls and lanterns where one food stall has caught fire, orange flames and grey smoke, a vendor spraying a fire extinguisher, people backing away and pointing, a young man in a green jacket running toward it with a fire extinguisher. Detailed modern pixel art like a high-quality indie game, crisp square pixels, no anti-aliasing, no blur, limited warm palette, contemporary East Asian city (mix of Hong Kong, Taipei, Guangzhou and Shanghai old towns), cozy and lively. Absolutely NO text, NO letters, NO Chinese characters anywhere: signs are blank or use simple icons.",
+  "quality": "high"
+ },
+ {
+  "id": "ev_lost",
+  "size": "1536x1024",
+  "prompt": "Pixel art game scene: a busy bus terminal and metro entrance at evening, a crying little girl in a yellow raincoat standing alone holding a red balloon, commuters rushing past, a young man in a green jacket kneeling down to talk to her. Detailed modern pixel art like a high-quality indie game, crisp square pixels, no anti-aliasing, no blur, limited warm palette, contemporary East Asian city (mix of Hong Kong, Taipei, Guangzhou and Shanghai old towns), cozy and lively. Absolutely NO text, NO letters, NO Chinese characters anywhere: signs are blank or use simple icons.",
+  "quality": "high"
+ },
+ {
+  "id": "ev_propose",
+  "size": "1536x1024",
+  "prompt": "Pixel art game scene: a harbor promenade at sunset, a young man kneeling with a ring box in front of a surprised young woman, a small crowd of passers-by cheering and filming with phones, a street guitarist playing, seagulls and boats behind. Detailed modern pixel art like a high-quality indie game, crisp square pixels, no anti-aliasing, no blur, limited warm palette, contemporary East Asian city (mix of Hong Kong, Taipei, Guangzhou and Shanghai old towns), cozy and lively. Absolutely NO text, NO letters, NO Chinese characters anywhere: signs are blank or use simple icons.",
+  "quality": "high"
+ },
+ {
+  "id": "end_keep",
+  "size": "1536x1024",
+  "prompt": "Pixel art game ending illustration: an old shophouse street preserved and lively at night during a neighborhood festival, long tables set in the middle of the street with residents of all ages eating together, strings of lanterns, children with sparklers, old shops all open. Detailed modern pixel art like a high-quality indie game, crisp square pixels, no anti-aliasing, no blur, limited warm palette, contemporary East Asian city (mix of Hong Kong, Taipei, Guangzhou and Shanghai old towns), cozy and lively. Absolutely NO text, NO letters, NO Chinese characters anywhere: signs are blank or use simple icons.",
+  "quality": "high"
+ },
+ {
+  "id": "end_trendy",
+  "size": "1536x1024",
+  "prompt": "Pixel art game ending illustration: an old shophouse street renovated into a trendy tourist commercial street, freshly painted facades, chain coffee shops and boutiques with minimal blank signs, tourists taking selfies, neat planters, one lonely old man watching from a corner. Detailed modern pixel art like a high-quality indie game, crisp square pixels, no anti-aliasing, no blur, limited warm palette, contemporary East Asian city (mix of Hong Kong, Taipei, Guangzhou and Shanghai old towns), cozy and lively. Absolutely NO text, NO letters, NO Chinese characters anywhere: signs are blank or use simple icons.",
+  "quality": "high"
+ },
+ {
+  "id": "end_half",
+  "size": "1536x1024",
+  "prompt": "Pixel art game ending illustration: an old shophouse street cut in half: the left half demolished with construction cranes, green fences, rubble and an excavator, the right half still has old shops with residents sitting outside drinking tea, dramatic contrast, overcast sky. Detailed modern pixel art like a high-quality indie game, crisp square pixels, no anti-aliasing, no blur, limited warm palette, contemporary East Asian city (mix of Hong Kong, Taipei, Guangzhou and Shanghai old towns), cozy and lively. Absolutely NO text, NO letters, NO Chinese characters anywhere: signs are blank or use simple icons.",
+  "quality": "high"
+ },
+ {
+  "id": "vehicles",
+  "size": "1536x1024",
+  "prompt": "Pixel art game sprite sheet on a flat solid pure magenta #FF00FF background: four vehicles shown from the side, evenly spaced in one horizontal row with gaps, left to right: an old rusty city bicycle, a small electric scooter, a used compact hatchback car, a small white motor boat. Same pixel scale, crisp pixels, no shadows on the background. Detailed modern pixel art like a high-quality indie game, crisp square pixels, no anti-aliasing, no blur, limited warm palette, contemporary East Asian city (mix of Hong Kong, Taipei, Guangzhou and Shanghai old towns), cozy and lively. Absolutely NO text, NO letters, NO Chinese characters anywhere: signs are blank or use simple icons.",
+  "quality": "high"
+ },
+ {
+  "id": "flashback",
+  "size": "1536x1024",
+  "prompt": "Pixel art game flashback scene with faded sepia nostalgic colors: a 1980s harbor pier at dawn, a young man and a young woman standing at the end of the pier, she holds a small pocket watch out to him, an old ferry leaving the harbor, mist, gulls. Detailed modern pixel art like a high-quality indie game, crisp square pixels, no anti-aliasing, no blur, limited warm palette, contemporary East Asian city (mix of Hong Kong, Taipei, Guangzhou and Shanghai old towns), cozy and lively. Absolutely NO text, NO letters, NO Chinese characters anywhere: signs are blank or use simple icons.",
+  "quality": "high"
+ }
+]

@@ -1,0 +1,17 @@
+# Godot
+.godot/
+*.translation
+export/
+build/
+# 录屏与视频
+*.avi
+*.mp4
+*.mov
+*.wav
+# 备份与临时
+*.bak
+*.bak_*
+__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db
