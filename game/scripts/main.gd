@@ -17,6 +17,28 @@ const L_CURB := 8
 
 var city: Dictionary
 var tex_cache := {}
+# ---- A1：美术风格 / 比例 / 镜头 / 时间 对比（设置存在 Engine meta 里，切换时重载场景也不丢）----
+const STYLES := [["s1", "现状·彩色小镇"], ["s2", "岭南骑楼老街"], ["s3", "港台现代街巷"]]
+const RATIOS := [["100", "100%（门比人略高）"], ["85", "85%（楼更矮、城更紧凑）"]]
+const ZOOMS := [[Vector2i(480, 270), "近（×4）"], [Vector2i(640, 360), "中（×3）"], [Vector2i(960, 540), "远（×2）"]]
+const TODS := [[Color(1.0, 0.97, 0.92), "白天"], [Color(1.0, 0.82, 0.66), "黄昏"], [Color(0.46, 0.48, 0.64), "夜晚（灯光在 B1 做）"]]
+var cm: CanvasModulate
+var hud: CanvasLayer
+var hud_label: Label
+var help_label: Label
+var toast_label: Label
+var toast_t := 0.0
+var px_font: FontFile
+var cam: Camera2D
+var help_bg: ColorRect
+
+
+static func opt(key: String, def):
+	return Engine.get_meta(key) if Engine.has_meta(key) else def
+
+
+func variant() -> String:
+	return "%s_%s" % [STYLES[opt("style", 0)][0], RATIOS[opt("ratio", 0)][0]]
 var world: Node2D
 var player: CharacterBody2D
 var npcs: Array = []
@@ -34,7 +56,10 @@ var fades: Array = []           # [sprite, x0, x1, top, origin]
 
 func tex(name: String) -> Texture2D:
 	if not tex_cache.has(name):
-		var img := Image.load_from_file(ProjectSettings.globalize_path("res://assets/%s.png" % name))
+		var path := "res://assets/%s.png" % name
+		if name == "ground" or name.begins_with("blocks/"):
+			path = "res://assets/variants/%s/%s.png" % [variant(), name]
+		var img := Image.load_from_file(ProjectSettings.globalize_path(path))
 		tex_cache[name] = ImageTexture.create_from_image(img)
 	return tex_cache[name]
 
@@ -128,7 +153,19 @@ func _talk(n: Node2D) -> void:
 
 func _ready() -> void:
 	var args := OS.get_cmdline_user_args()
-	city = JSON.parse_string(FileAccess.get_file_as_string("res://assets/city.json"))
+	for a in ([] if Engine.has_meta("args_done") else args):   # 截图/测试用（只在启动时生效一次）：--style=1 --ratio=0 --zoom=1 --tod=0 --pos=x,y --nohelp
+		for k in ["style", "ratio", "zoom", "tod"]:
+			if a.begins_with("--%s=" % k):
+				Engine.set_meta(k, int(a.split("=")[1]))
+		if a.begins_with("--pos="):
+			var xy: PackedStringArray = a.split("=")[1].split(",")
+			Engine.set_meta("keep_pos", Vector2(float(xy[0]), float(xy[1])))
+	Engine.set_meta("args_done", true)
+	if not DirAccess.dir_exists_absolute(ProjectSettings.globalize_path("res://assets/variants/" + variant())):
+		Engine.set_meta("style", 0)
+		Engine.set_meta("ratio", 0)
+	get_window().content_scale_size = ZOOMS[opt("zoom", 1)][0]
+	city = JSON.parse_string(FileAccess.get_file_as_string("res://assets/variants/%s/city.json" % variant()))
 	var ws: Array = city["world"]
 	var ground := Sprite2D.new()
 	ground.texture = tex("ground")
@@ -203,7 +240,7 @@ func _ready() -> void:
 	player.collision_layer = L_CHAR
 	player.collision_mask = L_WORLD | L_CHAR | L_CAR | L_CURB
 	world.add_child(player)
-	var cam := Camera2D.new()
+	cam = Camera2D.new()
 	cam.position_smoothing_enabled = true
 	cam.position_smoothing_speed = 4.0
 	cam.limit_left = 0
@@ -233,9 +270,15 @@ func _ready() -> void:
 	var fp: Array = city.get("fountain", [])
 	amb.setup(city.get("pond", [0, 0, 0, 0]), float(city.get("river_y", ws[1] - 68)), Vector2(ws[0], ws[1]),
 		Vector2(fp[0], fp[1]) if fp.size() == 2 else Vector2.INF)
-	var cm := CanvasModulate.new()
-	cm.color = Color(1.0, 0.97, 0.92)
+	cm = CanvasModulate.new()
+	cm.color = TODS[opt("tod", 0)][0]
 	add_child(cm)
+	if Engine.has_meta("keep_pos"):         # 只换风格时保留主角位置
+		player.global_position = Engine.get_meta("keep_pos")
+		Engine.remove_meta("keep_pos")
+	cam.force_update_scroll()
+	cam.reset_smoothing()               # 镜头直接到位，不从起点滑过来
+	_build_hud()
 	trace = "--trace" in args
 	for a in args:
 		if a.begins_with("--duration="):
@@ -320,10 +363,126 @@ func _car(c: Dictionary) -> void:
 func _unhandled_input(e: InputEvent) -> void:
 	if e.is_action_pressed("ui_accept"):
 		interact("")
+	if not (e is InputEventKey and e.pressed and not e.echo):
+		return
+	match (e as InputEventKey).keycode:
+		KEY_1, KEY_2, KEY_3:
+			var i: int = (e as InputEventKey).keycode - KEY_1
+			if i != opt("style", 0):
+				_switch("style", i, true)
+		KEY_R:
+			_switch("ratio", (opt("ratio", 0) + 1) % RATIOS.size(), false)
+		KEY_Z:
+			Engine.set_meta("zoom", (opt("zoom", 1) + 1) % ZOOMS.size())
+			get_window().content_scale_size = ZOOMS[opt("zoom", 1)][0]
+			_toast("镜头：" + ZOOMS[opt("zoom", 1)][1])
+		KEY_T:
+			Engine.set_meta("tod", (opt("tod", 0) + 1) % TODS.size())
+			cm.color = TODS[opt("tod", 0)][0]
+			_toast("时间：" + TODS[opt("tod", 0)][1])
+		KEY_H:
+			help_label.visible = not help_label.visible
+			help_bg.visible = help_label.visible
+			hud_label.get_parent().visible = help_label.visible
+		KEY_TAB:
+			player.autoplay = not player.autoplay
+			if player.autoplay:         # 从最近的路线点接着走
+				var best := 0
+				var bd := INF
+				for i in player.route.size():
+					var q: Array = player.route[i]
+					var dd := player.global_position.distance_to(Vector2(q[0], q[1]))
+					if dd < bd:
+						bd = dd
+						best = i
+				player.ri = best
+			_toast("自动巡游：" + ("开" if player.autoplay else "关"))
+		KEY_ESCAPE:
+			get_tree().quit()
+	_update_hud()
+
+
+## 切换风格（同比例布局一样，保留主角位置）或比例（布局变了，回到起点）
+func _switch(key: String, val: int, keep: bool) -> void:
+	var old = opt(key, 0)
+	Engine.set_meta(key, val)
+	if not DirAccess.dir_exists_absolute(ProjectSettings.globalize_path("res://assets/variants/" + variant())):
+		Engine.set_meta(key, old)
+		_toast("这个组合还没生成")
+		return
+	if keep:
+		Engine.set_meta("keep_pos", player.global_position)
+	Engine.set_meta("toast", ("风格：" + STYLES[opt("style", 0)][1]) if key == "style" else ("比例：" + RATIOS[opt("ratio", 0)][1]))
+	get_tree().call_deferred("reload_current_scene")
+
+
+func _build_hud() -> void:
+	px_font = FontFile.new()
+	px_font.load_dynamic_font(ProjectSettings.globalize_path("res://fonts/px.woff2"))
+	px_font.antialiasing = TextServer.FONT_ANTIALIASING_NONE
+	px_font.hinting = TextServer.HINTING_NONE
+	px_font.subpixel_positioning = TextServer.SUBPIXEL_POSITIONING_DISABLED
+	hud = CanvasLayer.new()
+	add_child(hud)
+	var bg := ColorRect.new()
+	bg.color = Color(0.1, 0.07, 0.05, 0.62)
+	bg.position = Vector2(4, 4)
+	hud.add_child(bg)
+	hud_label = _mk_label(Vector2(9, 6))
+	bg.add_child(hud_label)
+	hud_label.position = Vector2(5, 2)
+	help_bg = ColorRect.new()
+	help_bg.color = Color(0.1, 0.07, 0.05, 0.62)
+	hud.add_child(help_bg)
+	help_label = _mk_label(Vector2(9, 0))
+	hud.add_child(help_label)
+	toast_label = _mk_label(Vector2(0, 0))
+	toast_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	hud.add_child(toast_label)
+	if Engine.has_meta("toast"):
+		_toast(Engine.get_meta("toast"))
+		Engine.remove_meta("toast")
+	_update_hud()
+
+
+func _mk_label(pos: Vector2) -> Label:
+	var l := Label.new()
+	l.position = pos
+	l.add_theme_font_override("font", px_font)
+	l.add_theme_font_size_override("font_size", 12)
+	l.add_theme_color_override("font_color", Color8(250, 240, 222))
+	l.add_theme_color_override("font_outline_color", Color8(30, 20, 14))
+	l.add_theme_constant_override("outline_size", 2)
+	return l
+
+
+func _update_hud() -> void:
+	if hud_label == null:
+		return
+	var vs: Vector2i = ZOOMS[opt("zoom", 1)][0]
+	hud_label.text = "A1 美术风格与比例\n风格[1/2/3] %s\n比例[R] %s\n镜头[Z] %s   时间[T] %s" % [STYLES[opt("style", 0)][1], RATIOS[opt("ratio", 0)][1], ZOOMS[opt("zoom", 1)][1], TODS[opt("tod", 0)][1]]
+	var bg := hud_label.get_parent() as ColorRect
+	bg.size = hud_label.get_minimum_size() + Vector2(10, 4)
+	help_label.text = "方向键 走路   空格 交互   Tab 自动巡游   H 隐藏说明   Esc 退出"
+	help_label.position = Vector2(9, vs.y - 18)
+	help_bg.position = Vector2(4, vs.y - 19)
+	help_bg.size = help_label.get_minimum_size() + Vector2(10, 2)
+	toast_label.size = Vector2(vs.x, 16)
+	toast_label.position = Vector2(0, 40)
+
+
+func _toast(msg: String) -> void:
+	if toast_label == null:
+		return
+	toast_label.text = msg
+	toast_t = 2.0
 
 
 func _process(delta: float) -> void:
 	t += delta
+	if toast_label != null:
+		toast_t -= delta
+		toast_label.modulate.a = clampf(toast_t / 0.4, 0.0, 1.0)
 	sig_t += delta
 	if duration > 0.0 and t >= duration:
 		get_tree().quit()
