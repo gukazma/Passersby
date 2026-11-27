@@ -1,0 +1,81 @@
+{
+ "id": "diner",
+ "name": "食客",
+ "height_px": 109,
+ "resident": null,
+ "profile": null,
+ "anims": {
+  "idle_side": {
+   "file": "idle_side.png",
+   "frames": 4,
+   "fps": 4,
+   "frame_w": 31,
+   "frame_h": 112,
+   "origin": [
+    15,
+    111
+   ],
+   "root_motion_px": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "axis": "x"
+  },
+  "idle_front": {
+   "file": "idle_front.png",
+   "frames": 4,
+   "fps": 4,
+   "frame_w": 42,
+   "frame_h": 111,
+   "origin": [
+    21,
+    110
+   ],
+   "root_motion_px": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "axis": "y"
+  },
+  "idle_back": {
+   "file": "idle_back.png",
+   "frames": 4,
+   "fps": 4,
+   "frame_w": 43,
+   "frame_h": 112,
+   "origin": [
+    21,
+    111
+   ],
+   "root_motion_px": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "axis": "y"
+  },
+  "eat": {
+   "file": "eat.png",
+   "frames": 4,
+   "fps": 4.0,
+   "frame_w": 90,
+   "frame_h": 85,
+   "origin": [
+    45,
+    84
+   ],
+   "root_motion_px": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "axis": "x"
+  }
+ }
+}

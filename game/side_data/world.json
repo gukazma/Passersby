@@ -1,0 +1,379 @@
+{
+ "player": "chars/hero/char.json",
+ "start": {
+  "scene": "yongan_n",
+  "x": 300,
+  "y": 432
+ },
+ "scenes": {
+  "yongan_n": "scenes/yongan_n/yongan_n.json",
+  "yongan_s": "scenes/yongan_s/yongan_s.json",
+  "binjiang": "scenes/binjiang/binjiang.json",
+  "chenji": "scenes/chenji/chenji.json"
+ },
+ "npcs": [
+  {
+   "char": "chars/luobo/char.json",
+   "scene": "yongan_n",
+   "x": 1529,
+   "y": 412,
+   "greet": "后生仔，早啊！",
+   "talk": [
+    "后生仔，新搬来的？",
+    "天这么热，喝杯凉茶降降火。",
+    "我在这条街住了五十年，街坊都认得我。"
+   ],
+   "loop": [
+    [
+     "walk",
+     880,
+     404
+    ],
+    [
+     "say",
+     "回铺子看看。",
+     1.8
+    ],
+    [
+     "enter",
+     "L02-1"
+    ],
+    [
+     "inside",
+     4
+    ],
+    [
+     "exit",
+     "L02-1"
+    ],
+    [
+     "use",
+     "stool_fuan",
+     9,
+     "sit_tea"
+    ],
+    [
+     "walk",
+     1529,
+     412
+    ],
+    [
+     "wait",
+     3
+    ],
+    [
+     "face",
+     "front"
+    ],
+    [
+     "wait",
+     2
+    ]
+   ]
+  },
+  {
+   "char": "chars/yeyonghe/char.json",
+   "scene": "yongan_n",
+   "x": 1459,
+   "y": 410,
+   "greet": "要买点什么？",
+   "talk": [
+    "五金杂货，螺丝到水管都有。",
+    "新来的吧？以后家里有什么坏了，来找我。"
+   ],
+   "loop": [
+    [
+     "face",
+     "right"
+    ],
+    [
+     "anim",
+     "smoke",
+     7
+    ],
+    [
+     "use",
+     "stool_wuhe",
+     8,
+     "sit_stool"
+    ],
+    [
+     "walk",
+     1329,
+     420
+    ],
+    [
+     "wait",
+     2
+    ],
+    [
+     "walk",
+     1469,
+     410
+    ],
+    [
+     "face",
+     "front"
+    ],
+    [
+     "wait",
+     3
+    ]
+   ]
+  },
+  {
+   "char": "chars/huangli/char.json",
+   "scene": "yongan_n",
+   "x": 2529,
+   "y": 440,
+   "greet": "今天的烧鹅不错！",
+   "talk": [
+    "何记的烧腊最好吃，晚了就卖光了。",
+    {
+     "t": "我儿子昨天把盐当糖放进糖水里，全家喝了一口，哈哈哈！",
+     "anim": "laugh",
+     "hero": "laugh"
+    },
+    "不跟你聊啦，我得回去做饭。"
+   ],
+   "loop": [
+    [
+     "walk",
+     1754,
+     402
+    ],
+    [
+     "face",
+     "back"
+    ],
+    [
+     "wait",
+     3
+    ],
+    [
+     "walk",
+     2379,
+     445
+    ],
+    [
+     "walk",
+     2729,
+     436
+    ],
+    [
+     "wait",
+     2
+    ],
+    [
+     "walk",
+     2529,
+     440
+    ]
+   ]
+  },
+  {
+   "char": "chars/lele/char.json",
+   "scene": "yongan_s",
+   "x": 700,
+   "y": 440,
+   "greet": "哥哥！",
+   "talk": [
+    {
+     "t": "哥哥你看，旺财会握手！",
+     "anim": "jump"
+    },
+    "我妈说天后诞有舞狮看！"
+   ],
+   "loop": [
+    [
+     "walk",
+     1100,
+     432
+    ],
+    [
+     "pet",
+     "wangcai",
+     4
+    ],
+    [
+     "anim",
+     "jump",
+     2
+    ],
+    [
+     "walk",
+     500,
+     448
+    ],
+    [
+     "wait",
+     1.5
+    ]
+   ]
+  },
+  {
+   "char": "chars/yejun/char.json",
+   "scene": "binjiang",
+   "x": 1700,
+   "y": 448,
+   "talk": [
+    "不好意思，赶单呢！",
+    "渡轮码头那边单子最多。"
+   ],
+   "loop": [
+    [
+     "walk",
+     200,
+     450
+    ],
+    [
+     "anim",
+     "phone",
+     3
+    ],
+    [
+     "walk",
+     1700,
+     445
+    ],
+    [
+     "anim",
+     "phone",
+     3
+    ]
+   ]
+  },
+  {
+   "char": "chars/chenqide/char.json",
+   "scene": "chenji",
+   "x": 671,
+   "y": 396,
+   "face": "front",
+   "special": "work",
+   "talk": [
+    "欢迎！吃点什么？",
+    "我们的云吞面用大地鱼汤底，煲了五十二年。",
+    "你是新来的？第一碗我请。"
+   ],
+   "band": [
+    390,
+    400
+   ]
+  },
+  {
+   "char": "chars/diner/char.json",
+   "scene": "chenji",
+   "x": 224,
+   "y": 440,
+   "face": "right",
+   "special": "eat",
+   "talk": [
+    "……（他吃得太专心，没空理你）"
+   ],
+   "band": [
+    438,
+    442
+   ]
+  },
+  {
+   "char": "chars/wangcai/char.json",
+   "scene": "yongan_s",
+   "x": 1150,
+   "y": 440,
+   "loop": [
+    [
+     "walk",
+     900,
+     444
+    ],
+    [
+     "anim",
+     "sit",
+     4
+    ],
+    [
+     "walk",
+     1220,
+     436
+    ],
+    [
+     "anim",
+     "sit",
+     3
+    ]
+   ]
+  }
+ ],
+ "extra_props": {
+  "yongan_n": [
+   {
+    "img": "res://side_data/props/stool_w.png",
+    "x": 950,
+    "y_foot": 398
+   },
+   {
+    "img": "res://side_data/props/stool_w.png",
+    "x": 1569,
+    "y_foot": 398
+   }
+  ]
+ },
+ "spots": {
+  "yongan_n": [
+   {
+    "id": "bench_n",
+    "x": 2757,
+    "y": 408,
+    "hero_anim": "sit_bench",
+    "hero_view": "front"
+   },
+   {
+    "id": "stool_fuan",
+    "x": 936,
+    "y": 401,
+    "face": -1,
+    "anim": "sit_tea",
+    "player": false
+   },
+   {
+    "id": "stool_wuhe",
+    "x": 1582,
+    "y": 401,
+    "face": 1,
+    "anim": "sit_stool",
+    "player": false
+   }
+  ],
+  "yongan_s": [
+   {
+    "id": "bench_s",
+    "x": 1340,
+    "y": 408,
+    "hero_anim": "sit_bench",
+    "hero_view": "front"
+   }
+  ],
+  "binjiang": [
+   {
+    "id": "bench_b1",
+    "x": 560,
+    "y": 408,
+    "hero_anim": "sit_bench",
+    "hero_view": "front"
+   },
+   {
+    "id": "bench_b2",
+    "x": 1840,
+    "y": 408,
+    "hero_anim": "sit_bench",
+    "hero_view": "front"
+   }
+  ]
+ },
+ "bgm": {
+  "yongan_n": "bgm/yongan_day.ogg",
+  "yongan_s": "bgm/yongan_day.ogg",
+  "binjiang": "bgm/binjiang.ogg",
+  "chenji": "bgm/noodle_shop.ogg"
+ }
+}

@@ -1,0 +1,22 @@
+{
+ "frames": 4,
+ "fps": 4.0,
+ "frame_w": 100,
+ "frame_h": 49,
+ "origin": [
+  50,
+  48
+ ],
+ "root_motion_px": [
+  0,
+  0,
+  0,
+  0
+ ],
+ "axis": "x",
+ "pixel_size_src": 12.24,
+ "view": "side",
+ "loop": true,
+ "prop": null,
+ "file": "sit.png"
+}

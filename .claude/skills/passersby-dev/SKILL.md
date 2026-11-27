@@ -31,16 +31,24 @@ description: 《我亦是行人》Passing Through（仓库 Passersby）的开发
   - 暖色调，阴影也是暖色。
   - 界面不用蓝紫。人物衣服可以用牛仔蓝等颜色，这条只限 UI。
 - 比例：人大约是两层店铺高度的 1/4，主角原生身高约 110 px。门高约为人高的 1.3 倍，桌面到腰，凳面到膝。室内外要用同一套比例（见 §5）。
-- 招牌：AI 只画空白招牌，然后由 `tools/scene/pxscene.py` 自动找到招牌，用像素字体 `px.woff2`（12 px）烘焙进图里：
-  - 字号按整数倍放大（板子够大用 2×），不加粗；
-  - 横平竖直、居中，字的颜色按板子深浅自动选；
-  - 不要用程序在运行时往画面上叠 Label（A1.2 的字因此显得歪）。
+- **招牌字由 AI 直接写在原图上**：对像素化之前的 AI 原图做编辑，用短提示词把店名写上去。11-27 用户否掉了「像素字体后贴」：「字被遮掉了一半，和牌匾融合，字都很奇怪，为啥不能直接生成」。
+  - 每块招牌出 2 版。像素化后放大 2 倍逐字读，有错字、漏字、改了板色、带光晕的版本淘汰。
+  - 用 `scripts/env/drift.py` 检查排版有没有跑位，跑位了就重新量门的坐标。
+  - 小牌子（路名牌等）AI 写不清：在原图上先画一块更大的牌，再用黑体加描边写字（`scripts/env/plate_raw.py`、`scripts/signbake_raw.py`），然后整体像素化。字在像素化后至少要约 20 px 高才认得出。
+  - 绝不在像素化之后再贴字。
 - 被否掉的做法，不要再用：
+  - 像素字体烘焙或贴字的招牌（字小、发虚、像被遮了一半）；
   - 超细像素的正立面整排楼：缩小后发糊；
   - 楼顶露得很多的俯视城市；
   - 加粗的招牌字：会糊成一团。
 
 ## 3. 出图 → 真像素
+
+- **提示词要短**。用户 11-27 指出提示词可能太详细；做了 A/B 测试：同一个任务，短提示词约 70 词、长提示词约 190 词，各出 3 版，效果一样，短的还略好。依据是 OpenAI 的出图指南：给每张参考图标号并说明用途，按「场景 → 主体 → 细节 → 限制」写。
+  - 写法：「Image 1: <用途>. Image 2: <用途>. Draw <内容>, same positions/size, same pixel art style as Image N. Flat magenta #FF00FF background. No text, no shadow.」
+  - 不写像素尺寸数字，也不写长串规则。比例靠灰色 1.7 m 比例人加 `--fit` 来定，场景见 `references/env_notes.md`。
+  - 一张图引用两张参考图（角色 + 板凳）时，容易出成黑底发光，约一半要淘汰。坐姿只画人，提示词写「Draw only the man, not the bench」。
+  - 半透明的东西（烟、残影）会和洋红混成粉色，交给游戏用粒子做。
 
 1. 出图规格写成 json：`[{id,size,quality,refs,prompt}]`。
 2. 在 114 上运行 `D:\games\pixel_city\run_teamo_114.cmd <spec> <workdir> <并发>`。key 由脚本从 114 的用户环境变量读取，绝不回显。
@@ -97,6 +105,10 @@ description: 《我亦是行人》Passing Through（仓库 Passersby）的开发
      - `poseguide.py <guide.png> <guide.json> --profile <档案>` 生成 8 帧朝右的模特，格子 384×1024；
      - 出图规格引用两张参考图：模特和设定稿；尺寸 3072×1024；每个动作出 3–6 版。
   3. 正面、背面走：用 `poseguide_fb.py --view front|back`。投影系数：地面 0.4，竖直 0.92。根运动沿 y 轴。
+  3b. **斜走**（11-27 用户要求）：用 `poseguide_yaw.py --yaw 45`（右前斜，3/4 正面）或 `--yaw -45`（右后斜，3/4 背面），朝左用镜像。参考做法是 8 方向精灵：先画 5 个方向，再镜像出 3 个。
+     - json 里 axis 写 dir，同时写 dir_screen = [cos, sin×0.4]。游戏里每帧的位移 = 根运动 × dir_screen。
+     - 测不准时（脚在画面上高低交替）改用模特的设计值。
+     - 动画名：walk_diagf、walk_diagb。
   4. `walkbuild.py <ai.png> <guide.json> out/<名>` 依次完成：
      - 转成真像素，身高固定（主角 110 px）；
      - 按帧与帧之间的空隙切帧，不能等分，等分会切掉脚尖；
@@ -117,9 +129,48 @@ description: 《我亦是行人》Passing Through（仓库 Passersby）的开发
 - 走和跑都用 F 根运动：身体每帧前进的距离 = 实测着地那只脚的位移。速度由步幅算出来，不能拍脑袋。
 - 腿不要用程序直接画成成品：A1.2 那样画出来的跑步，用户说「姿势好怪」。程序只负责画姿势模特，衣服和形体交给 AI。
 
+## 4b. 动作与互动（11-27 用户要求：坐下、和道具互动、抽烟、逗狗、拍照、开心大笑……「动作不只是行走」）
+
+- 动作帧用短提示词，以角色设定稿作参考出图，再用 `specbuild.py` 按下半身对齐，离地动作加 `--anchor none`。json 字段：
+  - `loop`、`view`；
+  - `seat_point`：坐姿精灵里只画人，人放在家具前面，用这个点对准座面中心；
+  - `hand_point`：摸狗时狗头的位置；
+  - `smoke_frame` 和 `mouth_point`：游戏在这一帧、从嘴边冒出灰色像素烟；
+  - `shutter_frame`：拍照时在这一帧截图并闪白。
+- 已有的动作：
+  - 主角：sit_bench（正面坐长椅）、photo、laugh、pet_dog；
+  - 罗伯：sit_tea；
+  - 叶永和：smoke、sit_stool；
+  - 黄丽：laugh；
+  - 乐乐：pet_dog、jump；
+  - 叶俊：phone；
+  - 狗旺财：walk_side、run_side（快步）、idle_side、sit、happy。狗的姿势模特用 `scripts/actions/dogguide.py`，四拍步态，步幅约 1.0 倍肩高。
+- world.json 里的配置：
+  - `spots`：座位，写坐标、朝向、NPC 用的动画、主角用的动画；
+  - `extra_props`：补摆的家具，场景美术重做时不会被覆盖；
+  - NPC 的 loop 指令：`["use", 座位, 秒, 动画]`、`["anim", 动作, 秒]`、`["pet", "wangcai", 秒]`；
+  - 对话行可以写成 `{"t": 台词, "anim": "laugh", "hero": "laugh"}`，说到这句时 NPC 和主角一起笑。
+- 主角按空格的优先顺序：说话 > 摸狗 > 坐下 > 进门 > 过马路。坐着时按空格或方向键起身。按 P 是主角举手机拍照。
+
+## 4c. BGM（11-27 用户要「星露谷那种温馨风格」：只取风格，曲子原创）
+
+- 用豆包语音 seed-audio-1.0 生成，key 是 114 `.env` 里的 VOLC_TTS_APIKEY_NEW；脚本 `scripts/seed_bgm.py`，规格见 `scripts/seed_spec.json`。中文提示词写清：纯音乐、乐器、BPM、场景、可循环。每首最长 120 秒。
+- Suno 的 key 返回 401，ElevenLabs、MiniMax、fal 都没配 key。
+- 生成后的处理：
+  - 结尾 3 秒和开头交叉淡化，做成无缝循环：`atrim 3:120` 接 `atrim 0:3`，用 `acrossfade`；
+  - 用 loudnorm 统一响度到 −18 LUFS，转成 ogg，放进 `side_data/bgm/`；
+  - world.json 的 `bgm` 写每个场景对应哪首，换场景时淡入淡出。
+- 用频谱图检查：有和声和节拍、没有人声、没有长时间静音。
+
 ## 5. 横版玩法（11-27 定，类似蜡笔小新横版游戏的移动方式）
 
 见 `references/side_scroll_design.md`。纵向（W/S）走用正面和背面行走帧，不能用侧面帧平移。参考：《蜡笔小新 我与博士的暑假》是固定视角加手绘背景，角色能在画面里往纵深方向走：街道是横条、人行道是纵深带、在路口转弯、过马路走斑马线、进门、室内、NPC 的日程和交互。
+
+## 5b. 旧美术已清理（11-27 用户：「那个风格我不喜欢，给我清理掉，避免影响后续开发」）
+
+- 俯视角时代的东西都已从仓库删掉：素材、代码（`main.tscn`、`scripts/`）、旧工具。
+- 旧版本可以从标签 `A1.2` 找回。文件另外备份在 114 `D:\games\passersby_work\archive_旧美术_A1.2\`。
+- 不要再引用这些旧东西。
 
 ## 6. 测试与录屏
 

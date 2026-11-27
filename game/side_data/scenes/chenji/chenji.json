@@ -1,0 +1,161 @@
+{
+ "id": "chenji",
+ "name": "陈记云吞面",
+ "side": null,
+ "kind": "interior",
+ "width": 960,
+ "band": [
+  392,
+  454
+ ],
+ "layers": [
+  {
+   "img": "room_chenji.png",
+   "x": 0,
+   "y": 0,
+   "parallax": 1.0,
+   "z": -10,
+   "w": 960,
+   "h": 540
+  }
+ ],
+ "props": [
+  {
+   "img": "counter.png",
+   "x": 631,
+   "y_foot": 402,
+   "w": 192,
+   "h": 130,
+   "solid": [
+    184,
+    16
+   ]
+  },
+  {
+   "img": "fridge.png",
+   "x": 136,
+   "y_foot": 396,
+   "w": 51,
+   "h": 117,
+   "solid": [
+    43,
+    12
+   ]
+  },
+  {
+   "img": "table.png",
+   "x": 246,
+   "y_foot": 436,
+   "w": 72,
+   "h": 72,
+   "solid": [
+    64,
+    14
+   ]
+  },
+  {
+   "img": "stool_w.png",
+   "x": 288,
+   "y_foot": 440,
+   "w": 28,
+   "h": 29,
+   "solid": [
+    20,
+    8
+   ]
+  },
+  {
+   "img": "table.png",
+   "x": 386,
+   "y_foot": 436,
+   "w": 72,
+   "h": 72,
+   "solid": [
+    64,
+    14
+   ]
+  },
+  {
+   "img": "stool_r.png",
+   "x": 344,
+   "y_foot": 440,
+   "w": 31,
+   "h": 30,
+   "solid": [
+    23,
+    8
+   ]
+  },
+  {
+   "img": "stool_w.png",
+   "x": 428,
+   "y_foot": 440,
+   "w": 28,
+   "h": 29,
+   "solid": [
+    20,
+    8
+   ]
+  },
+  {
+   "img": "stool_r.png",
+   "x": 386,
+   "y_foot": 418,
+   "w": 31,
+   "h": 30,
+   "solid": [
+    23,
+    8
+   ]
+  },
+  {
+   "img": "fan.png",
+   "x": 316,
+   "y_foot": 412,
+   "w": 39,
+   "h": 85,
+   "solid": [
+    10,
+    6
+   ]
+  }
+ ],
+ "doors": [
+  {
+   "id": "chenji-kitchen",
+   "label": "后厨（店家专用）",
+   "x0": 727,
+   "x1": 811
+  }
+ ],
+ "exits": {
+  "left": null,
+  "right": null,
+  "bottom": {
+   "to": "yongan_n",
+   "door": "L01-1",
+   "label": "出门（永安街）",
+   "x0": 452,
+   "x1": 507
+  }
+ },
+ "zebras": [],
+ "entry": {
+  "x": 480,
+  "y": 450
+ },
+ "npc_spots": {
+  "owner": {
+   "x": 671,
+   "y_foot": 396,
+   "face": "front",
+   "note": "陈伯在柜台后"
+  },
+  "diner": {
+   "x": 224,
+   "y_foot": 440,
+   "pose": "sit",
+   "note": "食客坐红凳吃面"
+  }
+ }
+}

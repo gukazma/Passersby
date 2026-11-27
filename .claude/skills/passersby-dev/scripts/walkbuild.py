@@ -55,23 +55,26 @@ def feet(fr):
     xs = np.nonzero(al[yb - 2:yb + 1].any(0))[0]
     return [(q[0] + q[-1]) / 2 for q in np.split(xs, np.nonzero(np.diff(xs) > 2)[0] + 1) if len(q)]
 guide_rm = np.array(g["root_motion_img_px"], float) / P
+DX = g["dir_screen"][0] if g.get("axis") == "dir" else 1.0   # 斜走：脚在画面上的横向位移 = 前进量 × cos
 meas = []
 for i in range(nf):
     A, B = feet(reg[i]), feet(reg[(i + 1) % nf])
     c = [xa - xb for xa in A for xb in B]
-    meas.append(min(c, key=lambda d: abs(d - guide_rm[i])) if c else guide_rm[i])
+    meas.append((min(c, key=lambda d: abs(d - guide_rm[i] * DX)) if c else guide_rm[i] * DX) / DX)
 meas = np.array(meas)
+if g.get('axis') == 'y' or (g.get('axis') == 'dir' and (meas <= 0.5).any()):   # 正背面/测不准的斜走：用模特设计值
+    meas = guide_rm.copy()
 rm = meas * (1 - a.blend) + meas.mean() * a.blend
 slips = []
 for i in range(nf):
     A, B = feet(reg[i]), feet(reg[(i + 1) % nf])
-    slips.append(round(float(min((abs(xb + rm[i] - xa) for xa in A for xb in B), default=0)), 2))
+    slips.append(round(float(min((abs(xb + rm[i] * DX - xa) for xa in A for xb in B), default=0)), 2))
 fps = g.get("fps", 12)
 meta = {"frames": nf, "frame_w": W, "frame_h": Hh, "pixel_size_src": P, "fps": fps,
         "root_motion_px": [round(float(x), 3) for x in rm], "measured_px": [round(float(x), 2) for x in meas],
         "guide_px": [round(float(x), 2) for x in guide_rm], "cycle_px": round(float(rm.sum()), 2),
         "speed_px_s": round(float(rm.sum()) / nf * fps, 1), "slip_px": slips, "slip_mean_px": round(float(np.mean(slips)), 2),
-        "origin": [cx, Hh - 1], "profile": g.get("profile")}
+        "origin": [cx, Hh - 1], "axis": g.get("axis", "x"), "dir_screen": g.get("dir_screen"), "profile": g.get("profile")}
 json.dump(meta, open(str(out) + ".json", "w"), ensure_ascii=False, indent=1)
 bg = Image.new("RGBA", (S.shape[1], S.shape[0]), (236, 226, 206, 255)); bg.alpha_composite(Image.fromarray(S))
 bg.resize((S.shape[1] * 4, S.shape[0] * 4), Image.NEAREST).save(str(out) + "_x4.png")

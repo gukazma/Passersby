@@ -1,0 +1,23 @@
+# 动作动画笔记（11-27 ACTIONS fork，供合并进 passersby-dev skill）
+
+- **短提示词完全够用**：「Image 1: 角色。Draw him doing X, N frames in a row」，加上限制「same size and style / magenta / no text / no shadow」。
+  - 本轮 39 张图，人物动作基本一次成功。
+- **两张参考图（角色 + 板凳/凳子）的单张动作图**，有 3/6 出成黑底发光，只能淘汰。
+  - 坐姿的提示词写「Draw only the man, not the bench/stool」，只画人。
+  - 道具留在场景里，人物画在道具前面，用 seat_point 对准座面中心。
+  - 不要让人物和凳子画成一张图再藏道具：两者比例对不上会跳。
+- **街上的长椅正对镜头**，所以坐长椅的动作是正面坐（sit_bench，front），不是侧面。凳子在店里横放，用侧面坐。
+- **AI 画的烟、残影、尾巴拖影是半透明的**，会混进洋红变成粉色。
+  - 烟交给游戏用像素粒子做。抽烟动画只做「拿烟到嘴边」，json 里给 smoke_frame 和 mouth_point。
+  - 洋红杂边清理要迭代到没有为止，代码在 package.py clean()，最多 12 轮。
+  - 腿部的偏粉像素换成远侧腿的棕色，代码在 recolor_dog.py。
+- **跳跃这类离地动作**，specbuild 要加 `--anchor none`。否则按脚对齐会把腾空帧拉回地面。
+  - 最后一帧如果比其他帧大，就去掉，播完回到站立。
+- **AI 会改道具在手里的位置**（黄丽 laugh a 第 3 帧菜篮换了手），挑版本时逐帧看手里的东西。
+- **「被抚摸的狗」会被 AI 顺手画上一只人手**，提示词写「Draw only the dog, no hands, no people」。
+- **狗的走路**：
+  - 姿势模特用 `dogguide.py`。walk 是四拍步态（LH-LF-RH-RF），支撑占 62%；trot 是对角腿同步，支撑占 45%。
+  - 前腿腕关节向前凸，后腿跗关节向后凸。
+  - 步幅用 1.0× 肩高（walk）或 1.3×（trot）。用 0.62× 时太小，狗只能走 11 px/s。
+  - 小狗步频高：walk 14 fps，trot 18 fps，trot 约等于人走路的速度，可以跟着人走。
+- **蹲下抚摸**的 hand_point：在人物高度 30–85% 的范围内取最靠前的点，所有帧里取最远的一个。不要按站立身高找，会找到头。

@@ -1,0 +1,267 @@
+{
+ "id": "binjiang",
+ "name": "滨江路",
+ "side": "river",
+ "kind": "street",
+ "width": 1900,
+ "band": [
+  392,
+  468
+ ],
+ "layers": [
+  {
+   "img": "bg_harbour.png",
+   "x": 0,
+   "y": -101,
+   "parallax": 0.3,
+   "z": -20,
+   "w": 1599,
+   "h": 533
+  },
+  {
+   "img": "ground_binjiang.png",
+   "x": 0,
+   "y": 0,
+   "parallax": 1.0,
+   "z": -10,
+   "w": 1900,
+   "h": 540
+  }
+ ],
+ "props": [
+  {
+   "img": "railing.png",
+   "x": 864,
+   "y_foot": 393,
+   "w": 280,
+   "h": 72,
+   "solid": [
+    280,
+    6
+   ]
+  },
+  {
+   "img": "railing.png",
+   "x": 598,
+   "y_foot": 393,
+   "w": 280,
+   "h": 72,
+   "solid": [
+    280,
+    6
+   ]
+  },
+  {
+   "img": "railing.png",
+   "x": 332,
+   "y_foot": 393,
+   "w": 280,
+   "h": 72,
+   "solid": [
+    280,
+    6
+   ]
+  },
+  {
+   "img": "railing.png",
+   "x": 66,
+   "y_foot": 393,
+   "w": 280,
+   "h": 72,
+   "solid": [
+    280,
+    6
+   ]
+  },
+  {
+   "img": "railing.png",
+   "x": -200,
+   "y_foot": 393,
+   "w": 280,
+   "h": 72,
+   "solid": [
+    280,
+    6
+   ]
+  },
+  {
+   "img": "railing.png",
+   "x": 1408,
+   "y_foot": 393,
+   "w": 280,
+   "h": 72,
+   "solid": [
+    280,
+    6
+   ]
+  },
+  {
+   "img": "railing.png",
+   "x": 1674,
+   "y_foot": 393,
+   "w": 280,
+   "h": 72,
+   "solid": [
+    280,
+    6
+   ]
+  },
+  {
+   "img": "railing.png",
+   "x": 1940,
+   "y_foot": 393,
+   "w": 280,
+   "h": 72,
+   "solid": [
+    280,
+    6
+   ]
+  },
+  {
+   "img": "gate.png",
+   "x": 1136,
+   "y_foot": 396,
+   "w": 274,
+   "h": 198
+  },
+  {
+   "img": "teakiosk.png",
+   "x": 1580,
+   "y_foot": 412,
+   "w": 206,
+   "h": 192,
+   "solid": [
+    198,
+    20
+   ]
+  },
+  {
+   "img": "slamp.png",
+   "x": 300,
+   "y_foot": 398,
+   "w": 40,
+   "h": 195,
+   "solid": [
+    8,
+    4
+   ]
+  },
+  {
+   "img": "slamp.png",
+   "x": 880,
+   "y_foot": 398,
+   "w": 40,
+   "h": 195,
+   "solid": [
+    8,
+    4
+   ]
+  },
+  {
+   "img": "slamp.png",
+   "x": 1760,
+   "y_foot": 398,
+   "w": 40,
+   "h": 195,
+   "solid": [
+    8,
+    4
+   ]
+  },
+  {
+   "img": "bollard.png",
+   "x": 430,
+   "y_foot": 400,
+   "w": 31,
+   "h": 39,
+   "solid": [
+    23,
+    8
+   ]
+  },
+  {
+   "img": "bollard.png",
+   "x": 1380,
+   "y_foot": 400,
+   "w": 31,
+   "h": 39,
+   "solid": [
+    23,
+    8
+   ]
+  },
+  {
+   "img": "lifebuoy.png",
+   "x": 700,
+   "y_foot": 396,
+   "w": 39,
+   "h": 98,
+   "solid": [
+    6,
+    4
+   ]
+  },
+  {
+   "img": "bench.png",
+   "x": 560,
+   "y_foot": 404,
+   "w": 92,
+   "h": 55,
+   "solid": [
+    84,
+    10
+   ]
+  },
+  {
+   "img": "bench.png",
+   "x": 1840,
+   "y_foot": 404,
+   "w": 92,
+   "h": 55,
+   "solid": [
+    84,
+    10
+   ]
+  },
+  {
+   "img": "post_binjiang.png",
+   "x": 150,
+   "y_foot": 464,
+   "w": 119,
+   "h": 190,
+   "solid": [
+    6,
+    4
+   ]
+  },
+  {
+   "img": "light.png",
+   "x": 70,
+   "y_foot": 466,
+   "w": 52,
+   "h": 210,
+   "solid": [
+    8,
+    4
+   ]
+  }
+ ],
+ "doors": [
+  {
+   "id": "M01-1",
+   "label": "旧港渡轮码头",
+   "x0": 1080,
+   "x1": 1192
+  }
+ ],
+ "exits": {
+  "left": {
+   "to": "yongan_n",
+   "label": "回永安街",
+   "x": 60,
+   "y": 430
+  },
+  "right": null
+ },
+ "zebras": []
+}

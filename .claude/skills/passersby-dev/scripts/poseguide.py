@@ -12,6 +12,7 @@ ap.add_argument("out"); ap.add_argument("meta")
 ap.add_argument("--frames", type=int, default=8)
 ap.add_argument("--cell", default="384x1024")
 ap.add_argument("--height", type=float, default=700)
+ap.add_argument("--mode", default="walk", choices=["walk", "run"])
 ap.add_argument("--profile", help="步态档案 json（见 gait_profiles.json），覆盖默认值")
 a = ap.parse_args()
 PF = {"stride": 1.0, "knee_load": 1.0, "knee_swing": 1.0, "ankle": 1.0, "lean": 2.0, "head_fwd": 0.0, "stoop": 0.0,
@@ -25,6 +26,13 @@ HIP = [(0, 30), (10, 28), (30, 8), (50, -10), (56, -9), (62, -2), (75, 20), (87,
 KNEE = [(0, 5), (15, 18), (30, 7), (40, 4), (50, 9), (62, 38), (72, 60), (80, 52), (90, 20), (97, 5), (100, 5)]
 ANK = [(0, 0), (7, -6), (30, 5), (45, 10), (52, 6), (62, -16), (70, -10), (80, 0), (90, 2), (100, 0)]
 STANCE_END = 62
+if a.mode == "run":   # 跑步常模（Novacheck 1998 量级）：支撑约 0–40%，两段腾空
+    HIP = [(0, 35), (10, 30), (30, 2), (40, -12), (50, -6), (65, 25), (80, 50), (90, 44), (100, 35)]
+    KNEE = [(0, 18), (12, 40), (30, 22), (40, 15), (55, 60), (70, 110), (80, 95), (92, 35), (100, 18)]
+    ANK = [(0, 5), (12, 18), (30, 5), (40, -22), (55, -10), (75, 5), (90, 8), (100, 5)]
+    STANCE_END = 40
+    PF.setdefault("_run", 1)
+    PF["elbow"] = max(PF["elbow"], 85); PF["arm_swing"] *= 1.5; PF["lean"] += 7
 
 def curve(kp, p):
     """周期 Catmull-Rom 插值。"""
@@ -69,15 +77,28 @@ frames = []
 for i in range(N):
     pn = 100.0 * i / N; pf = pn + 50
     ln, lf = leg((0, 0), pn), leg((0, 0), pf)
-    low = max(ln[2][1], ln[3][1], lf[2][1], lf[3][1])
-    frames.append((pn, pf, low, ln, lf))
-
+    st = [L for L, p in ((ln, pn), (lf, pf)) if (p % 100) < STANCE_END]
+    if st:
+        low = max(max(L[2][1], L[3][1]) for L in st)
+    else:
+        low = None
+    frames.append([pn, pf, low, ln, lf])
+lows = [f[2] for f in frames if f[2] is not None]
+for f in frames:
+    if f[2] is None:      # 腾空帧：身体比支撑时高 0.18u，双脚离地
+        f[2] = max(lows) - 0.18 * u
 rm = []
-for i in range(N):   # 两帧都处于支撑相的那条腿，其踝关节相对髋的后移 = 身体前进
+for i in range(N):   # 两帧都处于支撑相的那条腿，其踝关节相对髋的后移 = 身体前进；腾空帧用均值
     j = (i + 1) % N; pn = 100.0 * i / N; pn2 = pn + 100.0 / N
-    near_ok = pn < STANCE_END and pn2 <= STANCE_END + 1e-6
-    k = 3 if near_ok else 4
-    rm.append(round(frames[i][k][1][0] - frames[j][k][1][0], 2))
+    got = None
+    for k, off in ((3, 0), (4, 50)):
+        p1, p2 = (pn + off) % 100, (pn2 + off)
+        if p1 < STANCE_END and p2 - (0 if p2 < 100 else 100) <= STANCE_END + 1e-6 and p2 < 100 + STANCE_END:
+            got = frames[i][k][1][0] - frames[j][k][1][0]
+            break
+    rm.append(None if got is None else round(got, 2))
+known = [r for r in rm if r is not None]
+rm = [round(sum(known) / len(known), 2) if r is None else r for r in rm]
 img = Image.new("RGB", (CW * N, CH), (255, 0, 255)); d = ImageDraw.Draw(img)
 NEAR, FAR, BODY = (215, 215, 215), (90, 90, 90), (165, 165, 165)
 def cap(p, q, w, c):
@@ -117,7 +138,7 @@ for i, (pn, pf, low, _, _) in enumerate(frames):
     d.ellipse([hc[0] - head_r, hc[1] - head_r, hc[0] + head_r, hc[1] + head_r], fill=BODY)
     d.polygon([(hc[0] + head_r * .85, hc[1] - head_r * .05), (hc[0] + head_r * 1.25, hc[1] + head_r * .2), (hc[0] + head_r * .8, hc[1] + head_r * .4)], fill=BODY)
     draw_leg(pn, NEAR); draw_arm(pn, NEAR, W * .8, True)
-json.dump({"profile": PF, "fps": PF["fps"], "frames": N, "cell": [CW, CH], "figure_height_img_px": H, "ground_y": ground,
+json.dump({"mode": a.mode, "profile": PF, "fps": PF["fps"], "frames": N, "cell": [CW, CH], "figure_height_img_px": H, "ground_y": ground,
            "root_motion_img_px": rm, "cycle_img_px": round(sum(rm), 1),
            "source": "Perry/Winter normal gait sagittal joint angles; toe-off 62%",
            "note": "浅灰=近侧 深灰=远侧；朝右；近侧腿 0%=脚跟着地"}, open(a.meta, "w"), ensure_ascii=False, indent=1)

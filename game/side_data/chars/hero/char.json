@@ -1,0 +1,322 @@
+{
+ "id": "hero",
+ "name": "阿行",
+ "height_px": 110,
+ "anims": {
+  "walk_side": {
+   "file": "walk_side.png",
+   "frames": 8,
+   "fps": 12.0,
+   "frame_w": 100,
+   "frame_h": 111,
+   "origin": [
+    50,
+    110
+   ],
+   "root_motion_px": [
+    4.281,
+    6.781,
+    5.781,
+    7.531,
+    4.281,
+    5.781,
+    4.781,
+    9.281
+   ],
+   "axis": "x",
+   "qc": {
+    "slip_mean_px": 1.35,
+    "speed_px_s": 72.7
+   }
+  },
+  "walk_front": {
+   "file": "walk_front.png",
+   "frames": 8,
+   "fps": 12.0,
+   "frame_w": 70,
+   "frame_h": 111,
+   "origin": [
+    35,
+    110
+   ],
+   "root_motion_px": [
+    3.106,
+    3.208,
+    3.19,
+    3.677,
+    3.106,
+    3.208,
+    3.19,
+    3.677
+   ],
+   "axis": "y",
+   "qc": {
+    "slip_mean_px": 4.63,
+    "speed_px_s": 39.5
+   }
+  },
+  "walk_back": {
+   "file": "walk_back.png",
+   "frames": 8,
+   "fps": 12.0,
+   "frame_w": 70,
+   "frame_h": 110,
+   "origin": [
+    35,
+    109
+   ],
+   "root_motion_px": [
+    3.152,
+    3.256,
+    3.238,
+    3.732,
+    3.152,
+    3.256,
+    3.238,
+    3.732
+   ],
+   "axis": "y",
+   "qc": {
+    "slip_mean_px": 3.97,
+    "speed_px_s": 40.1
+   }
+  },
+  "walk_diagf": {
+   "file": "walk_diagf.png",
+   "frames": 8,
+   "fps": 12.0,
+   "frame_w": 80,
+   "frame_h": 117,
+   "origin": [
+    40,
+    116
+   ],
+   "root_motion_px": [
+    7.881,
+    8.14,
+    8.094,
+    9.331,
+    7.881,
+    8.14,
+    8.094,
+    9.331
+   ],
+   "axis": "dir",
+   "dir_screen": [
+    0.7071,
+    0.2828
+   ],
+   "qc": {
+    "slip_mean_px": 2.92,
+    "speed_px_s": 100.3
+   }
+  },
+  "walk_diagb": {
+   "file": "walk_diagb.png",
+   "frames": 8,
+   "fps": 12.0,
+   "frame_w": 80,
+   "frame_h": 113,
+   "origin": [
+    40,
+    112
+   ],
+   "root_motion_px": [
+    7.823,
+    8.079,
+    8.034,
+    9.262,
+    7.823,
+    8.079,
+    8.034,
+    9.262
+   ],
+   "axis": "dir",
+   "dir_screen": [
+    0.7071,
+    -0.2828
+   ],
+   "qc": {
+    "slip_mean_px": 4.62,
+    "speed_px_s": 99.6
+   }
+  },
+  "run_side": {
+   "file": "run_side.png",
+   "frames": 8,
+   "fps": 14.0,
+   "frame_w": 110,
+   "frame_h": 114,
+   "origin": [
+    55,
+    113
+   ],
+   "root_motion_px": [
+    8.688,
+    9.688,
+    8.688,
+    8.688,
+    8.938,
+    9.188,
+    8.188,
+    8.938
+   ],
+   "axis": "x",
+   "qc": {
+    "slip_mean_px": 0.31,
+    "speed_px_s": 124.3
+   }
+  },
+  "idle_side": {
+   "file": "idle_side.png",
+   "frames": 4,
+   "fps": 4,
+   "frame_w": 46,
+   "frame_h": 113,
+   "origin": [
+    23,
+    112
+   ],
+   "root_motion_px": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "axis": "x"
+  },
+  "idle_front": {
+   "file": "idle_front.png",
+   "frames": 4,
+   "fps": 4,
+   "frame_w": 48,
+   "frame_h": 114,
+   "origin": [
+    24,
+    113
+   ],
+   "root_motion_px": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "axis": "y"
+  },
+  "idle_back": {
+   "file": "idle_back.png",
+   "frames": 4,
+   "fps": 4,
+   "frame_w": 47,
+   "frame_h": 113,
+   "origin": [
+    23,
+    112
+   ],
+   "root_motion_px": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "axis": "y"
+  },
+  "photo": {
+   "frames": 6,
+   "fps": 5.0,
+   "frame_w": 100,
+   "frame_h": 110,
+   "origin": [
+    50,
+    109
+   ],
+   "root_motion_px": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "axis": "x",
+   "view": "side",
+   "loop": false,
+   "prop": null,
+   "file": "photo.png",
+   "shutter_frame": 3
+  },
+  "sit_bench": {
+   "frames": 4,
+   "fps": 3.0,
+   "frame_w": 100,
+   "frame_h": 81,
+   "origin": [
+    50,
+    80
+   ],
+   "root_motion_px": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "axis": "x",
+   "view": "front",
+   "loop": true,
+   "prop": null,
+   "seat_point": [
+    0,
+    -30
+   ],
+   "seat": "bench",
+   "note": "只画人不画座位：道具保持显示，把 seat_point 对准道具座面中心；人物画在道具前面（y_foot 比道具大 1–6 px）",
+   "file": "sit_bench.png"
+  },
+  "pet_dog": {
+   "frames": 4,
+   "fps": 4.0,
+   "frame_w": 100,
+   "frame_h": 68,
+   "origin": [
+    50,
+    67
+   ],
+   "root_motion_px": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "axis": "x",
+   "view": "side",
+   "loop": true,
+   "prop": null,
+   "hand_point": [
+    32,
+    -37
+   ],
+   "file": "pet_dog.png"
+  },
+  "laugh": {
+   "frames": 4,
+   "fps": 6.0,
+   "frame_w": 100,
+   "frame_h": 110,
+   "origin": [
+    50,
+    109
+   ],
+   "root_motion_px": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "axis": "x",
+   "view": "front",
+   "loop": true,
+   "prop": null,
+   "file": "laugh.png"
+  }
+ }
+}

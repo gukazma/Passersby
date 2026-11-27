@@ -1,0 +1,83 @@
+{
+ "id": "chenqide",
+ "name": "陈启德（陈伯）",
+ "height_px": 106,
+ "resident": "R02",
+ "profile": null,
+ "anims": {
+  "idle_side": {
+   "file": "idle_side.png",
+   "frames": 4,
+   "fps": 4,
+   "frame_w": 33,
+   "frame_h": 109,
+   "origin": [
+    16,
+    108
+   ],
+   "root_motion_px": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "axis": "x"
+  },
+  "idle_front": {
+   "file": "idle_front.png",
+   "frames": 4,
+   "fps": 4,
+   "frame_w": 50,
+   "frame_h": 109,
+   "origin": [
+    25,
+    108
+   ],
+   "root_motion_px": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "axis": "y"
+  },
+  "idle_back": {
+   "file": "idle_back.png",
+   "frames": 4,
+   "fps": 4,
+   "frame_w": 48,
+   "frame_h": 109,
+   "origin": [
+    24,
+    108
+   ],
+   "root_motion_px": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "axis": "y"
+  },
+  "work": {
+   "file": "work.png",
+   "frames": 6,
+   "fps": 6.0,
+   "frame_w": 96,
+   "frame_h": 107,
+   "origin": [
+    48,
+    106
+   ],
+   "root_motion_px": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "axis": "y"
+  }
+ }
+}

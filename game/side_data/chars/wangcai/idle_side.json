@@ -1,0 +1,22 @@
+{
+ "frames": 4,
+ "fps": 8.0,
+ "frame_w": 100,
+ "frame_h": 52,
+ "origin": [
+  50,
+  51
+ ],
+ "root_motion_px": [
+  0,
+  0,
+  0,
+  0
+ ],
+ "axis": "x",
+ "pixel_size_src": 10.69,
+ "view": "side",
+ "loop": true,
+ "prop": null,
+ "file": "idle_side.png"
+}

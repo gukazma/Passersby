@@ -1,0 +1,182 @@
+{
+ "id": "luobo",
+ "name": "罗振邦（罗伯）",
+ "height_px": 104,
+ "resident": "R05",
+ "profile": {
+  "desc": "罗伯 68 岁：微驼、头前伸、步子小、抬脚低、背着手、慢",
+  "height_m": 1.62,
+  "stride": 0.6,
+  "knee_load": 0.6,
+  "knee_swing": 0.65,
+  "ankle": 0.5,
+  "lean": 6,
+  "stoop": 8,
+  "head_fwd": 0.35,
+  "arm_mode": "behind_back",
+  "fps": 9
+ },
+ "anims": {
+  "walk_side": {
+   "file": "walk_side.png",
+   "frames": 8,
+   "fps": 9,
+   "frame_w": 100,
+   "frame_h": 105,
+   "origin": [
+    50,
+    104
+   ],
+   "root_motion_px": [
+    3.062,
+    4.562,
+    4.062,
+    5.062,
+    4.062,
+    4.062,
+    3.062,
+    5.062
+   ],
+   "axis": "x",
+   "qc": {
+    "slip_mean_px": 0.58,
+    "speed_px_s": 37.1
+   }
+  },
+  "idle_side": {
+   "file": "idle_side.png",
+   "frames": 4,
+   "fps": 4,
+   "frame_w": 42,
+   "frame_h": 107,
+   "origin": [
+    21,
+    106
+   ],
+   "root_motion_px": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "axis": "x"
+  },
+  "walk_front": {
+   "file": "walk_front.png",
+   "frames": 8,
+   "fps": 9,
+   "frame_w": 70,
+   "frame_h": 105,
+   "origin": [
+    35,
+    104
+   ],
+   "root_motion_px": [
+    1.767,
+    1.816,
+    1.793,
+    2.082,
+    1.767,
+    1.816,
+    1.793,
+    2.082
+   ],
+   "axis": "y",
+   "qc": {
+    "slip_mean_px": 2.29,
+    "speed_px_s": 16.8
+   }
+  },
+  "idle_front": {
+   "file": "idle_front.png",
+   "frames": 4,
+   "fps": 4,
+   "frame_w": 45,
+   "frame_h": 107,
+   "origin": [
+    22,
+    106
+   ],
+   "root_motion_px": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "axis": "y"
+  },
+  "walk_back": {
+   "file": "walk_back.png",
+   "frames": 8,
+   "fps": 9,
+   "frame_w": 70,
+   "frame_h": 105,
+   "origin": [
+    35,
+    104
+   ],
+   "root_motion_px": [
+    1.814,
+    1.865,
+    1.84,
+    2.137,
+    1.814,
+    1.865,
+    1.84,
+    2.137
+   ],
+   "axis": "y",
+   "qc": {
+    "slip_mean_px": 3.83,
+    "speed_px_s": 17.2
+   }
+  },
+  "idle_back": {
+   "file": "idle_back.png",
+   "frames": 4,
+   "fps": 4,
+   "frame_w": 45,
+   "frame_h": 107,
+   "origin": [
+    22,
+    106
+   ],
+   "root_motion_px": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "axis": "y"
+  },
+  "sit_tea": {
+   "frames": 6,
+   "fps": 4.0,
+   "frame_w": 100,
+   "frame_h": 77,
+   "origin": [
+    50,
+    76
+   ],
+   "root_motion_px": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "axis": "x",
+   "view": "side",
+   "loop": true,
+   "prop": null,
+   "seat_point": [
+    -14,
+    -28
+   ],
+   "seat": "stool",
+   "note": "只画人不画座位：道具保持显示，把 seat_point 对准道具座面中心；人物画在道具前面（y_foot 比道具大 1–6 px）",
+   "file": "sit_tea.png"
+  }
+ }
+}

@@ -1,0 +1,22 @@
+{
+ "frames": 4,
+ "fps": 10.0,
+ "frame_w": 100,
+ "frame_h": 54,
+ "origin": [
+  50,
+  53
+ ],
+ "root_motion_px": [
+  0,
+  0,
+  0,
+  0
+ ],
+ "axis": "x",
+ "pixel_size_src": 11.01,
+ "view": "side",
+ "loop": true,
+ "prop": null,
+ "file": "happy.png"
+}

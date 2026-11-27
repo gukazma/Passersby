@@ -1,0 +1,170 @@
+{
+ "id": "huangli",
+ "name": "黄丽",
+ "height_px": 101,
+ "resident": "R08",
+ "profile": {
+  "desc": "黄丽 52 岁主妇，微胖：左手拎菜篮几乎不摆、右手摆、步子中等偏小、略前倾",
+  "height_m": 1.58,
+  "stride": 0.85,
+  "lean": 3,
+  "girth": 1.2,
+  "arm_mode": "bag_near",
+  "fps": 11
+ },
+ "anims": {
+  "walk_side": {
+   "file": "walk_side.png",
+   "frames": 8,
+   "fps": 11,
+   "frame_w": 100,
+   "frame_h": 102,
+   "origin": [
+    50,
+    101
+   ],
+   "root_motion_px": [
+    4.844,
+    6.094,
+    5.844,
+    7.844,
+    4.594,
+    6.594,
+    5.844,
+    7.844
+   ],
+   "axis": "x",
+   "qc": {
+    "slip_mean_px": 0.93,
+    "speed_px_s": 68.1
+   }
+  },
+  "idle_side": {
+   "file": "idle_side.png",
+   "frames": 4,
+   "fps": 4,
+   "frame_w": 33,
+   "frame_h": 103,
+   "origin": [
+    16,
+    102
+   ],
+   "root_motion_px": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "axis": "x"
+  },
+  "walk_front": {
+   "file": "walk_front.png",
+   "frames": 8,
+   "fps": 11,
+   "frame_w": 80,
+   "frame_h": 102,
+   "origin": [
+    40,
+    101
+   ],
+   "root_motion_px": [
+    2.531,
+    2.409,
+    2.377,
+    2.885,
+    2.531,
+    2.409,
+    2.377,
+    2.885
+   ],
+   "axis": "y",
+   "qc": {
+    "slip_mean_px": 2.55,
+    "speed_px_s": 28.1
+   }
+  },
+  "idle_front": {
+   "file": "idle_front.png",
+   "frames": 4,
+   "fps": 4,
+   "frame_w": 54,
+   "frame_h": 104,
+   "origin": [
+    27,
+    103
+   ],
+   "root_motion_px": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "axis": "y"
+  },
+  "walk_back": {
+   "file": "walk_back.png",
+   "frames": 8,
+   "fps": 11,
+   "frame_w": 80,
+   "frame_h": 105,
+   "origin": [
+    40,
+    104
+   ],
+   "root_motion_px": [
+    2.616,
+    2.49,
+    2.457,
+    2.983,
+    2.616,
+    2.49,
+    2.457,
+    2.983
+   ],
+   "axis": "y",
+   "qc": {
+    "slip_mean_px": 3.89,
+    "speed_px_s": 29.0
+   }
+  },
+  "idle_back": {
+   "file": "idle_back.png",
+   "frames": 4,
+   "fps": 4,
+   "frame_w": 51,
+   "frame_h": 104,
+   "origin": [
+    25,
+    103
+   ],
+   "root_motion_px": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "axis": "y"
+  },
+  "laugh": {
+   "frames": 4,
+   "fps": 6.0,
+   "frame_w": 100,
+   "frame_h": 102,
+   "origin": [
+    50,
+    101
+   ],
+   "root_motion_px": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "axis": "x",
+   "view": "front",
+   "loop": true,
+   "prop": null,
+   "file": "laugh.png"
+  }
+ }
+}

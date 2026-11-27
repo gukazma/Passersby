@@ -1,0 +1,149 @@
+{
+ "id": "wangcai",
+ "name": "旺财",
+ "height_px": 52,
+ "kind": "dog",
+ "anims": {
+  "happy": {
+   "file": "happy.png",
+   "frames": 4,
+   "fps": 10.0,
+   "frame_w": 100,
+   "frame_h": 54,
+   "origin": [
+    50,
+    53
+   ],
+   "root_motion_px": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "axis": "x",
+   "loop": true
+  },
+  "idle_back": {
+   "file": "idle_back.png",
+   "frames": 4,
+   "fps": 4,
+   "frame_w": 29,
+   "frame_h": 55,
+   "origin": [
+    14,
+    54
+   ],
+   "root_motion_px": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "axis": "y",
+   "loop": true
+  },
+  "idle_front": {
+   "file": "idle_front.png",
+   "frames": 4,
+   "fps": 4,
+   "frame_w": 29,
+   "frame_h": 56,
+   "origin": [
+    14,
+    55
+   ],
+   "root_motion_px": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "axis": "y",
+   "loop": true
+  },
+  "idle_side": {
+   "file": "idle_side.png",
+   "frames": 4,
+   "fps": 8.0,
+   "frame_w": 100,
+   "frame_h": 52,
+   "origin": [
+    50,
+    51
+   ],
+   "root_motion_px": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "axis": "x",
+   "loop": true
+  },
+  "run_side": {
+   "file": "run_side.png",
+   "frames": 8,
+   "fps": 18,
+   "frame_w": 90,
+   "frame_h": 55,
+   "origin": [
+    45,
+    54
+   ],
+   "root_motion_px": [
+    3.281,
+    2.781,
+    5.531,
+    5.031,
+    5.531,
+    1.281,
+    6.031,
+    3.031
+   ],
+   "axis": "x",
+   "loop": true
+  },
+  "sit": {
+   "file": "sit.png",
+   "frames": 4,
+   "fps": 4.0,
+   "frame_w": 100,
+   "frame_h": 49,
+   "origin": [
+    50,
+    48
+   ],
+   "root_motion_px": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "axis": "x",
+   "loop": true
+  },
+  "walk_side": {
+   "file": "walk_side.png",
+   "frames": 8,
+   "fps": 14,
+   "frame_w": 90,
+   "frame_h": 53,
+   "origin": [
+    45,
+    52
+   ],
+   "root_motion_px": [
+    2.688,
+    1.688,
+    2.688,
+    2.688,
+    3.688,
+    -0.062,
+    2.688,
+    2.938
+   ],
+   "axis": "x",
+   "loop": true
+  }
+ }
+}

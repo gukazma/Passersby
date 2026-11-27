@@ -1,0 +1,21 @@
+{
+ "frames": 4,
+ "fps": 4,
+ "frame_w": 29,
+ "frame_h": 55,
+ "origin": [
+  14,
+  54
+ ],
+ "root_motion_px": [
+  0,
+  0,
+  0,
+  0
+ ],
+ "axis": "y",
+ "pixel_size_src": 12.47,
+ "view": "back",
+ "loop": true,
+ "file": "idle_back.png"
+}

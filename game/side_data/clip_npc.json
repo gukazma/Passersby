@@ -1,0 +1,45 @@
+{
+ "start": {
+  "scene": "yongan_n",
+  "x": 700,
+  "y": 440
+ },
+ "steps": [
+  {
+   "act": "wait",
+   "t": 1.0
+  },
+  {
+   "act": "walkto",
+   "x": 1729,
+   "y": 440,
+   "max": 20
+  },
+  {
+   "act": "wait",
+   "t": 1.0
+  },
+  {
+   "act": "approach",
+   "npc": "huangli",
+   "max": 20
+  },
+  {
+   "act": "talk",
+   "each": 3.0
+  },
+  {
+   "act": "wait",
+   "t": 1.0
+  },
+  {
+   "act": "walkto",
+   "x": 1379,
+   "y": 440
+  },
+  {
+   "act": "wait",
+   "t": 3.0
+  }
+ ]
+}

@@ -3,12 +3,12 @@ config_version=5
 
 [application]
 config/name="我亦是行人 Passing Through"
-run/main_scene="res://main.tscn"
+run/main_scene="res://side/side_main.tscn"
 config/features=PackedStringArray("4.6")
 
 [display]
-window/size/viewport_width=640
-window/size/viewport_height=360
+window/size/viewport_width=960
+window/size/viewport_height=540
 window/size/window_width_override=1920
 window/size/window_height_override=1080
 window/stretch/mode="viewport"

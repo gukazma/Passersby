@@ -1,0 +1,175 @@
+{
+ "id": "yejun",
+ "name": "叶俊",
+ "height_px": 114,
+ "resident": "R09",
+ "profile": {
+  "desc": "叶俊 24 岁外卖骑手，健身：挺胸、大步、屈肘有力摆臂、步频快",
+  "height_m": 1.78,
+  "stride": 1.2,
+  "knee_load": 1.15,
+  "knee_swing": 1.2,
+  "ankle": 1.2,
+  "lean": 1,
+  "arm_swing": 1.6,
+  "elbow": 45,
+  "torso": 1.02,
+  "girth": 1.1,
+  "fps": 13
+ },
+ "anims": {
+  "walk_side": {
+   "file": "walk_side.png",
+   "frames": 8,
+   "fps": 13,
+   "frame_w": 100,
+   "frame_h": 114,
+   "origin": [
+    50,
+    113
+   ],
+   "root_motion_px": [
+    7.25,
+    9.0,
+    10.0,
+    9.75,
+    7.75,
+    9.0,
+    9.75,
+    9.5
+   ],
+   "axis": "x",
+   "qc": {
+    "slip_mean_px": 0.75,
+    "speed_px_s": 117.0
+   }
+  },
+  "idle_side": {
+   "file": "idle_side.png",
+   "frames": 4,
+   "fps": 4,
+   "frame_w": 39,
+   "frame_h": 117,
+   "origin": [
+    19,
+    116
+   ],
+   "root_motion_px": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "axis": "x"
+  },
+  "walk_front": {
+   "file": "walk_front.png",
+   "frames": 8,
+   "fps": 13,
+   "frame_w": 76,
+   "frame_h": 115,
+   "origin": [
+    38,
+    114
+   ],
+   "root_motion_px": [
+    3.636,
+    3.84,
+    3.839,
+    4.346,
+    3.636,
+    3.84,
+    3.839,
+    4.346
+   ],
+   "axis": "y",
+   "qc": {
+    "slip_mean_px": 5.21,
+    "speed_px_s": 50.9
+   }
+  },
+  "idle_front": {
+   "file": "idle_front.png",
+   "frames": 4,
+   "fps": 4,
+   "frame_w": 48,
+   "frame_h": 117,
+   "origin": [
+    24,
+    116
+   ],
+   "root_motion_px": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "axis": "y"
+  },
+  "walk_back": {
+   "file": "walk_back.png",
+   "frames": 8,
+   "fps": 13,
+   "frame_w": 76,
+   "frame_h": 118,
+   "origin": [
+    38,
+    117
+   ],
+   "root_motion_px": [
+    3.87,
+    4.088,
+    4.086,
+    4.626,
+    3.87,
+    4.088,
+    4.086,
+    4.626
+   ],
+   "axis": "y",
+   "qc": {
+    "slip_mean_px": 5.77,
+    "speed_px_s": 54.2
+   }
+  },
+  "idle_back": {
+   "file": "idle_back.png",
+   "frames": 4,
+   "fps": 4,
+   "frame_w": 48,
+   "frame_h": 117,
+   "origin": [
+    24,
+    116
+   ],
+   "root_motion_px": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "axis": "y"
+  },
+  "phone": {
+   "frames": 4,
+   "fps": 4.0,
+   "frame_w": 100,
+   "frame_h": 114,
+   "origin": [
+    50,
+    113
+   ],
+   "root_motion_px": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "axis": "x",
+   "view": "front",
+   "loop": true,
+   "prop": null,
+   "file": "phone.png"
+  }
+ }
+}
