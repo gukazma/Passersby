@@ -1,5 +1,6 @@
 extends CharacterBody2D
-## F 方案行走：动画固定帧率，身体只在换帧时按根运动前进（撞到东西沿墙滑）。
+## 行走/跑步：动画固定帧率；身体在每一帧的时间里按该帧的根运动匀速前进（连续移动，不再一跳一跳），
+## 一个周期走过的距离 = 根运动之和，脚步不打滑。撞到东西沿墙滑。
 ## 精灵表：8 列 x 4 行（down, left, right, up），每帧 32x40，脚底锚点 (16, 39)。
 
 const ROWS := {"down": 0, "left": 1, "right": 2, "up": 3}
@@ -16,11 +17,19 @@ var waiting_time := 0.0           # 被人/车挡住、原地等待的时间
 var spr: Sprite2D
 var walk_tex: Texture2D
 var idle_tex: Texture2D          # 站立帧：4 帧横排（down/left/right/up），双脚着地
+var run_tex: Texture2D           # 跑步帧（可选）：布局同行走
+var walk_rm: Dictionary = {}
+var walk_fps := 12.5
+var run_rm: Dictionary = {}
+var run_fps := 14.0
+var running := false             # 当前是否在跑
 
 
 func setup(tex: Texture2D, motion: Dictionary, fps: float) -> void:
 	rm = motion
 	anim_fps = fps
+	walk_rm = motion
+	walk_fps = fps
 	var sh := Sprite2D.new()      # 脚下影子
 	var si := Image.create(14, 5, false, Image.FORMAT_RGBA8)
 	for y in 5:
@@ -50,37 +59,53 @@ func setup(tex: Texture2D, motion: Dictionary, fps: float) -> void:
 	_update_frame()
 
 
-## 每物理帧调用：want = 想走的方向名（"" = 站住）
-func step_walk(want: String, delta: float) -> void:
+## 每物理帧调用：want = 想走的方向名（"" = 站住）；run = 想跑（没有跑步帧时用快走代替）
+func step_walk(want: String, delta: float, run: bool = false) -> void:
 	if want == "":
 		moving = false
 		frame = 0
 		acc = 0.0
 		_update_frame()
 		return
+	if run != running:
+		running = run
+		if run and run_tex:
+			rm = run_rm
+			anim_fps = run_fps
+		elif run:
+			rm = walk_rm
+			anim_fps = walk_fps * 1.7
+		else:
+			rm = walk_rm
+			anim_fps = walk_fps
 	if want != dir:
 		dir = want
 		frame = 0
 		acc = 0.0
 	moving = true
-	acc += delta * anim_fps
-	while acc >= 1.0:
-		acc -= 1.0
+	var left := delta * anim_fps      # 这一物理帧要走掉的"动画帧"数
+	var hit := false
+	while left > 0.0:
+		var part := minf(left, 1.0 - acc)
 		var step: float = float(rm[dir][frame]) if rm.has(dir) else 3.75
-		var motion: Vector2 = DIRS[dir] * step
-		var col := move_and_collide(motion)
+		var col := move_and_collide(DIRS[dir] * step * part)
 		if col:
+			hit = true
 			if col.get_collider() is StaticBody2D:
-				blocked_time += 1.0 / anim_fps
+				blocked_time += part / anim_fps
 			else:
-				waiting_time += 1.0 / anim_fps
+				waiting_time += part / anim_fps
 			var rest := col.get_remainder().slide(col.get_normal())
 			if rest.length() > 0.01:
 				move_and_collide(rest)
-		else:
-			blocked_time = 0.0
-			waiting_time = 0.0
-		frame = (frame + 1) % 8
+		acc += part
+		left -= part
+		if acc >= 1.0 - 1e-6:
+			acc = 0.0
+			frame = (frame + 1) % 8
+	if not hit:
+		blocked_time = 0.0
+		waiting_time = 0.0
 	_update_frame()
 
 
@@ -101,9 +126,17 @@ func _update_frame() -> void:
 			spr.vframes = 1
 		spr.frame = ROWS[dir]
 	else:
-		if spr.texture != walk_tex:
+		var want_tex: Texture2D = run_tex if (running and run_tex) else walk_tex
+		if spr.texture != want_tex:
 			spr.frame = 0
-			spr.texture = walk_tex
+			spr.texture = want_tex
 			spr.hframes = 8
 			spr.vframes = 4
 		spr.frame = ROWS[dir] * 8 + frame
+
+
+## 跑步帧：贴图 + 根运动 + 帧率（hero_run.json）
+func set_run(t: Texture2D, motion: Dictionary, fps: float) -> void:
+	run_tex = t
+	run_rm = motion
+	run_fps = fps

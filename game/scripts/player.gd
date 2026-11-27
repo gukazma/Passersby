@@ -1,5 +1,5 @@
 extends "res://scripts/walker.gd"
-## 玩家：方向键；--autoplay 时按 route 自动走（录演示用）。
+## 玩家：方向键走，按住 Shift 跑；--autoplay 时按 route 自动走（录演示用）。
 
 var route: Array = []      # [[x, y, wait_s], ...]，相邻点轴对齐
 var ri := 0
@@ -7,10 +7,15 @@ var wait := 0.0
 var autoplay := false
 var detour := Vector2.INF   # 被人/车挡住时的临时让路点
 var main: Node = null      # 主场景（交互、红绿灯）
+var frozen := false        # 拍照模式时主角不动
+var auto_run := false      # 测试用：自动巡游时跑
 
 
 func _physics_process(delta: float) -> void:
 	var want := ""
+	if frozen:
+		step_walk("", delta)
+		return
 	if autoplay:
 		want = _route_dir(delta)
 	else:
@@ -20,7 +25,7 @@ func _physics_process(delta: float) -> void:
 				want = "right" if v.x > 0 else "left"
 			else:
 				want = "down" if v.y > 0 else "up"
-	step_walk(want, delta)
+	step_walk(want, delta, auto_run if autoplay else Input.is_key_pressed(KEY_SHIFT))
 
 
 func _route_dir(delta: float) -> String:

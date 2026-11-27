@@ -7,8 +7,13 @@ import json
 import math
 import pathlib
 
+import sys
+
 import numpy as np
 from PIL import Image, ImageDraw
+
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+from occ import south_top, runs      # noqa: E402  后巷南侧楼顶凸起的逐列遮挡/碰撞
 
 A = pathlib.Path("godot/assets")
 SZ = json.load(open(A / "sizes.json"))
@@ -17,7 +22,7 @@ Rn = lambda a, b: float(rng.uniform(a, b))
 
 LAYOUT = [["cbd_a", "cbd_b", "cbd_c"], ["shop_a", "plaza", "food"], ["apt_a", "shop_b", "apt_b"]]
 B = {n: json.load(open(A / f"blocks/{n}.json")) for row in LAYOUT for n in row}
-MARGIN, VW, SWV = 40, 20, 14            # 地图边人行道、纵路半宽、纵路人行道宽
+MARGIN, VW, SWV = 40, 20, 22            # 地图边人行道、纵路半宽、纵路人行道宽（A1.1 加宽：行道树种在人行道上，不压马路）
 COLW = [max(B[LAYOUT[r][c]]["w"] for r in range(3)) for c in range(3)]
 colx = [MARGIN]
 for c in range(1, 3):
@@ -146,15 +151,29 @@ for r, row in enumerate(LAYOUT):
         b = B[n]
         bx = colx[c] + (COLW[c] - b["w"]) // 2
         by = (ROW0_BOTTOM - b["h"]) if r == 0 else rows_top[r]
+        occ = None
         if b["alley"]:
             a0, a1 = b["alley"]
             parts = [[0, a0, a0], [a1, b["base"], b["base"]]]
             solids.append([bx, by, b["w"], a0 - 3])
             solids.append([bx, by + a1 + 2, b["w"], b["base"] - a1 - 2])
+            # 南排楼顶伸进后巷带的东西：单独一层（跟南排楼一起排序，挡住后巷里的人）+ 碰撞跟着轮廓走
+            bim = np.array(Image.open(A / f"blocks/{n}.png").convert("RGBA"))
+            top = south_top(bim, a0, a1)
+            if (top < a1).any():
+                y0 = int(top.min())
+                ov = bim[y0:a1].copy()
+                rows = np.arange(y0, a1)[:, None]
+                ov[..., 3] = np.where(rows >= top[None, :], ov[..., 3], 0)
+                Image.fromarray(ov).save(A / f"blocks/{n}_occ.png")
+                occ = [y0, a1, b["base"]]
+                for x0, t, rw in runs(top, a1):
+                    if rw >= 18:          # 窄的（地沟盖之类）只做遮挡不做碰撞，免得出现"空气墙"
+                        solids.append([bx + x0, by + t + 3, rw, a1 + 2 - t - 3])
         else:
             parts = [[0, b["base"], b["base"]]]
             solids.append([bx, 0, b["w"], by + b["base"]])
-        blocks.append({"img": n, "x": bx, "y": by, "w": b["w"], "h": b["h"], "base": b["base"], "alley": b["alley"], "parts": parts})
+        blocks.append({"img": n, "x": bx, "y": by, "w": b["w"], "h": b["h"], "base": b["base"], "alley": b["alley"], "parts": parts, "occ": occ})
 Image.fromarray(img).save(A / "ground.png")
 
 # ── 道具 ──
@@ -176,23 +195,22 @@ def blocked(x, y, r=10):
     return any(abs(x - p["x"]) < 18 and abs(y - p["y"]) < 10 for p in props)
 
 
-# 行道树：横路两侧人行道靠路缘，每 ~110 像素一棵（树坑），路灯与树错开
+# 行道树（A1.1）：每条人行道一排、一棵一棵、等间距，不交错，树坑在人行道上，树冠不压马路。
+# 横路：只种在北侧人行道（靠路缘，树冠往上盖人行道和楼脚）；南侧人行道放路灯（3/4 视角那边的树冠会盖住车道）。
+TREE_DX = 120
 for y, hw, sw, med in HROADS:
-    for side in (-1, 1):
-        yy = y - hw - 1 if side < 0 else y + hw + sw - 1   # 北侧树坑贴路缘，南侧贴人行道外沿（3/4 视角树冠不压车道）
-        for x in range(60, W, 110):
-            xx = x + Rn(-4, 4)
-            if inter(xx, y, 30):
-                continue
-            prop("street_tree", xx, yy)
-            if (x // 110) % 2 == 0:
-                prop("lamp2", xx + 55, yy)
+    for x in range(60, W, TREE_DX):
+        if not inter(x, y, 30):
+            prop("street_tree", x, y - hw - 1)
+        if not inter(x + TREE_DX // 2, y, 30):
+            prop("lamp2", x + TREE_DX // 2, y + hw + sw - 1)
+# 纵路：两侧人行道各一排，树坑靠人行道外沿（离路缘 18 像素，树冠 36 宽正好不进车道），两侧对齐
 for x in VR:
     for side in (-1, 1):
-        xx = x + side * (VW - 5)          # 树坑压在路缘上（人行道只有 14 像素，给行走线留 2 像素余量）
-        for y in range(30, prom0 - 20, 120):
-            if not inter(xx, y, 30):
-                prop("street_tree", xx, y + 10)
+        xx = x + side * (VW + SWV - 4)
+        for y in range(40, prom0 - HR_SW - 20, 120):
+            if not inter(x, y, 34):
+                prop("street_tree", xx, y)
 for x in VR:   # 红绿灯（四角）：灯色由 main.gd 按相位控制
     for y, hw, sw, med in HROADS:
         prop("traffic_light", x - VW + 2, y - hw - 3, light=["ns", 6])
@@ -226,7 +244,7 @@ vendings.append([round(pl["x"] + 40), round(pl["y"] + pa0 + 42)])
 prop("kiosk", pl["x"] + pl["w"] - 40, pl["y"] + pa0 + 34)
 # 滨河：树、长椅、路灯
 for x in range(50, W, 140):
-    prop("street_tree", x + Rn(-10, 10), prom0 + 12)
+    prop("street_tree", x, prom0 + 12)
 for x in range(120, W, 280):
     prop("bench2", x, RIVER_Y - 10)
     prop("lamp2", x + 70, RIVER_Y - 8)
@@ -240,12 +258,14 @@ for y, hw, sw, med in HROADS:
     opens = sorted(xc for xc, yy, _ in CROSS_H if yy == y)
     xs = [0] + [v for xc in opens for v in (xc - 13, xc + 13)] + [W]
     for a, b in zip(xs[0::2], xs[1::2]):
-        barriers.append([a, y - hw + 2, b - a, 2 * hw - 4])
+        if b > a:
+            barriers.append([a, y - hw + 2, b - a, 2 * hw - 4])
 for x in VR:
     opens = sorted(yc for xx, yc in CROSS_V if xx == x)
     ys = [0] + [v for yc in opens for v in (yc - 13, yc + 13)] + [prom0 - HR_SW]
     for a, b in zip(ys[0::2], ys[1::2]):
-        barriers.append([x - VW + 2, a, 2 * VW - 4, b - a])
+        if b > a:          # 最南边的斑马线口子会超出纵路尽头
+            barriers.append([x - VW + 2, a, 2 * VW - 4, b - a])
 polys = [[[0, RIVER_Y - 4], [W, RIVER_Y - 4], [W, H], [0, H]]]
 
 # ── 车（右侧通行；环线只右转）──

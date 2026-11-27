@@ -31,6 +31,9 @@ var toast_t := 0.0
 var px_font: FontFile
 var cam: Camera2D
 var help_bg: ColorRect
+var photo := false             # 拍照模式
+var photo_zoom := 1
+const PHOTO_FAR := Vector2i(1920, 1080)
 
 
 static func opt(key: String, def):
@@ -49,6 +52,8 @@ var inters: Array = []          # 路口 Rect2
 var duration := 0.0
 var t := 0.0
 var trace := false
+var trace_frames := false
+var last_pf := -1
 var next_trace := 0.0
 var sig_t := 0.0
 var fades: Array = []           # [sprite, x0, x1, top, origin]
@@ -232,13 +237,16 @@ func _ready() -> void:
 	var hm: Dictionary = motions["hero"]
 	player.setup(tex("hero"), hm["root_motion_px"], hm["anim_fps"])
 	player.set_idle(idle_tex("hero"))
+	if FileAccess.file_exists("res://assets/hero_run.json"):
+		var rj: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://assets/hero_run.json"))
+		player.set_run(tex("hero_run"), rj["root_motion_px"], rj["anim_fps"])
 	var st: Array = city["player"]["start"]
 	player.global_position = Vector2(st[0], st[1])
 	player.route = city["player"]["route"]
 	player.autoplay = "--autoplay" in args
 	player.main = self
 	player.collision_layer = L_CHAR
-	player.collision_mask = L_WORLD | L_CHAR | L_CAR | L_CURB
+	player.collision_mask = L_WORLD | L_CHAR | L_CAR      # 主角不受路中护栏限制：哪里都能过马路（NPC 仍走斑马线）
 	world.add_child(player)
 	cam = Camera2D.new()
 	cam.position_smoothing_enabled = true
@@ -276,10 +284,19 @@ func _ready() -> void:
 	if Engine.has_meta("keep_pos"):         # 只换风格时保留主角位置
 		player.global_position = Engine.get_meta("keep_pos")
 		Engine.remove_meta("keep_pos")
+	player.reset_physics_interpolation()
 	cam.force_update_scroll()
 	cam.reset_smoothing()               # 镜头直接到位，不从起点滑过来
 	_build_hud()
 	trace = "--trace" in args
+	trace_frames = "--trace_frames" in args       # 测试用：每个画面帧打印主角插值后的位置（查卡顿）
+	player.auto_run = "--autorun" in args
+	if "--photo" in args:          # 测试用：进拍照模式、拉到全景、存一张截图
+		_photo(true)
+		photo_zoom = ZOOMS.size()
+		get_window().content_scale_size = PHOTO_FAR
+		_update_hud()
+		get_tree().create_timer(0.6).timeout.connect(_shot)
 	for a in args:
 		if a.begins_with("--duration="):
 			duration = float(a.split("=")[1])
@@ -304,6 +321,15 @@ func _block(b: Dictionary) -> void:
 		s.offset = Vector2(0, part[0] - part[2])
 		world.add_child(s)
 		fades.append([s, float(b["x"]), float(b["x"] + b["w"]), float(b["y"] + part[0]), float(b["y"] + part[2])])
+	var occ = b.get("occ")
+	if occ is Array:              # 南排楼顶伸进后巷的东西（楼梯间、水箱）：跟南排楼一起排序，挡住后巷里的人
+		var o := Sprite2D.new()
+		o.texture = tex("blocks/" + b["img"] + "_occ")
+		o.centered = false
+		o.position = Vector2(b["x"], b["y"] + occ[2])
+		o.offset = Vector2(0, occ[0] - occ[2])
+		world.add_child(o)
+		fades.append([o, float(b["x"]), float(b["x"] + b["w"]), float(b["y"] + b["alley"][1]), float(b["y"] + occ[2])])
 
 
 func _rect_body(r: Array, layer: int) -> void:
@@ -373,18 +399,31 @@ func _unhandled_input(e: InputEvent) -> void:
 		KEY_R:
 			_switch("ratio", (opt("ratio", 0) + 1) % RATIOS.size(), false)
 		KEY_Z:
-			Engine.set_meta("zoom", (opt("zoom", 1) + 1) % ZOOMS.size())
-			get_window().content_scale_size = ZOOMS[opt("zoom", 1)][0]
-			_toast("镜头：" + ZOOMS[opt("zoom", 1)][1])
+			if photo:      # 拍照模式多一档「全景（×1）」
+				photo_zoom = (photo_zoom + 1) % (ZOOMS.size() + 1)
+				get_window().content_scale_size = PHOTO_FAR if photo_zoom == ZOOMS.size() else ZOOMS[photo_zoom][0]
+				_toast("镜头：" + ("全景（×1）" if photo_zoom == ZOOMS.size() else ZOOMS[photo_zoom][1]))
+			else:
+				Engine.set_meta("zoom", (opt("zoom", 1) + 1) % ZOOMS.size())
+				get_window().content_scale_size = ZOOMS[opt("zoom", 1)][0]
+				_toast("镜头：" + ZOOMS[opt("zoom", 1)][1])
 		KEY_T:
 			Engine.set_meta("tod", (opt("tod", 0) + 1) % TODS.size())
 			cm.color = TODS[opt("tod", 0)][0]
 			_toast("时间：" + TODS[opt("tod", 0)][1])
 		KEY_H:
-			help_label.visible = not help_label.visible
-			help_bg.visible = help_label.visible
-			hud_label.get_parent().visible = help_label.visible
+			if not photo:
+				help_label.visible = not help_label.visible
+				help_bg.visible = help_label.visible
+				hud_label.get_parent().visible = help_label.visible
+		KEY_P:
+			_photo(not photo)
+		KEY_ENTER, KEY_KP_ENTER, KEY_F12:
+			if photo:
+				_shot()
 		KEY_TAB:
+			if photo:
+				return
 			player.autoplay = not player.autoplay
 			if player.autoplay:         # 从最近的路线点接着走
 				var best := 0
@@ -400,6 +439,33 @@ func _unhandled_input(e: InputEvent) -> void:
 		KEY_ESCAPE:
 			get_tree().quit()
 	_update_hud()
+
+
+## 拍照模式：隐藏界面、主角站住、方向键平移镜头、Z 切远近（多一档全景）、回车/F12 存截图到 截图/
+func _photo(on: bool) -> void:
+	photo = on
+	player.frozen = on
+	for n in [help_label, help_bg, hud_label.get_parent()]:
+		n.visible = not on
+	if on:
+		photo_zoom = opt("zoom", 1)
+		_toast("拍照模式：方向键移动镜头  Z 远近  回车 保存截图  P 退出")
+	else:
+		cam.offset = Vector2(0, -16)
+		get_window().content_scale_size = ZOOMS[opt("zoom", 1)][0]
+		_toast("退出拍照模式")
+
+
+func _shot() -> void:
+	toast_label.visible = false
+	await RenderingServer.frame_post_draw
+	var img := get_viewport().get_texture().get_image()
+	toast_label.visible = true
+	var dir := ProjectSettings.globalize_path("res://").path_join("../截图").simplify_path()
+	DirAccess.make_dir_recursive_absolute(dir)
+	var name := "我亦是行人_%s.png" % Time.get_datetime_string_from_system().replace(":", "-").replace("T", "_")
+	img.save_png(dir.path_join(name))
+	_toast("已保存 截图/" + name)
 
 
 ## 切换风格（同比例布局一样，保留主角位置）或比例（布局变了，回到起点）
@@ -459,11 +525,14 @@ func _mk_label(pos: Vector2) -> Label:
 func _update_hud() -> void:
 	if hud_label == null:
 		return
-	var vs: Vector2i = ZOOMS[opt("zoom", 1)][0]
-	hud_label.text = "A1 美术风格与比例\n风格[1/2/3] %s\n比例[R] %s\n镜头[Z] %s   时间[T] %s" % [STYLES[opt("style", 0)][1], RATIOS[opt("ratio", 0)][1], ZOOMS[opt("zoom", 1)][1], TODS[opt("tod", 0)][1]]
+	var vs: Vector2i = get_window().content_scale_size
+	var k := maxf(1.0, roundf(vs.x / 640.0))      # 远镜头时界面按整数倍放大，字不会变小
+	hud.scale = Vector2(k, k)
+	vs = Vector2i(roundi(vs.x / k), roundi(vs.y / k))
+	hud_label.text = "A1.1 美术风格与比例\n风格[1/2/3] %s\n比例[R] %s\n镜头[Z] %s   时间[T] %s" % [STYLES[opt("style", 0)][1], RATIOS[opt("ratio", 0)][1], ZOOMS[opt("zoom", 1)][1], TODS[opt("tod", 0)][1]]
 	var bg := hud_label.get_parent() as ColorRect
 	bg.size = hud_label.get_minimum_size() + Vector2(10, 4)
-	help_label.text = "方向键 走路   空格 交互   Tab 自动巡游   H 隐藏说明   Esc 退出"
+	help_label.text = "方向键 走  Shift 跑  空格 交互  P 拍照  Tab 巡游  H 隐藏  Esc 退出"
 	help_label.position = Vector2(9, vs.y - 18)
 	help_bg.position = Vector2(4, vs.y - 19)
 	help_bg.size = help_label.get_minimum_size() + Vector2(10, 2)
@@ -480,6 +549,14 @@ func _toast(msg: String) -> void:
 
 func _process(delta: float) -> void:
 	t += delta
+	if photo:
+		var v := Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
+		var sp := 160.0 * (3.0 if Input.is_key_pressed(KEY_SHIFT) else 1.0)
+		cam.offset += v * sp * delta
+		var ws: Array = city["world"]
+		var half := Vector2(get_window().content_scale_size) / 2.0      # 别推出地图边（不然往回按会"卡住"）
+		var c := (player.global_position + cam.offset).clamp(half, Vector2(ws[0], ws[1]) - half)
+		cam.offset = c - player.global_position
 	if toast_label != null:
 		toast_t -= delta
 		toast_label.modulate.a = clampf(toast_t / 0.4, 0.0, 1.0)
@@ -495,6 +572,10 @@ func _process(delta: float) -> void:
 	var ph := phase()
 	for l in lights:
 		(l[0] as ColorRect).color = Color8(90, 230, 110) if ph == l[1] else Color8(240, 70, 60)
+	if trace_frames and Engine.get_physics_frames() != last_pf:
+		last_pf = Engine.get_physics_frames()
+		var o: Vector2 = player.global_position
+		print("F %.4f %.3f %.3f %s %d" % [t, o.x, o.y, player.dir, player.frame])
 	if trace and t >= next_trace:
 		next_trace += 2.0
 		var p := player.global_position

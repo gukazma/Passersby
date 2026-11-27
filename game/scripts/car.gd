@@ -1,6 +1,6 @@
 extends AnimatableBody2D
 ## 车辆：沿车道折线匀速行驶。loop=true 绕圈；false 开到终点后回到起点（穿城直行）。
-## 前方传感器碰到人/车就停；停超过 2.5 秒（防路口互等）强行通过。贴图：右/下/上（左 = 右翻转）。原点 = 车身中心。
+## 前方传感器碰到人/车就停：前面是人就一直等（人可以随便过马路）；前面是车且停超过 2.5 秒（防路口互等）才强行通过。贴图：右/下/上（左 = 右翻转）。原点 = 车身中心。
 
 var pts: PackedVector2Array
 var seg := 0
@@ -84,9 +84,14 @@ func _physics_process(delta: float) -> void:
 	if red:
 		return
 	sensor.force_shapecast_update()
-	if sensor.is_colliding() and stopped < 2.5:
-		stopped += delta
-		return
+	if sensor.is_colliding():
+		var person := false
+		for i in sensor.get_collision_count():
+			if sensor.get_collider(i) is CharacterBody2D:
+				person = true
+		if person or stopped < 2.5:
+			stopped += delta
+			return
 	if not sensor.is_colliding():
 		stopped = 0.0
 	var nxt := seg + 1
@@ -95,6 +100,7 @@ func _physics_process(delta: float) -> void:
 			nxt = 0
 		else:
 			global_position = pts[0]
+			reset_physics_interpolation()     # 瞬移回起点，不要插值出一道残影
 			seg = 0
 			_face(pts[1] - pts[0])
 			return
