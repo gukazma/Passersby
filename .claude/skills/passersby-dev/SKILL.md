@@ -180,3 +180,23 @@ description: 《我亦是行人》Passing Through（仓库 Passersby）的开发
 - cmd 的坑：
   - `if not exist X a & b` 会把 b 也算进 if，要用括号分组；
   - Windows 的 tar 不展开通配符、会弄坏中文名，改用 `scp -r` 或 Python。
+
+## 7. 演示录制与讲解视频（A1.3 做法）
+
+- **自动演示**：`side_data/clip_*.json`，启动参数加 `-- --demo=clip_x.json --quit_after_demo`。可用的指令：
+  - 移动：`{x,y,run,t}`；
+  - `walkto`、`approach`（走到某个 NPC 身边）、`interact`、`talk`（自动翻页）；
+  - `down`（过马路）、`take_photo`、`stand`、`wait`。
+  - 室内要沿通道走（先沿下沿，再往里，再横着走），否则会被桌凳卡住。
+- **录制**：在实验机上用 Movie Maker 录，参数 `--write-movie x.avi --fixed-fps 25 --rendering-driver d3d12`。
+  - 录出来的是 960×540，合成时用 `scale=1920:1080:flags=neighbor` 放大。
+  - AVI 带游戏原声（BGM），可以直接当背景声。
+- **搬运**：实验机和 114 之间用 `scp -3 -F 临时 ssh 配置`，两台机器各写一个 Host。不能共用 ControlPath，否则会连到同一台机器上。
+- **视频合成**：在 114 上用 `tools/video/build_video.py`：
+  - 旁白用 edge-tts Yunxi +4%；
+  - 说话时用 sidechain 压低背景；
+  - 字幕带半透明底板，不然会压在静态画面的内容上；
+  - 片头封面 3 秒；
+  - 整片 −16 LUFS。
+  - 讲解静态画面由 `stills.py` 生成。
+- **交付前检查**：`qc.py` 测响度和峰值，扫描冻结和静音，再抽帧看一遍。成品放 `D:\Lumo视频\我亦是行人\`，用 `--list` 确认归类正确。
