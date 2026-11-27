@@ -1,0 +1,32 @@
+[
+ {
+  "id": "heroA_walk2_a",
+  "size": "3072x1024",
+  "quality": "high",
+  "refs": [
+   "D:\\games\\passersby_work\\a13chars\\walk_guide.png",
+   "D:\\games\\passersby_work\\a13style\\art\\heroA_gait.png"
+  ],
+  "prompt": "Image 1 is a POSE GUIDE: eight grey mannequins in a row showing a side-view walking cycle facing RIGHT. LIGHT grey limbs are the side NEAREST the viewer, DARK grey limbs are the FAR side. Image 2 is the character model sheet (use the young MAN, top row). Draw the man from image 2 eight times, EXACTLY in the eight poses of image 1: same positions in the row, same size, same head position, same angle of every thigh, shin, foot, upper arm and forearm, same feet on the same ground line, same foot angles (the swinging foot hangs toe-down, the rear foot pushes off on its toes, the front foot lands on its heel). Copy his face, hair, mustard trench coat, white T-shirt, charcoal trousers, white sneakers and the dark green backpack with umbrella exactly from image 2. Anatomy rules: exactly TWO arms and TWO legs. The near arm and near leg are drawn in front of the body. The FAR arm is behind the torso, so mostly hidden: only the far hand may peek out where the dark grey hand is visible in the guide. The arms swing OPPOSITE to the legs exactly as in the guide. Pixel art in exactly the style of image 2: clean dark outlines, flat cel shading, no blur, no anti-aliasing. Plain flat pure magenta #FF00FF background, no ground shadow, no text, no grid lines."
+ },
+ {
+  "id": "heroA_walk2_b",
+  "size": "3072x1024",
+  "quality": "high",
+  "refs": [
+   "D:\\games\\passersby_work\\a13chars\\walk_guide.png",
+   "D:\\games\\passersby_work\\a13style\\art\\heroA_gait.png"
+  ],
+  "prompt": "Image 1 is a POSE GUIDE: eight grey mannequins in a row showing a side-view walking cycle facing RIGHT. LIGHT grey limbs are the side NEAREST the viewer, DARK grey limbs are the FAR side. Image 2 is the character model sheet (use the young MAN, top row). Draw the man from image 2 eight times, EXACTLY in the eight poses of image 1: same positions in the row, same size, same head position, same angle of every thigh, shin, foot, upper arm and forearm, same feet on the same ground line, same foot angles (the swinging foot hangs toe-down, the rear foot pushes off on its toes, the front foot lands on its heel). Copy his face, hair, mustard trench coat, white T-shirt, charcoal trousers, white sneakers and the dark green backpack with umbrella exactly from image 2. Anatomy rules: exactly TWO arms and TWO legs. The near arm and near leg are drawn in front of the body. The FAR arm is behind the torso, so mostly hidden: only the far hand may peek out where the dark grey hand is visible in the guide. The arms swing OPPOSITE to the legs exactly as in the guide. Pixel art in exactly the style of image 2: clean dark outlines, flat cel shading, no blur, no anti-aliasing. Plain flat pure magenta #FF00FF background, no ground shadow, no text, no grid lines."
+ },
+ {
+  "id": "heroA_walk2_c",
+  "size": "3072x1024",
+  "quality": "high",
+  "refs": [
+   "D:\\games\\passersby_work\\a13chars\\walk_guide.png",
+   "D:\\games\\passersby_work\\a13style\\art\\heroA_gait.png"
+  ],
+  "prompt": "Image 1 is a POSE GUIDE: eight grey mannequins in a row showing a side-view walking cycle facing RIGHT. LIGHT grey limbs are the side NEAREST the viewer, DARK grey limbs are the FAR side. Image 2 is the character model sheet (use the young MAN, top row). Draw the man from image 2 eight times, EXACTLY in the eight poses of image 1: same positions in the row, same size, same head position, same angle of every thigh, shin, foot, upper arm and forearm, same feet on the same ground line, same foot angles (the swinging foot hangs toe-down, the rear foot pushes off on its toes, the front foot lands on its heel). Copy his face, hair, mustard trench coat, white T-shirt, charcoal trousers, white sneakers and the dark green backpack with umbrella exactly from image 2. Anatomy rules: exactly TWO arms and TWO legs. The near arm and near leg are drawn in front of the body. The FAR arm is behind the torso, so mostly hidden: only the far hand may peek out where the dark grey hand is visible in the guide. The arms swing OPPOSITE to the legs exactly as in the guide. Pixel art in exactly the style of image 2: clean dark outlines, flat cel shading, no blur, no anti-aliasing. Plain flat pure magenta #FF00FF background, no ground shadow, no text, no grid lines."
+ }
+]

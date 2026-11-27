@@ -1,0 +1,42 @@
+[
+ {
+  "id": "heroA_front_a",
+  "size": "3072x1024",
+  "quality": "high",
+  "refs": [
+   "D:\\games\\passersby_work\\a13chars\\front_guide.png",
+   "D:\\games\\passersby_work\\a13style\\art\\heroA_gait.png"
+  ],
+  "prompt": "Image 1 is a POSE GUIDE: eight grey mannequins in a row walking TOWARD the camera, seen from the front and slightly from above (three-quarter top-down game view). LIGHT grey limbs are the character's LEFT side, DARK grey limbs his RIGHT side. Draw the man eight times EXACTLY in these eight poses: same positions, same size, the foot that is lower in the picture is the one stepping toward the camera, the higher foot is behind with its heel lifting, arms swing opposite to the legs exactly as in the guide. Face visible, looking ahead. Image 2 is the character model sheet (use the young MAN, top row). Copy his face, hair, mustard trench coat, white T-shirt, charcoal trousers, white sneakers and the dark green backpack with the umbrella exactly. Exactly TWO arms and TWO legs, every body part fully opaque, no ghost limbs, no motion blur. Pixel art in exactly the style of image 2: clean dark outlines, flat cel shading, no blur, no anti-aliasing. Plain flat pure magenta #FF00FF background, no ground shadow, no text, no grid lines."
+ },
+ {
+  "id": "heroA_front_b",
+  "size": "3072x1024",
+  "quality": "high",
+  "refs": [
+   "D:\\games\\passersby_work\\a13chars\\front_guide.png",
+   "D:\\games\\passersby_work\\a13style\\art\\heroA_gait.png"
+  ],
+  "prompt": "Image 1 is a POSE GUIDE: eight grey mannequins in a row walking TOWARD the camera, seen from the front and slightly from above (three-quarter top-down game view). LIGHT grey limbs are the character's LEFT side, DARK grey limbs his RIGHT side. Draw the man eight times EXACTLY in these eight poses: same positions, same size, the foot that is lower in the picture is the one stepping toward the camera, the higher foot is behind with its heel lifting, arms swing opposite to the legs exactly as in the guide. Face visible, looking ahead. Image 2 is the character model sheet (use the young MAN, top row). Copy his face, hair, mustard trench coat, white T-shirt, charcoal trousers, white sneakers and the dark green backpack with the umbrella exactly. Exactly TWO arms and TWO legs, every body part fully opaque, no ghost limbs, no motion blur. Pixel art in exactly the style of image 2: clean dark outlines, flat cel shading, no blur, no anti-aliasing. Plain flat pure magenta #FF00FF background, no ground shadow, no text, no grid lines."
+ },
+ {
+  "id": "heroA_back_a",
+  "size": "3072x1024",
+  "quality": "high",
+  "refs": [
+   "D:\\games\\passersby_work\\a13chars\\back_guide.png",
+   "D:\\games\\passersby_work\\a13style\\art\\heroA_gait.png"
+  ],
+  "prompt": "Image 1 is a POSE GUIDE: eight grey mannequins in a row walking AWAY from the camera, seen from behind and slightly from above (three-quarter top-down game view). LIGHT grey limbs are the character's LEFT side, DARK grey limbs his RIGHT side. Draw the man eight times EXACTLY in these eight poses seen from BEHIND: same positions, same size, the foot that is higher in the picture is the one stepping forward away from the camera, the lower foot is behind with its heel lifting and the sole of the shoe visible, arms swing opposite to the legs exactly as in the guide. We see the back of his head and the backpack. Image 2 is the character model sheet (use the young MAN, top row). Copy his face, hair, mustard trench coat, white T-shirt, charcoal trousers, white sneakers and the dark green backpack with the umbrella exactly. Exactly TWO arms and TWO legs, every body part fully opaque, no ghost limbs, no motion blur. Pixel art in exactly the style of image 2: clean dark outlines, flat cel shading, no blur, no anti-aliasing. Plain flat pure magenta #FF00FF background, no ground shadow, no text, no grid lines."
+ },
+ {
+  "id": "heroA_back_b",
+  "size": "3072x1024",
+  "quality": "high",
+  "refs": [
+   "D:\\games\\passersby_work\\a13chars\\back_guide.png",
+   "D:\\games\\passersby_work\\a13style\\art\\heroA_gait.png"
+  ],
+  "prompt": "Image 1 is a POSE GUIDE: eight grey mannequins in a row walking AWAY from the camera, seen from behind and slightly from above (three-quarter top-down game view). LIGHT grey limbs are the character's LEFT side, DARK grey limbs his RIGHT side. Draw the man eight times EXACTLY in these eight poses seen from BEHIND: same positions, same size, the foot that is higher in the picture is the one stepping forward away from the camera, the lower foot is behind with its heel lifting and the sole of the shoe visible, arms swing opposite to the legs exactly as in the guide. We see the back of his head and the backpack. Image 2 is the character model sheet (use the young MAN, top row). Copy his face, hair, mustard trench coat, white T-shirt, charcoal trousers, white sneakers and the dark green backpack with the umbrella exactly. Exactly TWO arms and TWO legs, every body part fully opaque, no ghost limbs, no motion blur. Pixel art in exactly the style of image 2: clean dark outlines, flat cel shading, no blur, no anti-aliasing. Plain flat pure magenta #FF00FF background, no ground shadow, no text, no grid lines."
+ }
+]

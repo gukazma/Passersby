@@ -1,0 +1,29 @@
+[
+ {
+  "id": "heroA_gait",
+  "size": "3072x1536",
+  "quality": "high",
+  "refs": [
+   "D:\\games\\passersby_work\\a13style\\art\\heroA.png"
+  ],
+  "prompt": "Keep the image EXACTLY the same: same background, same characters, same outfits, same three standing poses, same pixel size and positions. ONLY redraw the FOURTH figure of each row (the walking pose, facing right) because its arms and legs are wrong. Natural human walking is CONTRALATERAL: the arm swings opposite to the leg. Draw it like this: the leg NEAREST the viewer steps FORWARD (heel touching the ground in front), the far leg is BEHIND pushing off with its toes; therefore the arm NEAREST the viewer swings BACKWARD behind the hip, and the far arm swings FORWARD in front of the chest (partly hidden by the body). Never draw the same-side arm and leg moving forward together. Moderate relaxed stride, upright posture, head level."
+ },
+ {
+  "id": "heroB_gait",
+  "size": "3072x1536",
+  "quality": "high",
+  "refs": [
+   "D:\\games\\passersby_work\\a13style\\art\\heroB.png"
+  ],
+  "prompt": "Keep the image EXACTLY the same: same background, same characters, same outfits, same three standing poses, same pixel size and positions. ONLY redraw the FOURTH figure of each row (the walking pose, facing right) because its arms and legs are wrong. Natural human walking is CONTRALATERAL: the arm swings opposite to the leg. Draw it like this: the leg NEAREST the viewer steps FORWARD (heel touching the ground in front), the far leg is BEHIND pushing off with its toes; therefore the arm NEAREST the viewer swings BACKWARD behind the hip, and the far arm swings FORWARD in front of the chest (partly hidden by the body). Never draw the same-side arm and leg moving forward together. Moderate relaxed stride, upright posture, head level."
+ },
+ {
+  "id": "heroC_gait",
+  "size": "3072x1536",
+  "quality": "high",
+  "refs": [
+   "D:\\games\\passersby_work\\a13style\\art\\heroC.png"
+  ],
+  "prompt": "Keep the image EXACTLY the same: same background, same characters, same outfits, same three standing poses, same pixel size and positions. ONLY redraw the FOURTH figure of each row (the walking pose, facing right) because its arms and legs are wrong. Natural human walking is CONTRALATERAL: the arm swings opposite to the leg. Draw it like this: the leg NEAREST the viewer steps FORWARD (heel touching the ground in front), the far leg is BEHIND pushing off with its toes; therefore the arm NEAREST the viewer swings BACKWARD behind the hip, and the far arm swings FORWARD in front of the chest (partly hidden by the body). Never draw the same-side arm and leg moving forward together. Moderate relaxed stride, upright posture, head level."
+ }
+]

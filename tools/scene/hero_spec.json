@@ -1,0 +1,29 @@
+[
+ {
+  "id": "heroA",
+  "size": "3072x1536",
+  "quality": "high",
+  "refs": [
+   "D:\\games\\passersby_work\\a13style\\art\\fineA_ref_b.png"
+  ],
+  "prompt": "Use EXACTLY the art style, pixel size, outline and palette of the reference image (polished modern pixel art, clean dark outlines, flat cel shading with 2-3 tones, no noise, no dithering, no blur, no anti-aliasing, every art pixel a crisp square of about 3.2 image pixels). Draw a CHARACTER MODEL SHEET for a side-scrolling pixel art life-simulation game, on a plain flat warm off-white background (#efe6d6), no scenery, no text, no letters. Two versions of the SAME protagonist outfit: a young MAN on the top row and a young WOMAN on the bottom row, both about 25 years old, ordinary city people, realistic slightly cute proportions about three and a half heads tall, the same height as the people in the reference image. Each row shows the character four times side by side with even spacing, all standing on the same baseline, full body, nothing cut off: 1 front view facing the camera, arms relaxed; 2 TRUE side profile facing RIGHT, standing, both feet flat on the ground; 3 back view; 4 side profile facing RIGHT in a mid-stride walking pose. The outfit must read clearly in side profile and look almost the same when mirrored (keep it nearly symmetric, no one-sided logos). Outfit: a mustard-yellow light trench coat open over a white T-shirt, dark charcoal trousers, worn white sneakers, a small dark-green travel backpack with a folded umbrella in its side pocket. Man: short messy black hair. Woman: black chin-length bob."
+ },
+ {
+  "id": "heroB",
+  "size": "3072x1536",
+  "quality": "high",
+  "refs": [
+   "D:\\games\\passersby_work\\a13style\\art\\fineA_ref_b.png"
+  ],
+  "prompt": "Use EXACTLY the art style, pixel size, outline and palette of the reference image (polished modern pixel art, clean dark outlines, flat cel shading with 2-3 tones, no noise, no dithering, no blur, no anti-aliasing, every art pixel a crisp square of about 3.2 image pixels). Draw a CHARACTER MODEL SHEET for a side-scrolling pixel art life-simulation game, on a plain flat warm off-white background (#efe6d6), no scenery, no text, no letters. Two versions of the SAME protagonist outfit: a young MAN on the top row and a young WOMAN on the bottom row, both about 25 years old, ordinary city people, realistic slightly cute proportions about three and a half heads tall, the same height as the people in the reference image. Each row shows the character four times side by side with even spacing, all standing on the same baseline, full body, nothing cut off: 1 front view facing the camera, arms relaxed; 2 TRUE side profile facing RIGHT, standing, both feet flat on the ground; 3 back view; 4 side profile facing RIGHT in a mid-stride walking pose. The outfit must read clearly in side profile and look almost the same when mirrored (keep it nearly symmetric, no one-sided logos). Outfit: a faded denim work jacket over a cream hoodie, loose olive cargo trousers, brown canvas boots, a tan canvas tote bag on the shoulder. Man: short black hair with a slight fringe. Woman: dark brown hair in a low ponytail."
+ },
+ {
+  "id": "heroC",
+  "size": "3072x1536",
+  "quality": "high",
+  "refs": [
+   "D:\\games\\passersby_work\\a13style\\art\\fineA_ref_b.png"
+  ],
+  "prompt": "Use EXACTLY the art style, pixel size, outline and palette of the reference image (polished modern pixel art, clean dark outlines, flat cel shading with 2-3 tones, no noise, no dithering, no blur, no anti-aliasing, every art pixel a crisp square of about 3.2 image pixels). Draw a CHARACTER MODEL SHEET for a side-scrolling pixel art life-simulation game, on a plain flat warm off-white background (#efe6d6), no scenery, no text, no letters. Two versions of the SAME protagonist outfit: a young MAN on the top row and a young WOMAN on the bottom row, both about 25 years old, ordinary city people, realistic slightly cute proportions about three and a half heads tall, the same height as the people in the reference image. Each row shows the character four times side by side with even spacing, all standing on the same baseline, full body, nothing cut off: 1 front view facing the camera, arms relaxed; 2 TRUE side profile facing RIGHT, standing, both feet flat on the ground; 3 back view; 4 side profile facing RIGHT in a mid-stride walking pose. The outfit must read clearly in side profile and look almost the same when mirrored (keep it nearly symmetric, no one-sided logos). Outfit: a brick-red knitted cardigan over a white collared shirt, navy straight trousers, black canvas shoes, a brown leather messenger bag. Man: neat side-parted black hair and round glasses. Woman: shoulder-length black hair with a hair clip and round glasses."
+ }
+]

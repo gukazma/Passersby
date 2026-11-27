@@ -1,0 +1,9 @@
+{
+ "hero":     {"desc": "主角 25 岁，普通体型，放松", "height_m": 1.72, "fps": 12},
+ "elder":    {"desc": "七十岁老人（陈伯/罗伯）：微驼、头前伸、步子小、抬脚低、背着手、慢", "height_m": 1.62, "stride": 0.6, "knee_load": 0.6, "knee_swing": 0.65, "ankle": 0.5, "lean": 6, "stoop": 8, "head_fwd": 0.35, "arm_mode": "behind_back", "fps": 9},
+ "fit":      {"desc": "健身的外卖小哥：挺胸、步幅大、摆臂有力屈肘、弹", "height_m": 1.78, "stride": 1.2, "knee_load": 1.15, "knee_swing": 1.2, "ankle": 1.2, "lean": 1, "arm_swing": 1.6, "elbow": 45, "torso": 1.02, "fps": 13},
+ "heavy":    {"desc": "胖的五金店老板：步幅小、身体后仰、手臂摆幅小、慢、腿短", "height_m": 1.68, "stride": 0.75, "knee_load": 0.8, "knee_swing": 0.8, "lean": -3, "girth": 1.7, "arm_swing": 0.6, "elbow": 20, "leg_len": 0.94, "fps": 10},
+ "shopper":  {"desc": "买菜的主妇：近侧手拎菜袋几乎不摆，远侧手正常摆，步子中等", "height_m": 1.58, "stride": 0.85, "arm_mode": "bag_near", "fps": 12},
+ "kid":      {"desc": "小学生：头大腿短、步频快、蹦跳、摆臂大", "height_m": 1.3, "head": 1.25, "leg_len": 0.88, "torso": 0.9, "stride": 1.1, "knee_swing": 1.25, "arm_swing": 1.5, "elbow": 25, "fps": 15},
+ "office":   {"desc": "上班族女性：直腰、步幅偏小、手插口袋/手拿手机", "height_m": 1.63, "stride": 0.9, "lean": 0, "arm_mode": "pockets", "fps": 12}
+}
