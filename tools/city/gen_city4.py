@@ -13,7 +13,7 @@ import numpy as np
 from PIL import Image, ImageDraw
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
-from occ import south_top, runs      # noqa: E402  后巷南侧楼顶凸起的逐列遮挡/碰撞
+from occ import south_top      # noqa: E402  后巷南侧楼顶凸起的逐列遮挡/碰撞
 
 A = pathlib.Path("godot/assets")
 SZ = json.load(open(A / "sizes.json"))
@@ -166,10 +166,7 @@ for r, row in enumerate(LAYOUT):
                 rows = np.arange(y0, a1)[:, None]
                 ov[..., 3] = np.where(rows >= top[None, :], ov[..., 3], 0)
                 Image.fromarray(ov).save(A / f"blocks/{n}_occ.png")
-                occ = [y0, a1, b["base"]]
-                for x0, t, rw in runs(top, a1):
-                    if rw >= 18:          # 窄的（地沟盖之类）只做遮挡不做碰撞，免得出现"空气墙"
-                        solids.append([bx + x0, by + t + 3, rw, a1 + 2 - t - 3])
+                occ = [y0, a1, b["base"]]     # A1.2：只做遮挡、不做碰撞（人可以走到楼梯间、水箱"后面"被挡住）
         else:
             parts = [[0, b["base"], b["base"]]]
             solids.append([bx, 0, b["w"], by + b["base"]])

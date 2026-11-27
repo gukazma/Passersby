@@ -18,7 +18,7 @@ const L_CURB := 8
 var city: Dictionary
 var tex_cache := {}
 # ---- A1：美术风格 / 比例 / 镜头 / 时间 对比（设置存在 Engine meta 里，切换时重载场景也不丢）----
-const STYLES := [["s1", "现状·彩色小镇"], ["s2", "岭南骑楼老街"], ["s3", "港台现代街巷"]]
+const STYLES := [["s1", "现状·彩色小镇"], ["s2", "岭南骑楼老街"], ["s3", "港台现代街巷"], ["yongan", "永安街试验街（新画法）"]]
 const RATIOS := [["100", "100%（门比人略高）"], ["85", "85%（楼更矮、城更紧凑）"]]
 const ZOOMS := [[Vector2i(480, 270), "近（×4）"], [Vector2i(640, 360), "中（×3）"], [Vector2i(960, 540), "远（×2）"]]
 const TODS := [[Color(1.0, 0.97, 0.92), "白天"], [Color(1.0, 0.82, 0.66), "黄昏"], [Color(0.46, 0.48, 0.64), "夜晚（灯光在 B1 做）"]]
@@ -29,6 +29,7 @@ var help_label: Label
 var toast_label: Label
 var toast_t := 0.0
 var px_font: FontFile
+var px8_font: FontFile
 var cam: Camera2D
 var help_bg: ColorRect
 var photo := false             # 拍照模式
@@ -41,6 +42,8 @@ static func opt(key: String, def):
 
 
 func variant() -> String:
+	if STYLES[opt("style", 0)][0] == "yongan":     # 试验街：单独一套布局，只有一种比例
+		return "yongan"
 	return "%s_%s" % [STYLES[opt("style", 0)][0], RATIOS[opt("ratio", 0)][0]]
 var world: Node2D
 var player: CharacterBody2D
@@ -170,6 +173,7 @@ func _ready() -> void:
 		Engine.set_meta("style", 0)
 		Engine.set_meta("ratio", 0)
 	get_window().content_scale_size = ZOOMS[opt("zoom", 1)][0]
+	_load_fonts()
 	city = JSON.parse_string(FileAccess.get_file_as_string("res://assets/variants/%s/city.json" % variant()))
 	var ws: Array = city["world"]
 	var ground := Sprite2D.new()
@@ -182,6 +186,8 @@ func _ready() -> void:
 	add_child(world)
 	for b in city.get("blocks", []):
 		_block(b)
+	for r in city.get("rows", []):
+		_row(r)
 	for p in city["props"]:
 		_static(p)
 	for r in city.get("solids", []):
@@ -239,7 +245,7 @@ func _ready() -> void:
 	player.set_idle(idle_tex("hero"))
 	if FileAccess.file_exists("res://assets/hero_run.json"):
 		var rj: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://assets/hero_run.json"))
-		player.set_run(tex("hero_run"), rj["root_motion_px"], rj["anim_fps"])
+		player.set_run(tex("hero_run"), rj["root_motion_px"], rj["anim_fps"], int(rj.get("frames_per_row", 8)))
 	var st: Array = city["player"]["start"]
 	player.global_position = Vector2(st[0], st[1])
 	player.route = city["player"]["route"]
@@ -332,6 +338,70 @@ func _block(b: Dictionary) -> void:
 		fades.append([o, float(b["x"]), float(b["x"] + b["w"]), float(b["y"] + b["alley"][1]), float(b["y"] + occ[2])])
 
 
+## 整排楼（AI 整排画、抠底透明）：每栋楼一个切片，按楼的墙脚排序、各自淡出；招牌文字由程序叠加
+func _row(r: Dictionary) -> void:
+	var t2 := tex("blocks/" + r["img"])
+	var base := float(r["base"])
+	for b in r["buildings"]:
+		var s := Sprite2D.new()
+		s.texture = t2
+		s.centered = false
+		s.region_enabled = true
+		s.region_rect = Rect2(b["x0"], 0, b["x1"] - b["x0"], r["h"])
+		s.position = Vector2(r["x"] + b["x0"], r["y"] + base)
+		s.offset = Vector2(0, -base)
+		world.add_child(s)
+		for sg in r.get("signs", []):
+			var cx: float = sg["x"] + sg["w"] / 2.0
+			if cx >= b["x0"] and cx < b["x1"]:
+				s.add_child(_sign(sg, Vector2(sg["x"] - b["x0"], sg["y"] - base)))
+		fades.append([s, float(r["x"] + b["x0"]), float(r["x"] + b["x1"]), float(r["y"] + b["top"]), float(r["y"] + base)])
+
+
+## 招牌：底色块 + 像素中文（够高用 12 像素字，否则 8 像素；竖招牌一字一行）
+func _sign(sg: Dictionary, pos: Vector2) -> Control:
+	var bg := ColorRect.new()
+	bg.position = pos
+	bg.size = Vector2(sg["w"], sg["h"])
+	var c: Array = sg.get("bg", [120, 30, 24])
+	bg.color = Color8(int(c[0]), int(c[1]), int(c[2]))
+	var l := Label.new()
+	var vertical: bool = sg.get("vertical", false)
+	var txt: String = sg["text"]
+	var big: bool = (float(sg["w"]) if vertical else float(sg["h"])) >= 13.0
+	var f: FontFile = px_font if big else px8_font
+	var fs := 12 if big else 8
+	if not vertical and f.get_string_size(txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x > float(sg["w"]) - 2.0 and big:
+		f = px8_font
+		fs = 8
+	if not vertical:      # 字放不下：招牌左右加宽（以原招牌为中心），不缩字、不截字
+		var need := f.get_string_size(txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x + 4.0
+		if need > bg.size.x:
+			bg.position.x -= floorf((need - bg.size.x) / 2.0)
+			bg.size.x = ceilf(need)
+		if bg.size.y < 10.0:
+			bg.position.y -= floorf((10.0 - bg.size.y) / 2.0)
+			bg.size.y = 10.0
+	if vertical:
+		var chars := PackedStringArray()
+		for i in txt.length():
+			chars.append(txt[i])
+		l.text = "\n".join(chars)
+	else:
+		l.text = txt
+	l.add_theme_font_override("font", f)
+	l.add_theme_font_size_override("font_size", fs)
+	l.add_theme_constant_override("line_spacing", -2 if vertical else 0)
+	var fc: Array = sg.get("fg", [250, 226, 150])
+	l.add_theme_color_override("font_color", Color8(int(fc[0]), int(fc[1]), int(fc[2])))
+	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	l.size = bg.size
+	l.clip_text = true
+	bg.add_child(l)
+	return bg
+
+
 func _rect_body(r: Array, layer: int) -> void:
 	var body := StaticBody2D.new()
 	body.collision_layer = layer
@@ -392,12 +462,16 @@ func _unhandled_input(e: InputEvent) -> void:
 	if not (e is InputEventKey and e.pressed and not e.echo):
 		return
 	match (e as InputEventKey).keycode:
-		KEY_1, KEY_2, KEY_3:
+		KEY_1, KEY_2, KEY_3, KEY_4:
 			var i: int = (e as InputEventKey).keycode - KEY_1
 			if i != opt("style", 0):
-				_switch("style", i, true)
+				# 试验街和 A1 城市布局不同：进出试验街回到起点
+				_switch("style", i, i != 3 and opt("style", 0) != 3)
 		KEY_R:
-			_switch("ratio", (opt("ratio", 0) + 1) % RATIOS.size(), false)
+			if opt("style", 0) == 3:
+				_toast("试验街只有一种比例")
+			else:
+				_switch("ratio", (opt("ratio", 0) + 1) % RATIOS.size(), false)
 		KEY_Z:
 			if photo:      # 拍照模式多一档「全景（×1）」
 				photo_zoom = (photo_zoom + 1) % (ZOOMS.size() + 1)
@@ -449,7 +523,7 @@ func _photo(on: bool) -> void:
 		n.visible = not on
 	if on:
 		photo_zoom = opt("zoom", 1)
-		_toast("拍照模式：方向键移动镜头  Z 远近  回车 保存截图  P 退出")
+		_toast("拍照模式：WASD/方向键 移动镜头  Z 远近  回车 保存截图  P 退出")
 	else:
 		cam.offset = Vector2(0, -16)
 		get_window().content_scale_size = ZOOMS[opt("zoom", 1)][0]
@@ -482,12 +556,21 @@ func _switch(key: String, val: int, keep: bool) -> void:
 	get_tree().call_deferred("reload_current_scene")
 
 
+func _load_fonts() -> void:
+	px_font = _pixel_font("res://fonts/px.woff2")
+	px8_font = _pixel_font("res://fonts/px8.woff2")
+
+
+func _pixel_font(path: String) -> FontFile:
+	var f := FontFile.new()
+	f.load_dynamic_font(ProjectSettings.globalize_path(path))
+	f.antialiasing = TextServer.FONT_ANTIALIASING_NONE
+	f.hinting = TextServer.HINTING_NONE
+	f.subpixel_positioning = TextServer.SUBPIXEL_POSITIONING_DISABLED
+	return f
+
+
 func _build_hud() -> void:
-	px_font = FontFile.new()
-	px_font.load_dynamic_font(ProjectSettings.globalize_path("res://fonts/px.woff2"))
-	px_font.antialiasing = TextServer.FONT_ANTIALIASING_NONE
-	px_font.hinting = TextServer.HINTING_NONE
-	px_font.subpixel_positioning = TextServer.SUBPIXEL_POSITIONING_DISABLED
 	hud = CanvasLayer.new()
 	add_child(hud)
 	var bg := ColorRect.new()
@@ -529,10 +612,10 @@ func _update_hud() -> void:
 	var k := maxf(1.0, roundf(vs.x / 640.0))      # 远镜头时界面按整数倍放大，字不会变小
 	hud.scale = Vector2(k, k)
 	vs = Vector2i(roundi(vs.x / k), roundi(vs.y / k))
-	hud_label.text = "A1.1 美术风格与比例\n风格[1/2/3] %s\n比例[R] %s\n镜头[Z] %s   时间[T] %s" % [STYLES[opt("style", 0)][1], RATIOS[opt("ratio", 0)][1], ZOOMS[opt("zoom", 1)][1], TODS[opt("tod", 0)][1]]
+	hud_label.text = "A1.2 美术风格与比例\n风格[1/2/3/4] %s\n比例[R] %s\n镜头[Z] %s   时间[T] %s" % [STYLES[opt("style", 0)][1], RATIOS[opt("ratio", 0)][1], ZOOMS[opt("zoom", 1)][1], TODS[opt("tod", 0)][1]]
 	var bg := hud_label.get_parent() as ColorRect
 	bg.size = hud_label.get_minimum_size() + Vector2(10, 4)
-	help_label.text = "方向键 走  Shift 跑  空格 交互  P 拍照  Tab 巡游  H 隐藏  Esc 退出"
+	help_label.text = "WASD/方向键 走  Shift 跑  空格 交互  P 拍照  Tab 巡游  H 隐藏  Esc 退出"
 	help_label.position = Vector2(9, vs.y - 18)
 	help_bg.position = Vector2(4, vs.y - 19)
 	help_bg.size = help_label.get_minimum_size() + Vector2(10, 2)
@@ -550,7 +633,7 @@ func _toast(msg: String) -> void:
 func _process(delta: float) -> void:
 	t += delta
 	if photo:
-		var v := Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
+		var v := Input.get_vector("move_left", "move_right", "move_up", "move_down")
 		var sp := 160.0 * (3.0 if Input.is_key_pressed(KEY_SHIFT) else 1.0)
 		cam.offset += v * sp * delta
 		var ws: Array = city["world"]

@@ -23,6 +23,8 @@ var walk_fps := 12.5
 var run_rm: Dictionary = {}
 var run_fps := 14.0
 var running := false             # 当前是否在跑
+var nframes := 8                 # 当前动画每行帧数（行走 8；跑步表可以是 16）
+var run_n := 8
 
 
 func setup(tex: Texture2D, motion: Dictionary, fps: float) -> void:
@@ -62,6 +64,11 @@ func setup(tex: Texture2D, motion: Dictionary, fps: float) -> void:
 ## 每物理帧调用：want = 想走的方向名（"" = 站住）；run = 想跑（没有跑步帧时用快走代替）
 func step_walk(want: String, delta: float, run: bool = false) -> void:
 	if want == "":
+		if running:          # 停下时回到行走表（站立帧照常）
+			running = false
+			rm = walk_rm
+			anim_fps = walk_fps
+			nframes = 8
 		moving = false
 		frame = 0
 		acc = 0.0
@@ -69,15 +76,20 @@ func step_walk(want: String, delta: float, run: bool = false) -> void:
 		return
 	if run != running:
 		running = run
+		var old_n := nframes
 		if run and run_tex:
 			rm = run_rm
 			anim_fps = run_fps
+			nframes = run_n
 		elif run:
 			rm = walk_rm
 			anim_fps = walk_fps * 1.7
+			nframes = 8
 		else:
 			rm = walk_rm
 			anim_fps = walk_fps
+			nframes = 8
+		frame = int(frame * nframes / old_n) % nframes      # 走↔跑切换时接着同一个相位
 	if want != dir:
 		dir = want
 		frame = 0
@@ -102,7 +114,7 @@ func step_walk(want: String, delta: float, run: bool = false) -> void:
 		left -= part
 		if acc >= 1.0 - 1e-6:
 			acc = 0.0
-			frame = (frame + 1) % 8
+			frame = (frame + 1) % nframes
 	if not hit:
 		blocked_time = 0.0
 		waiting_time = 0.0
@@ -130,13 +142,14 @@ func _update_frame() -> void:
 		if spr.texture != want_tex:
 			spr.frame = 0
 			spr.texture = want_tex
-			spr.hframes = 8
+			spr.hframes = nframes
 			spr.vframes = 4
-		spr.frame = ROWS[dir] * 8 + frame
+		spr.frame = ROWS[dir] * nframes + frame
 
 
 ## 跑步帧：贴图 + 根运动 + 帧率（hero_run.json）
-func set_run(t: Texture2D, motion: Dictionary, fps: float) -> void:
+func set_run(t: Texture2D, motion: Dictionary, fps: float, frames: int = 8) -> void:
+	run_n = frames
 	run_tex = t
 	run_rm = motion
 	run_fps = fps

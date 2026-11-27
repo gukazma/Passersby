@@ -19,7 +19,7 @@ func _physics_process(delta: float) -> void:
 	if autoplay:
 		want = _route_dir(delta)
 	else:
-		var v := Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
+		var v := Input.get_vector("move_left", "move_right", "move_up", "move_down")
 		if v != Vector2.ZERO:
 			if absf(v.x) > absf(v.y):
 				want = "right" if v.x > 0 else "left"
