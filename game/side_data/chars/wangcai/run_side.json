@@ -1,60 +1,27 @@
 {
+ "file": "run_side.png",
  "frames": 8,
- "frame_w": 90,
- "frame_h": 55,
- "pixel_size_src": 4.63,
- "fps": 18,
- "root_motion_px": [
-  3.281,
-  2.781,
-  5.531,
-  5.031,
-  5.531,
-  1.281,
-  6.031,
-  3.031
- ],
- "measured_px": [
-  2.5,
-  1.5,
-  7.0,
-  6.0,
-  7.0,
-  -1.5,
-  8.0,
-  2.0
- ],
- "guide_px": [
-  3.86,
-  3.86,
-  3.86,
-  3.86,
-  3.86,
-  3.86,
-  3.86,
-  3.86
- ],
- "cycle_px": 32.5,
- "speed_px_s": 73.1,
- "slip_px": [
-  0.78,
-  1.28,
-  1.47,
-  0.97,
-  1.47,
-  2.78,
-  1.97,
-  1.03
- ],
- "slip_mean_px": 1.47,
+ "fps": 16,
+ "frame_w": 78,
+ "frame_h": 47,
  "origin": [
-  45,
-  54
+  36,
+  46
+ ],
+ "root_motion_px": [
+  6.469,
+  8.469,
+  6.969,
+  5.969,
+  6.969,
+  7.969,
+  7.219,
+  5.469
  ],
  "axis": "x",
- "dir_screen": null,
- "profile": null,
  "loop": true,
  "view": "side",
- "file": "run_side.png"
+ "gait": "trot",
+ "duty": 0.45,
+ "slip_mean_px": 0.73
 }

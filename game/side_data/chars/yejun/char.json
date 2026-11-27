@@ -23,10 +23,10 @@
    "frames": 8,
    "fps": 9.5,
    "frame_w": 100,
-   "frame_h": 125,
+   "frame_h": 116,
    "origin": [
     50,
-    124
+    115
    ],
    "root_motion_px": [
     9.156,

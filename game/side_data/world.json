@@ -527,15 +527,17 @@
   "yongan_n": [
    {
     "type": "steam",
-    "x": 240,
-    "y": 196
+    "x": 350,
+    "y": 287,
+    "depth": 391
    }
   ],
   "chenji": [
    {
     "type": "steam",
     "x": 572,
-    "y": 310
+    "y": 312,
+    "depth": 403
    }
   ]
  },
@@ -574,14 +576,14 @@
     "x": 900,
     "n": 7,
     "ground": false,
-    "sky_y": 120
+    "sky_alt": 270
    },
    {
     "type": "seagull",
     "x": 1500,
     "n": 4,
     "ground": false,
-    "sky_y": 80
+    "sky_alt": 310
    },
    {
     "type": "pigeon",

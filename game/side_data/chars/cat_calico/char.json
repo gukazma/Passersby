@@ -5,28 +5,31 @@
  "height_px": 27,
  "anims": {
   "walk_side": {
+   "file": "walk_side.png",
    "frames": 8,
-   "fps": 19,
+   "fps": 11,
    "frame_w": 56,
    "frame_h": 29,
    "origin": [
-    28,
+    26,
     28
    ],
    "root_motion_px": [
-    1.38,
-    1.38,
-    1.38,
-    1.38,
-    1.38,
-    1.38,
-    1.38,
-    1.38
+    3.406,
+    3.656,
+    3.906,
+    3.906,
+    3.906,
+    3.906,
+    4.156,
+    3.656
    ],
    "axis": "x",
    "loop": true,
    "view": "side",
-   "file": "walk_side.png"
+   "gait": "walk",
+   "duty": 0.6,
+   "slip_mean_px": 0.18
   },
   "idle_side": {
    "frames": 4,

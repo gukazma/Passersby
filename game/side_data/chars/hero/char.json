@@ -8,10 +8,10 @@
    "frames": 8,
    "fps": 8.5,
    "frame_w": 120,
-   "frame_h": 114,
+   "frame_h": 111,
    "origin": [
     60,
-    113
+    110
    ],
    "root_motion_px": [
     8.938,
@@ -146,10 +146,10 @@
    "frames": 8,
    "fps": 11,
    "frame_w": 120,
-   "frame_h": 132,
+   "frame_h": 115,
    "origin": [
     60,
-    131
+    114
    ],
    "root_motion_px": [
     15.892,

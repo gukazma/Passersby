@@ -13,10 +13,6 @@ var npcs: Array = []
 var cam: Camera2D
 var hud: CanvasLayer
 var fade: ColorRect
-var loc_label: Label
-var help_label: Label
-var card: Label
-var prompt: Label
 var dlg: PanelContainer
 var dlg_name: Label
 var dlg_text: Label
@@ -43,7 +39,6 @@ var dlg_hearts: HBoxContainer
 var friend: Dictionary = {}       # cid -> 好感点数（100 点 = 1 颗心，最多 10 颗）
 var talked: Dictionary = {}       # 本次游戏已经聊过的人（第一次聊天 +20）
 var heart_tex: Array = []         # [空, 半, 满]
-var emote_cd: Dictionary = {}
 var test_want := Vector2.ZERO     # 自动测试：机器人输入
 var test_run := false
 var test_no_edges := false
@@ -52,7 +47,6 @@ var shots_saved := 0
 var _scene_cache: Dictionary = {}
 var ambient: Node2D
 var crossing_zebra := Vector2.ZERO  # 有人正在过的斑马线 (x0, x1)，车在前面停
-var clock_label: Label
 
 
 func _ready() -> void:
@@ -168,19 +162,13 @@ func _go(id: String, pos: Vector2, view: String, facing: int) -> void:
 	for n2 in npcs:
 		n2.step_cb = Callable(ambient, "footstep")
 	var d: Dictionary = scene.data
-	var side_txt = d.get("side", "")
-	loc_label.text = str(d.get("name", id))
 
 
-func _transition(callback: Callable, card_text: String = "") -> void:
+func _transition(callback: Callable, _card_text: String = "") -> void:
 	busy = true
 	var tw := create_tween()
 	tw.tween_property(fade, "color:a", 1.0, 0.35)
 	tw.tween_callback(callback)
-	if card_text != "":
-		tw.tween_callback(func(): card.text = card_text; card.visible = true)
-		tw.tween_interval(0.6)
-		tw.tween_callback(func(): card.visible = false)
 	tw.tween_property(fade, "color:a", 0.0, 0.35)
 	tw.tween_callback(func(): busy = false)
 
@@ -218,12 +206,9 @@ func _physics_process(delta: float) -> void:
 		elif not player.anims[player.special]["loop"] and player.special_done:
 			_player_stand()
 	ambient.tick(delta)
-	clock_label.text = ambient.clock_text() + ("  ▶▶" if ambient.fast else "")
 	for n in npcs:
 		n.tick(delta)
 		_smoke_tick(n)
-		_mood_emote(n, delta)
-	_update_prompt()
 	_follow_cam(delta)
 	if scene:
 		scene.update_parallax(cam.get_screen_center_position().x - VIEW.x / 2)
@@ -285,8 +270,6 @@ func _unhandled_input(ev: InputEvent) -> void:
 			_toggle_photo()
 		KEY_ENTER, KEY_F12:
 			if photo: _shot()
-		KEY_H:
-			help_label.visible = not help_label.visible
 		KEY_T:
 			ambient.fast = not ambient.fast
 		KEY_SPACE, KEY_E:
@@ -355,12 +338,9 @@ func _enter(door: Dictionary) -> void:
 		world["_return"] = {"scene": scene_id, "x": dx, "y": scene.band.x + 4}
 		_go(it, Vector2(en["x"], float(en["y"]) + 18), "back", 1)
 		cutscene_move = Vector2(0, -1))
-	tw.tween_callback(func(): card.text = door.get("label", ""); card.visible = true)
 	tw.tween_property(fade, "color:a", 0.0, 0.3)
 	tw.tween_interval(0.25)
 	tw.tween_callback(func(): cutscene_move = Vector2.ZERO; busy = false)
-	tw.tween_interval(0.6)
-	tw.tween_callback(func(): card.visible = false)
 
 
 func _leave_interior() -> void:
@@ -400,12 +380,11 @@ func _cross(z: Dictionary) -> void:
 		if z.has("to_x"): x = float(z["to_x"])
 		var b: Array = j.get("band", [392, 468])
 		_go(to, Vector2(x, float(b[1]) + 30), "back", -player.facing)
-		cutscene_move = Vector2(0, -1)
-		card.text = "过马路 → " + z.get("label", to); card.visible = true)
+		cutscene_move = Vector2(0, -1))
 	tw.tween_property(fade, "color:a", 0.0, 0.35)
 	tw.tween_interval(0.55)
 	tw.tween_callback(func():
-		cutscene_move = Vector2.ZERO; busy = false; card.visible = false; crossing_zebra = Vector2.ZERO
+		cutscene_move = Vector2.ZERO; busy = false; crossing_zebra = Vector2.ZERO
 		player.position.y = clampf(player.position.y, scene.band.x + 1, scene.band.y - 2))
 
 
@@ -507,45 +486,6 @@ func _emote(who: Node2D, name: String, secs: float) -> void:
 	tw.tween_property(sp, "position:y", sp.position.y - 4, 0.25).set_trans(Tween.TRANS_BACK)
 	tw.tween_interval(secs)
 	tw.tween_callback(sp.queue_free)
-
-
-func _update_prompt() -> void:
-	var txt := ""
-	if not busy and dlg_npc == null:
-		for n in npcs:
-			var d: Vector2 = n.position - player.position
-			if n.visible and not n.talk.is_empty() and absf(d.x) < 46 and absf(d.y) < 18:
-				txt = "空格  和" + n.cname + "说话"
-				break
-		if txt == "" and player.special in ["sit_bench"]:
-			txt = "空格 / 方向键  起身"
-		if txt == "" and _near_dog() and player.special == "":
-			txt = "空格  摸摸" + _near_dog().cname
-		if txt == "" and not _near_spot().is_empty() and player.special == "":
-			txt = "空格  坐下"
-		if txt == "":
-			var door: Dictionary = scene.door_at(player.position)
-			if not door.is_empty():
-				txt = ("W  进入 " if door.has("interior") else "") + door.get("label", "")
-		if txt == "":
-			var z: Dictionary = scene.zebra_at(player.position)
-			if not z.is_empty():
-				txt = "S  过马路 → " + z.get("label", "")
-		if txt == "" and scene.data.get("kind", "") == "interior" and player.position.y > scene.band.y - 14:
-			txt = "S  出门"
-		var ex: Dictionary = scene.exits
-		if txt == "" and player.position.x < 70 and ex.get("left") != null:
-			txt = "←  " + ex["left"].get("label", "")
-		elif txt == "" and player.position.x > scene.width - 70 and ex.get("right") != null:
-			txt = ex["right"].get("label", "") + "  →"
-	prompt.text = txt
-	prompt.visible = txt != "" and not photo and not player.has_meta("bubble")
-	var sp: Vector2 = player.get_global_transform_with_canvas().origin
-	prompt.size = prompt.get_combined_minimum_size()      # 刚换文字的这一帧 size 还没更新，按最小尺寸算，否则提示牌会偏
-	var top: float = 120.0
-	if player.anims.has(player.cur):
-		top = player.anims[player.cur]["oy"] + 8
-	prompt.position = Vector2(roundf(clampf(sp.x - prompt.size.x / 2, 2, VIEW.x - prompt.size.x - 2)), roundf(maxf(2, sp.y - top - prompt.size.y)))
 
 
 func _bubble(who: Node2D, text: String, secs: float) -> void:
@@ -663,12 +603,9 @@ func _photo_tick() -> void:
 	var sf := int(player.anims["photo"]["meta"].get("shutter_frame", 3))
 	if player.frame >= sf and not player.get_meta("shot_done", false):
 		player.set_meta("shot_done", true)
-		var was := help_label.visible
-		loc_label.visible = false; help_label.visible = false; prompt.visible = false
 		if DisplayServer.get_name() != "headless":
 			await RenderingServer.frame_post_draw
 		_shot()
-		loc_label.visible = true; help_label.visible = was
 		flash.color.a = 0.85
 		create_tween().tween_property(flash, "color:a", 0.0, 0.35)
 	if player.special_done:
@@ -700,17 +637,6 @@ func _smoke_tick(n: Node2D) -> void:
 		smoke_mark[n] = -1
 
 
-func _mood_emote(n: Node2D, delta: float) -> void:
-	## 心情：偶尔在头顶冒情绪气泡（开心 ♪、累 …、忙 汗滴、生气 怒）
-	var cd: float = emote_cd.get(n, randf_range(4.0, 12.0)) - delta
-	if cd <= 0.0:
-		cd = randf_range(9.0, 18.0)
-		var e: String = {"happy": "music", "tired": "dots", "busy": "sweat", "annoyed": "anger", "sleepy": "sleepy"}.get(n.mood, "")
-		if e != "" and n.visible and not n.talking:
-			_emote(n, e, 1.4)
-	emote_cd[n] = cd
-
-
 func _play_bgm(path: String) -> void:
 	if path == bgm_path:
 		return
@@ -738,21 +664,6 @@ func _build_hud() -> void:
 	fade.color = Color(0.08, 0.05, 0.04, 0.0)
 	fade.size = VIEW
 	fade.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	loc_label = _label(Vector2(8, 6), 12, Color("fff4dc"))
-	help_label = _label(Vector2(8, VIEW.y - 18), 12, Color("fff4dc"))
-	clock_label = _label(Vector2(VIEW.x - 64, 6), 12, Color("fff4dc"))
-	help_label.text = "WASD 走（可斜走）  Shift 跑  空格 说话/进门/坐下/摸狗  P 拍照  T 时间快进  H 隐藏  Esc 退出"
-	prompt = _label(Vector2.ZERO, 12, Color("3a2116"))
-	var sb := StyleBoxFlat.new()
-	sb.bg_color = Color(1.0, 0.96, 0.86, 0.92)
-	sb.border_color = Color("3a2116"); sb.set_border_width_all(1)
-	sb.content_margin_left = 4; sb.content_margin_right = 4; sb.content_margin_top = 1; sb.content_margin_bottom = 2
-	prompt.add_theme_stylebox_override("normal", sb)
-	card = _label(Vector2(0, 220), 12, Color("fff4dc"))
-	card.size = Vector2(VIEW.x, 24)
-	card.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	card.add_theme_font_size_override("font_size", 24)
-	card.visible = false
 	_make_hearts()
 	dlg = PanelContainer.new()
 	var ps := StyleBoxFlat.new()
@@ -791,7 +702,7 @@ func _build_hud() -> void:
 	dlg_text.autowrap_mode = TextServer.AUTOWRAP_ARBITRARY
 	dlg_text.custom_minimum_size = Vector2(620, 60)
 	vb.add_child(dlg_text)
-	var more := Label.new(); _style(more, 12, Color("9a5a2a")); more.text = "空格 ▶"
+	var more := Label.new(); _style(more, 12, Color("9a5a2a")); more.text = "▼"
 	more.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	vb.add_child(more)
 	dlg.visible = false
@@ -827,8 +738,6 @@ func _label(pos: Vector2, size: int, c: Color) -> Label:
 
 func _toggle_photo() -> void:
 	photo = not photo
-	loc_label.visible = not photo
-	help_label.visible = not photo
 
 
 func _shot() -> void:
@@ -842,7 +751,6 @@ func _shot() -> void:
 	DirAccess.make_dir_recursive_absolute(dir)
 	var f := dir.path_join("我亦是行人_%s_%d.png" % [Time.get_datetime_string_from_system().replace(":", "-"), shots_saved])
 	img.save_png(f)
-	_bubble(player, "已保存截图", 1.2)
 
 
 # ---------------------------------------------------------------- 自动演示（录视频用）

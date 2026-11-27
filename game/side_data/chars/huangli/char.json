@@ -18,10 +18,10 @@
    "frames": 8,
    "fps": 8,
    "frame_w": 100,
-   "frame_h": 140,
+   "frame_h": 141,
    "origin": [
     50,
-    139
+    140
    ],
    "root_motion_px": [
     6.615,

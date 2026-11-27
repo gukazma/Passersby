@@ -120,6 +120,12 @@ for cj in sorted(glob.glob(os.path.join(D, 'chars', '*', 'char.json'))):
                     sizes = sorted(int(band_[:, r[0]:r[-1] + 1].sum()) for r in blobs)
                     if sizes[-2] < 0.3 * sizes[-1] and sizes[-2] < 25:
                         P(f'[脚被切] {name} 第 {i} 帧: 两只脚大小 {sizes[-2]} / {sizes[-1]} 像素，有一只只剩一点')
+        # 贴地：侧面走/跑/站，每一帧的最低点都要在地线（origin y）上，否则人和影子之间有缝，像悬空
+        # （A1.4 用户：「跑步的时候影子是悬空的，看起来人悬空一样」——跑步 7 帧离地 10–19 px，叶俊走路整体离地 10 px）
+        if k in ('walk_side', 'run_side', 'idle_side', 'walk') and c.get('kind') != 'bird' and bottoms:
+            gaps = [int(oy - b) for b in bottoms]
+            if max(abs(g) for g in gaps) > 1:
+                P(f'[悬空] {name}: 各帧脚底离地线 {gaps} px（应全为 0）')
         if k.startswith(('walk', 'run', 'idle')) and len(heights) > 1:
             if max(bottoms) - min(bottoms) > 3 and k in ('walk_side', 'idle_side', 'idle_front', 'idle_back'):
                 P(f'[脚底] {name}: 各帧脚底相差 {max(bottoms) - min(bottoms)} px')

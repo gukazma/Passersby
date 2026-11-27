@@ -12,5 +12,5 @@ echo == syntax > tests\out\test.log
 for %%f in (side\*.gd) do "%GODOT%" --headless --path . --check-only --script %%f >> tests\out\test.log 2>&1
 findstr /c:"Parse Error" /c:"Failed to load script" tests\out\test.log && (echo RESULT FAIL  syntax errors, autotest skipped >> tests\out\test.log & echo EXITCODE 2 >> tests\out\test.log & exit /b 2)
 echo == autotest >> tests\out\test.log
-"%GODOT%" --headless --path . --fixed-fps 60 -- --autotest --soak=%SOAK% >> tests\out\test.log 2>&1
+"%GODOT%" --headless --path . --fixed-fps 60 --quit-after 108000 -- --autotest --soak=%SOAK% >> tests\out\test.log 2>&1
 echo EXITCODE %ERRORLEVEL% >> tests\out\test.log

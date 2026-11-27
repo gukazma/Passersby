@@ -201,7 +201,13 @@ var detour := 0.0                 # 绕行时临时的纵深偏移
 var stuck_log: Array = []         # 自动测试用：卡住记录
 
 
-## 走向目标：到了返回 true。被挡住 0.5 秒后换一条纵深绕行，累计 3 秒仍到不了 → 记录并放弃（返回 true）
+## 走向目标：到了返回 true。
+## 「卡住」按有没有接近目标算（不是按动没动）：在障碍角上上下抖、原地来回也算卡住。
+## 卡住 0.4 秒 → 往能过去的一侧绕行（_pick_detour）；1.6 秒 → 换另一侧；累计 3 秒仍到不了 → 记录并放弃（返回 true）
+var best_d := INF
+var last_goal := Vector2.INF
+
+
 func walk_to(tgt: Vector2, delta: float, tol := 2.0) -> bool:
 	var goal := Vector2(tgt.x, clampf(tgt.y + detour, band.x, band.y))
 	var d := goal - position
@@ -210,26 +216,46 @@ func walk_to(tgt: Vector2, delta: float, tol := 2.0) -> bool:
 			detour = 0.0
 			return false
 		stuck_t = 0.0
+		best_d = INF
 		return true
+	if not goal.is_equal_approx(last_goal):
+		last_goal = goal
+		best_d = d.length()
 	var want := Vector2(signf(d.x) if absf(d.x) > tol else 0.0, signf(d.y) if absf(d.y) > 1.5 else 0.0)
-	var mv := drive(want, false, delta)
-	if mv.length() < 0.05:
+	drive(want, false, delta)
+	var nd: float = (goal - position).length()
+	if nd < best_d - 0.75:
+		best_d = nd
+		stuck_t = maxf(0.0, stuck_t - delta * 2.0)
+	else:
 		stuck_t += delta
-		if stuck_t > 0.5 and detour == 0.0:
-			var mid := (band.x + band.y) / 2.0
-			detour = 22.0 if position.y < mid else -22.0
+		if stuck_t > 0.4 and detour == 0.0:
+			detour = _pick_detour(tgt)
 		elif stuck_t > 1.6 and absf(detour) < 30.0:
 			detour = -detour * 1.6
 		if stuck_t > 3.0:
-			stuck_log.append({"t": Time.get_ticks_msec(), "pos": position, "tgt": tgt, "cmd": str(loop[step_i % loop.size()]) if loop.size() else ""})
+			stuck_log.append({"t": Time.get_ticks_msec(), "pos": position, "tgt": tgt, "detour": detour, "want": want, "cur": cur, "cmd": str(loop[step_i % loop.size()]) if loop.size() else ""})
 			stuck_t = 0.0
 			detour = 0.0
 			return true
-	else:
-		stuck_t = maxf(0.0, stuck_t - delta * 0.5)
 	return false
 
 
 func _next() -> void:
 	step_i = (step_i + 1) % maxi(1, loop.size())
 	t = 0.0
+
+
+## 被挡时往哪边绕：往前看 24 px，上下 14–70 px 哪个位置能走（不在家具里、不出纵深带），选最近的
+func _pick_detour(tgt: Vector2) -> float:
+	var dirx: float = signf(tgt.x - position.x)
+	for k in [14.0, 24.0, 36.0, 50.0, 70.0]:
+		for sgn in [1.0, -1.0]:
+			var y: float = position.y + k * sgn
+			if y < band.x or y > band.y:
+				continue
+			var p := Vector2(position.x, y)
+			if not _blocked(p) and not _blocked(p + Vector2(dirx * 24.0, 0)):
+				return y - tgt.y
+	return 22.0 if position.y < (band.x + band.y) / 2.0 else -22.0
+

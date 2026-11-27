@@ -13,7 +13,13 @@ var fast := false                 # T 键：时间快进
 var wind := 8.0                   # 横向风速（px/s），缓慢变化
 var tt := 0.0
 var cmod: CanvasModulate
-var shadows: Array = []           # [Sprite2D, kind]
+var shadows: Array = []           # [Sprite2D, kind]（楼排、高道具）
+var shade: CanvasGroup            # 所有太阳影子画进同一个组：重叠处不会叠黑
+var shadow_map: Dictionary = {}   # 角色/车/地上的鸟 -> 影子 Sprite2D
+var sun_ax := 0.0                 # 每 1 px 高度，影子在屏幕上的横向偏移（正 = 向右）
+var sun_ay := 0.3                 # 每 1 px 高度，影子在屏幕上向下（朝镜头）的长度
+var sun_alpha := 0.3
+var perches: Array = []           # 能落鸟的点 {p: Vector3(x, 纵深, 高度), g: 组}：画面里的屋脊、路灯顶、牌子顶、栏杆、树冠
 var lights: Array = []            # {node, base, kind:"lamp"|"shop"|"car", flicker}
 var cars: Array = []              # {node, spr, data, v, dir, lane_y, lights:[]}
 var car_cd := 3.0
@@ -128,7 +134,8 @@ func setup(main: Node, sc: Node2D) -> void:
 	M = main
 	scene = sc
 	interior = sc.data.get("kind", "street") == "interior"
-	shadows.clear(); lights.clear(); cars.clear(); birds.clear(); flocks.clear(); emitters.clear()
+	shadows.clear(); lights.clear(); cars.clear(); birds.clear(); flocks.clear(); emitters.clear(); shadow_map.clear(); perches.clear()
+	shade = null
 	if cmod and is_instance_valid(cmod):
 		cmod.queue_free()
 	cmod = CanvasModulate.new()
@@ -147,6 +154,7 @@ func setup(main: Node, sc: Node2D) -> void:
 		amb.stop()
 	if not interior:
 		_make_shadows()
+		_prop_perches()
 	_make_lights()
 	_make_fx()
 	_make_fauna()
@@ -154,7 +162,12 @@ func setup(main: Node, sc: Node2D) -> void:
 
 
 func _make_shadows() -> void:
-	## 楼排和高的道具（树、路灯、报亭、路牌）的影子：剪影压扁、翻到地面上，随太阳倾斜
+	## 太阳影子：楼排、高道具、角色、车、地上的鸟，都用自己的剪影压扁、斜切到地面上。
+	## 设定：街道东西向，镜头朝南看，太阳在楼的后上方 → 影子朝镜头（屏幕下方）落；
+	## 早上太阳在左（东）影子斜向右，傍晚在右（西）影子斜向左；太阳越低影子越长。
+	shade = CanvasGroup.new()
+	shade.z_index = -9
+	scene.add_child(shade)
 	for L in scene.data.get("layers", []):
 		var img: String = L["img"]
 		if not (img.begins_with("row_") or img.begins_with("block")):
@@ -162,32 +175,125 @@ func _make_shadows() -> void:
 		var tex: Texture2D = load(scene.base + "/" + img) if ResourceLoader.exists(scene.base + "/" + img) else null
 		if tex == null:
 			continue
-		var s := Sprite2D.new()
-		s.texture = tex
-		s.centered = false
+		var s := _shadow_sprite(tex)
 		s.offset = Vector2(0, -tex.get_height())
 		s.position = Vector2(float(L.get("x", 0)), float(L.get("y", 0)) + tex.get_height())
-		s.modulate = Color(0.12, 0.07, 0.05, 0.0)
-		s.z_index = -9
-		scene.add_child(s)
+		s.set_meta("foot", s.position)
 		shadows.append([s, "row"])
+		_find_perches(tex, Vector2(float(L.get("x", 0)), float(L.get("y", 0))))
 	for P in scene.data.get("props", []):
 		var nm: String = P["img"]
-		if not (nm.begins_with("tree") or nm.contains("lamp") or nm.begins_with("kiosk") or nm.begins_with("post") or nm.begins_with("gate") or nm.begins_with("teakiosk")):
+		if not (nm.begins_with("tree") or nm.contains("lamp") or nm.begins_with("kiosk") or nm.begins_with("post") or nm.begins_with("gate") or nm.begins_with("teakiosk") or nm.begins_with("stall") or nm.begins_with("bench") or nm.begins_with("bicycle") or nm.begins_with("railing") or nm.begins_with("bollard") or nm.begins_with("hydrant") or nm.begins_with("light") or nm.begins_with("pot_")):
 			continue
 		var p: String = scene.base + "/" + nm
 		if not ResourceLoader.exists(p):
 			continue
 		var tex: Texture2D = load(p)
-		var s := Sprite2D.new()
-		s.texture = tex
-		s.centered = false
-		s.offset = Vector2(-tex.get_width() / 2.0, -tex.get_height())
-		s.position = Vector2(P["x"], P["y_foot"])
-		s.modulate = Color(0.12, 0.07, 0.05, 0.0)
-		s.z_index = -9
-		scene.add_child(s)
+		var s := _shadow_sprite(tex)
+		s.offset = Vector2(-float(P.get("ox", tex.get_width() / 2.0)), -float(P.get("oy", tex.get_height())))
+		s.set_meta("foot", Vector2(P["x"], P["y_foot"]))
 		shadows.append([s, "prop"])
+
+
+func _shadow_sprite(tex: Texture2D) -> Sprite2D:
+	var s := Sprite2D.new()
+	s.texture = tex
+	s.centered = false
+	s.modulate = Color(0.16, 0.09, 0.06, 1.0)
+	shade.add_child(s)
+	return s
+
+
+## 影子变换：本地 (x, -h)（脚底以上 h 像素）→ 屏幕 (x + ax·h, ay·h)
+func _shadow_xform(foot: Vector2, k := 1.0) -> Transform2D:
+	return Transform2D(Vector2(1, 0), Vector2(-sun_ax * k, -sun_ay * k), foot)
+
+
+## 动的东西（角色、车、地上的鸟）的影子：每帧复制它的当前帧
+func _sync_shadow(key: Object, src: Sprite2D, foot: Vector2, show: bool) -> void:
+	if shade == null:
+		return
+	var s: Sprite2D = shadow_map.get(key)
+	if s == null:
+		s = _shadow_sprite(src.texture)
+		shadow_map[key] = s
+	s.visible = show and sun_alpha > 0.01
+	if not s.visible:
+		return
+	s.texture = src.texture
+	s.hframes = src.hframes
+	s.vframes = src.vframes
+	s.frame = src.frame
+	s.flip_h = src.flip_h
+	s.offset = src.offset + Vector2(0, src.position.y)
+	s.transform = _shadow_xform(foot)
+
+
+func _prop_perches() -> void:
+	## 街上的鸟最常歇在：路灯顶、路牌/报亭顶、栏杆扶手、系缆桩、树冠里（麻雀）。纵深 = 道具脚 + 0.5，画在道具前面
+	for P in scene.data.get("props", []):
+		var nm: String = P["img"]
+		var p: String = scene.base + "/" + nm
+		if not ResourceLoader.exists(p):
+			continue
+		var tex: Texture2D = load(p)
+		var h: float = float(P.get("oy", tex.get_height()))
+		var x: float = float(P["x"])
+		var y: float = float(P["y_foot"])
+		var g := "%s@%d" % [nm, int(x)]
+		if nm.contains("lamp"):
+			perches.append({"p": Vector3(x, y + 0.5, h - 3.0), "g": g})
+		elif nm.begins_with("post") or nm.begins_with("kiosk") or nm.begins_with("teakiosk") or nm.begins_with("gate"):
+			for dx in [-10.0, 0.0, 10.0]:
+				perches.append({"p": Vector3(x + dx, y + 0.5, _top_at(tex, P, dx)), "g": g})
+		elif nm.begins_with("railing"):
+			for dx in range(-110, 111, 14):
+				perches.append({"p": Vector3(x + dx, y + 0.5, _top_at(tex, P, float(dx))), "g": g})
+		elif nm.begins_with("tree"):
+			for dx in [-30.0, -12.0, 8.0, 26.0]:
+				perches.append({"p": Vector3(x + dx, y + 1.0, h * 0.62 + randf_range(-8, 8)), "g": g, "tree": true})
+
+
+## 道具在 dx 处最高的不透明像素离脚底多高（落在实处，不悬空）
+func _top_at(tex: Texture2D, P: Dictionary, dx: float) -> float:
+	var img := tex.get_image()
+	if img == null:
+		return float(tex.get_height()) - 2.0
+	if img.is_compressed():
+		img.decompress()
+	var ox: float = float(P.get("ox", tex.get_width() / 2.0))
+	var oy: float = float(P.get("oy", tex.get_height()))
+	var cx := clampi(int(ox + dx), 0, img.get_width() - 1)
+	for yy in img.get_height():
+		if img.get_pixel(cx, yy).a > 0.5:
+			return oy - float(yy) - 0.5
+	return oy - 2.0
+
+
+func _find_perches(tex: Texture2D, at: Vector2) -> void:
+	## 屋脊上平的地方（连续 10 px 高度差 ≤ 1）可以落鸟
+	var img := tex.get_image()
+	if img == null:
+		return
+	if img.is_compressed():
+		img.decompress()
+	var w := img.get_width()
+	var tops: Array = []
+	for x in range(0, w, 2):
+		var top := -1
+		for y in img.get_height():
+			if img.get_pixel(x, y).a > 0.5:
+				top = y
+				break
+		tops.append(top)
+	for i in range(3, tops.size() - 3, 6):
+		var ok: bool = tops[i] >= 0
+		for j in range(i - 3, i + 4):
+			if tops[j] < 0 or absi(tops[j] - tops[i]) > 1:
+				ok = false
+		if ok and at.y + tops[i] > 40.0:      # 屋脊要在画面里
+			var py: float = at.y + tops[i]
+			perches.append({"p": Vector3(at.x + i * 2, scene.band.x - 1.0, scene.band.x - 1.0 - py), "g": "roof%d" % int(py)})
 
 
 func _light(pos: Vector2, color: Color, scale: float, kind: String, flicker := false) -> void:
@@ -219,7 +325,7 @@ func _make_lights() -> void:
 		_light(Vector2(480, 250), Color(1.0, 0.85, 0.6), 4.0, "room")
 
 
-func _particles(pos: Vector2, kind: String) -> CPUParticles2D:
+func _particles(pos: Vector2, kind: String, depth := 0.0) -> CPUParticles2D:
 	var p := CPUParticles2D.new()
 	p.position = pos
 	p.z_index = 40
@@ -240,8 +346,8 @@ func _particles(pos: Vector2, kind: String) -> CPUParticles2D:
 		p.z_index = 45
 	else:   # steam：从锅里冒出、随风斜飘、越来越淡
 		p.texture = puff_tex
-		p.amount = 14
-		p.lifetime = 2.6
+		p.amount = 22
+		p.lifetime = 2.8
 		p.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
 		p.emission_rect_extents = Vector2(8, 2)
 		p.direction = Vector2(0, -1)
@@ -249,14 +355,23 @@ func _particles(pos: Vector2, kind: String) -> CPUParticles2D:
 		p.initial_velocity_min = 10.0
 		p.initial_velocity_max = 16.0
 		p.gravity = Vector2(wind * 0.7, -4)
-		p.scale_amount_min = 1.0
-		p.scale_amount_max = 2.0
+		p.scale_amount_min = 1.2
+		p.scale_amount_max = 2.4
 		var ramp := Gradient.new()
-		ramp.set_color(0, Color(1, 1, 1, 0.75))
+		ramp.set_color(0, Color(1, 1, 1, 0.85))
 		ramp.set_color(1, Color(1, 1, 1, 0.0))
 		p.color_ramp = ramp
 		p.preprocess = 2.0
-	scene.add_child(p)
+	if kind == "steam" and depth > 0.0:
+		# 蒸汽按所在位置的纵深参与前后排序：锅在店里，路过的人挡在蒸汽前面
+		var holder := Node2D.new()
+		holder.position = Vector2(pos.x, depth)
+		p.position = Vector2(0, pos.y - depth)
+		p.z_index = 0
+		holder.add_child(p)
+		scene.ysort.add_child(holder)
+	else:
+		scene.add_child(p)
 	emitters.append([p, kind])
 	return p
 
@@ -271,7 +386,7 @@ func _make_fx() -> void:
 			_particles(Vector2(P["x"], P["y_foot"] - h * 0.72), "leaves")
 	for f in M.world.get("fx", {}).get(scene.data.get("id", ""), []):
 		if f["type"] == "steam":
-			_particles(Vector2(f["x"], f["y"]), "steam")
+			_particles(Vector2(f["x"], f["y"]), "steam", float(f.get("depth", 0.0)))
 			_loop_player("steam_hiss_loop", Vector2(f["x"], f["y"]), scene)
 
 
@@ -289,24 +404,38 @@ func _anim_sprite(cid: String) -> Dictionary:
 	return out
 
 
-func _bird(kind: String, pos: Vector2, flock: Dictionary, state: String) -> void:
+## 鸟的行为（A1.5 按真实城市鸟改；用户：「鸽子咋一直在半空中飞」「鸟没有做遮挡，得模拟鸟的实际行为」）：
+##  - 城里的鸽子、麻雀习惯了车和行人：车不惊鸟；行人走近只是走开/跳开，贴得很近、有人跑过来、狗猫冲过来才整群惊飞
+##  - 惊飞：先陡升躲开，鸽子绕一圈，然后落到屋脊上或者远一点的地面；在屋脊上歇一会儿，没人了再飞回地上觅食
+##  - 麻雀飞得短，直接躲到最近的屋脊上，很快回来；海鸥在海面上空借风盘旋，偶尔落在栏杆、系缆桩上
+##  - 每只鸟都有「地面点」(x, 纵深 y) 和高度 alt：节点放在地面点参与前后排序（树、路灯、行人能挡住它），
+##    精灵向上抬 alt 画；落在屋脊上的鸟纵深 = 楼脚，被人行道上所有东西挡住
+const BIRD := {
+	"pigeon": {"walk": 14.0, "avoid": 75.0, "flush": 34.0, "flush_run": 120.0, "flush_animal": 110.0, "fly": 330.0, "lap": 150.0, "alt": 110.0, "perch_s": [10.0, 25.0], "roof_p": 0.6},
+	"sparrow": {"walk": 24.0, "avoid": 70.0, "flush": 46.0, "flush_run": 140.0, "flush_animal": 130.0, "fly": 260.0, "lap": 0.0, "alt": 70.0, "perch_s": [5.0, 12.0], "roof_p": 1.0},
+	"seagull": {"walk": 12.0, "avoid": 90.0, "flush": 50.0, "flush_run": 140.0, "flush_animal": 120.0, "fly": 120.0, "lap": 260.0, "alt": 170.0, "perch_s": [20.0, 40.0], "roof_p": 0.0},
+}
+
+
+func _bird(kind: String, pos: Vector2, alt: float, flock: Dictionary, state: String) -> void:
 	var node := Node2D.new()
 	node.position = pos
 	var spr := Sprite2D.new()
 	spr.centered = false
 	node.add_child(spr)
 	scene.ysort.add_child(node)
-	var b := {"node": node, "spr": spr, "kind": kind, "state": state, "vel": Vector2.ZERO, "t": randf() * 3.0,
-		"anim": "", "f": 0.0, "flock": flock, "home": pos, "facing": 1 if randf() < 0.5 else -1}
+	var b := {"node": node, "spr": spr, "kind": kind, "state": state, "vel": Vector3.ZERO, "t": randf() * 3.0, "alt": alt,
+		"anim": "", "f": 0.0, "flock": flock, "facing": 1 if randf() < 0.5 else -1,
+		"off": Vector3(randf_range(-28, 28), randf_range(-8, 8), randf_range(-14, 14)), "dest": Vector3.ZERO}
+	if kind == "seagull":
+		b["off"] = Vector3(randf_range(-150, 150), randf_range(-10, 30), randf_range(-60, 60))   # 海鸥散得开
 	birds.append(b)
-	_bset(b, flock["anims"].keys()[0] if state == "ground" else "fly_side")
+	_bset(b, "idle_side" if state == "ground" and flock["anims"].has("idle_side") else ("stand" if state == "ground" else "fly_side"))
 
 
 func _bset(b: Dictionary, anim: String) -> void:
 	var A: Dictionary = b["flock"]["anims"]
-	if not A.has(anim):
-		return
-	if b["anim"] == anim:
+	if not A.has(anim) or b["anim"] == anim:
 		return
 	b["anim"] = anim
 	b["f"] = 0.0
@@ -321,124 +450,287 @@ func _make_fauna() -> void:
 	for fa in M.world.get("fauna", {}).get(scene.data.get("id", ""), []):
 		var kind: String = fa["type"]
 		var anims := _anim_sprite(kind)
-		var flock := {"id": flocks.size(), "kind": kind, "anims": anims, "center": Vector2(fa["x"], fa.get("y", scene.band.y - 10)),
-			"state": "ground" if fa.get("ground", true) else "sky", "t": 0.0, "landing": Vector2(fa["x"], fa.get("y", scene.band.y - 10)),
-			"range": float(fa.get("range", 260)), "sky_y": float(fa.get("sky_y", 140))}
+		var ground: bool = fa.get("ground", true)
+		var home := Vector2(fa["x"], fa.get("y", scene.band.y - 10))
+		var flock := {"id": flocks.size(), "kind": kind, "anims": anims, "home": home, "state": "ground" if ground else "soar",
+			"t": 0.0, "c": Vector3(home.x, scene.band.x + 30.0, 0.0), "lap_a": 0.0, "lap_c": Vector2.ZERO, "flushes": 0,
+			"air_t": 0.0, "dest": {}, "sky_alt": float(fa.get("sky_alt", 330.0 - float(fa.get("sky_y", 140))))}
 		flocks.append(flock)
 		for i in int(fa.get("n", 5)):
-			if flock["state"] == "ground":
-				var gy: float = clampf(float(fa.get("y", scene.band.y - 10)) + randf_range(-10, 10), scene.band.x + 2, scene.band.y + 4)
-				_bird(kind, Vector2(fa["x"] + randf_range(-40, 40), gy), flock, "ground")
+			if ground:
+				var gy: float = clampf(home.y + randf_range(-10, 10), scene.band.x + 4, scene.band.y)
+				_bird(kind, Vector2(home.x + randf_range(-40, 40), gy), 0.0, flock, "ground")
 			else:
-				_bird(kind, Vector2(fa["x"] + randf_range(-120, 120), flock["sky_y"] + randf_range(-40, 40)), flock, "sky")
+				var c := Vector2(home.x + randf_range(-160, 160), scene.band.x + randf_range(-4, 30))
+				_bird(kind, c, flock["sky_alt"] + randf_range(-40, 40), flock, "fly")
+
+
+func _threats() -> Array:
+	## [位置, 种类("person"/"animal"), 在跑, 在动]
+	var out: Array = []
+	var actors: Array = [M.player]
+	actors.append_array(M.npcs)
+	for a in actors:
+		if is_instance_valid(a) and a.visible and not a.hidden_in_door:
+			out.append([a.position, "animal" if a.kind in ["dog", "cat"] else "person", a.running, a.moving])
+	return out
 
 
 func _bird_tick(delta: float) -> void:
-	var threats: Array = [M.player.position]
-	for n in M.npcs:
-		if n.visible and n.moving:
-			threats.append(n.position)
-	for c in cars:
-		threats.append(c["node"].position)
+	var threats := _threats()
 	for fl in flocks:
 		var fid: int = fl["id"]
 		var members: Array = birds.filter(func(b): return b["flock"]["id"] == fid)
-		if fl["state"] == "ground":
-			var alarm := false
-			for b in members:
-				for tp in threats:
-					if b["node"].position.distance_to(tp) < (90.0 if fl["kind"] != "sparrow" else 60.0):
-						alarm = true
-			if alarm:
-				fl["state"] = "sky"
-				fl["t"] = randf_range(7.0, 14.0)
-				var away: float = -1.0 if M.player.position.x > fl["center"].x else 1.0
-				fl["center"] = Vector2(fl["center"].x + away * 220.0, fl["sky_y"])
+		var cfg: Dictionary = BIRD.get(fl["kind"], BIRD["pigeon"])
+		match fl["state"]:
+			"ground", "perch":
+				# 惊飞判定：任何一只被吓到，整群一起飞
+				var scare := Vector2.INF
 				for b in members:
-					b["state"] = "takeoff"
-					b["vel"] = Vector2(away * randf_range(30, 60), -randf_range(70, 110))
-					_bset(b, "takeoff" if fl["anims"].has("takeoff") else "fly_side")
-				play_at("pigeon_wings_takeoff" if fl["kind"] == "pigeon" else "sparrow_chirp", members[0]["node"].position)
-		elif fl["state"] == "sky":
-			fl["t"] -= delta
-			# 在天上绕圈（徘徊中心缓慢移动），时间到了找地方落下（地面鸟）
-			var cc: Vector2 = fl["center"]
-			cc.x += sin(tt * 0.3 + fl["range"]) * 20.0 * delta
-			fl["center"] = cc
-			if fl["anims"].has("walk_peck") or fl["anims"].has("hop"):
-				if fl["t"] <= 0.0:
-					fl["state"] = "landing"
-					var w: float = float(scene.width)
-					fl["landing"] = Vector2(clampf(fl["center"].x + randf_range(-300, 300), 80, w - 80), randf_range(scene.band.x + 6, scene.band.y))
+					if b["state"] != "ground" and b["state"] != "perch":
+						continue
+					var bp: Vector2 = b["node"].position
+					for th in threats:
+						var d: float = bp.distance_to(th[0])
+						if b["state"] == "perch" and b["alt"] > 90.0:
+							continue        # 高处（屋脊、路灯顶）的鸟不怕街上的人；栏杆、低矮处的照样会惊飞
+						var r: float = cfg["flush"]
+						if th[1] == "animal" and th[3]:
+							r = cfg["flush_animal"]
+						elif th[2]:
+							r = cfg["flush_run"]
+						if d < r:
+							scare = th[0]
+				if scare != Vector2.INF:
+					_flush(fl, members, scare)
+				elif fl["state"] == "perch":
+					fl["t"] -= delta
+					if fl["t"] <= 0.0:
+						# 歇够了：觅食点附近没人就飞回地上
+						var spot := _ground_spot(fl, threats, true)
+						if spot != Vector2.INF:
+							_fly_to(fl, members, {"kind": "ground", "p": spot})
+						else:
+							fl["t"] = 4.0
+			"flee", "circle", "approach":
+				fl["air_t"] += delta
+				_flock_center(fl, cfg, delta)
+			"soar":
+				_flock_center(fl, cfg, delta)
 		for b in members:
-			_bird_move(b, fl, delta)
-		if fl["state"] == "landing" and members.all(func(b): return b["state"] == "ground"):
-			fl["state"] = "ground"
-			fl["center"] = fl["landing"]
+			_bird_move(b, fl, cfg, threats, delta)
+		if fl["state"] == "approach" and members.all(func(b): return b["state"] == "ground" or b["state"] == "perch"):
+			fl["state"] = fl["dest"]["kind"]
+			fl["air_t"] = 0.0
+			fl["t"] = randf_range(cfg["perch_s"][0], cfg["perch_s"][1])
 		if fl["kind"] == "seagull" and randf() < delta * 0.25:
-			play_at("seagull_call", fl["center"])
+			play_at("seagull_call", Vector2(fl["c"].x, fl["c"].y))
 		if fl["kind"] == "pigeon" and fl["state"] == "ground" and randf() < delta * 0.12:
-			play_at("pigeon_coo", fl["center"])
+			play_at("pigeon_coo", fl["home"])
 		if fl["kind"] == "sparrow" and randf() < delta * 0.2:
-			play_at("sparrow_chirp", fl["center"])
+			play_at("sparrow_chirp", fl["home"])
 
 
-func _bird_move(b: Dictionary, fl: Dictionary, delta: float) -> void:
+func _flush(fl: Dictionary, members: Array, from: Vector2) -> void:
+	var cfg: Dictionary = BIRD.get(fl["kind"], BIRD["pigeon"])
+	var cx := 0.0
+	for b in members:
+		cx += b["node"].position.x
+	cx /= maxf(1.0, members.size())
+	var away: float = 1.0 if cx >= from.x else -1.0
+	fl["flushes"] += 1
+	fl["air_t"] = 0.0
+	fl["state"] = "flee"
+	fl["t"] = 0.9
+	fl["c"] = Vector3(cx + away * 90.0, scene.band.x + 20.0, cfg["alt"])
+	fl["away"] = away
+	for b in members:
+		b["state"] = "fly"
+		b["vel"] = Vector3(away * randf_range(60, 120), randf_range(-20, 0), randf_range(160, 220))
+		_bset(b, "takeoff" if fl["anims"].has("takeoff") else "fly_side")
+	play_at("pigeon_wings_takeoff" if fl["kind"] == "pigeon" else "sparrow_chirp", Vector2(cx, members[0]["node"].position.y))
+
+
+func _fly_to(fl: Dictionary, members: Array, dest: Dictionary) -> void:
+	fl["state"] = "approach"
+	fl["dest"] = dest
+	var i := 0
+	for b in members:
+		if dest["kind"] == "perch":
+			var pp: Vector3 = dest["slots"][i % dest["slots"].size()]
+			var extra: int = i / dest["slots"].size()
+			b["dest"] = pp + Vector3(extra * 7.0 * (1.0 if i % 2 == 0 else -1.0), 0, 0)
+		else:
+			var gp: Vector2 = dest["p"] + Vector2(randf_range(-36, 36), randf_range(-8, 8))
+			gp.y = clampf(gp.y, scene.band.x + 4, scene.band.y)
+			b["dest"] = Vector3(gp.x, gp.y, 0.0)
+		if b["state"] != "fly":
+			b["state"] = "fly"
+			b["vel"] = Vector3(0, 0, 120)
+			_bset(b, "takeoff" if fl["anims"].has("takeoff") else "fly_side")
+		i += 1
+
+
+func _ground_spot(fl: Dictionary, threats: Array, prefer_home: bool) -> Vector2:
+	## 找一块离人远的人行道（不在家具里），优先回原来的觅食点
+	var cands: Array = []
+	if prefer_home:
+		cands.append(fl["home"])
+	for k in 8:
+		cands.append(Vector2(clampf(fl["c"].x + randf_range(-320, 320), 60, float(scene.width) - 60), randf_range(scene.band.x + 8, scene.band.y - 2)))
+	for c in cands:
+		var good := true
+		for th in threats:
+			if c.distance_to(th[0]) < 170.0:
+				good = false
+		for r in scene.solids:
+			if r.grow(10).has_point(c):
+				good = false
+		if good:
+			return c
+	return Vector2.INF
+
+
+func _flock_center(fl: Dictionary, cfg: Dictionary, delta: float) -> void:
+	var c: Vector3 = fl["c"]
+	match fl["state"]:
+		"flee":
+			fl["t"] -= delta
+			c.x += fl["away"] * cfg["fly"] * 0.6 * delta
+			if fl["t"] <= 0.0:
+				if cfg["lap"] > 0.0:
+					fl["state"] = "circle"
+					fl["lap_a"] = 0.0
+					fl["lap_c"] = Vector2(c.x + fl["away"] * cfg["lap"], c.y)
+				else:
+					_choose_dest(fl, cfg)
+		"circle":
+			# 鸽子惊飞后在街道上空绕一个大圈（逆时针，经过镜头前和楼前）
+			fl["lap_a"] += cfg["fly"] / cfg["lap"] * delta
+			var a: float = fl["lap_a"] + PI
+			c = Vector3(fl["lap_c"].x + cos(a) * cfg["lap"] * fl["away"], scene.band.x + 40.0 + sin(a) * 34.0, cfg["alt"] + sin(a * 2.0) * 20.0)
+			if fl["lap_a"] >= TAU * 0.85:
+				_choose_dest(fl, cfg)
+		"soar":
+			# 海鸥：借风慢慢盘旋，中心随风漂
+			fl["lap_a"] += cfg["fly"] / cfg["lap"] * delta * 0.6
+			var a2: float = fl["lap_a"]
+			c = Vector3(fl["home"].x + cos(a2) * cfg["lap"] + sin(tt * 0.05) * 120.0, scene.band.x + 10.0 + sin(a2) * 20.0, fl["sky_alt"] + sin(a2 * 0.5) * 30.0)
+	fl["c"] = c
+
+
+func _choose_dest(fl: Dictionary, cfg: Dictionary) -> void:
+	var members: Array = birds.filter(func(b): return b["flock"]["id"] == fl["id"])
+	if randf() < cfg["roof_p"] and perches.size() > 0:
+		# 落到附近（离当前位置 120–450 px，在画面附近）的一处高处，同一处一只挨一只；麻雀爱钻树冠
+		var cands: Array = []
+		for pp in perches:
+			var dxp: float = absf(pp["p"].x - fl["c"].x)
+			if dxp < 450.0 and (fl["kind"] == "sparrow" or not pp.get("tree", false)):
+				cands.append(pp)
+		if cands.size() > 0:
+			var pick: Dictionary = cands[randi() % cands.size()]
+			var slots: Array = []
+			for pp in perches:
+				if pp["g"] == pick["g"] and absf(pp["p"].x - pick["p"].x) < 70.0:
+					slots.append(pp["p"])
+			_fly_to(fl, members, {"kind": "perch", "slots": slots})
+			return
+	var spot := _ground_spot(fl, _threats(), false)
+	if spot == Vector2.INF:
+		spot = fl["home"]
+	_fly_to(fl, members, {"kind": "ground", "p": spot})
+
+
+func _bird_move(b: Dictionary, fl: Dictionary, cfg: Dictionary, threats: Array, delta: float) -> void:
 	var node: Node2D = b["node"]
-	var sp: float = fl["anims"]["_speed"]
 	match b["state"]:
 		"ground":
+			# 觅食：走走、啄啄、站站；有人走近就往另一边走开（不飞）
+			var flee := Vector2.ZERO
+			for th in threats:
+				var d: Vector2 = node.position - th[0]
+				if d.length() < cfg["avoid"] and th[3]:
+					flee += d.normalized()
 			b["t"] -= delta
-			if b["t"] <= 0.0:
+			if flee != Vector2.ZERO:
+				var v: Vector2 = Vector2(signf(flee.x) if flee.x != 0.0 else 1.0, clampf(flee.y, -0.4, 0.4)) * cfg["walk"] * 2.2
+				b["vel"] = Vector3(v.x, v.y, 0)
+				b["facing"] = 1 if v.x >= 0 else -1
+				_bset(b, "walk_peck" if fl["anims"].has("walk_peck") else ("hop" if fl["anims"].has("hop") else "idle_side"))
+				b["t"] = 0.6
+			elif b["t"] <= 0.0:
 				b["t"] = randf_range(0.8, 2.5)
 				var r := randf()
 				if r < 0.45:
-					b["vel"] = Vector2(randf_range(-14, 14), randf_range(-3, 3))
+					# 往觅食点方向慢慢走，不会越走越远
+					var back: float = signf(fl["home"].x - node.position.x) if absf(fl["home"].x - node.position.x) > 60.0 else (1.0 if randf() < 0.5 else -1.0)
+					b["vel"] = Vector3(back * randf_range(0.5, 1.0) * cfg["walk"], randf_range(-3, 3), 0)
 					b["facing"] = 1 if b["vel"].x >= 0 else -1
 					_bset(b, "walk_peck" if fl["anims"].has("walk_peck") else ("hop" if fl["anims"].has("hop") else "idle_side"))
 				elif r < 0.75 and fl["anims"].has("peck"):
-					b["vel"] = Vector2.ZERO
+					b["vel"] = Vector3.ZERO
 					_bset(b, "peck")
 				else:
-					b["vel"] = Vector2.ZERO
+					b["vel"] = Vector3.ZERO
 					_bset(b, "idle_side" if fl["anims"].has("idle_side") else "stand")
-			var np: Vector2 = node.position + b["vel"] * delta
-			np.y = clampf(np.y, scene.band.x + 2, scene.band.y + 6)
-			np.x = clampf(np.x, fl["center"].x - 70, fl["center"].x + 70)
+			var np: Vector2 = node.position + Vector2(b["vel"].x, b["vel"].y) * delta
+			np.y = clampf(np.y, scene.band.x + 3, scene.band.y + 4)
+			np.x = clampf(np.x, 10, float(scene.width) - 10)
+			for r2 in scene.solids:
+				if r2.has_point(np):
+					np = node.position
 			node.position = np
-		"takeoff", "sky":
-			# 简单鸟群：朝群中心、互相避开、保持速度
-			var tgt: Vector2 = fl["center"] + Vector2(cos(tt * 0.7 + node.get_instance_id() % 7) * 90.0, sin(tt * 0.9 + node.get_instance_id() % 5) * 30.0)
-			var acc: Vector2 = (tgt - node.position).normalized() * 90.0
-			for o in birds:
-				if o != b and o["flock"]["id"] == fl["id"]:
-					var d: Vector2 = node.position - o["node"].position
-					if d.length() < 14.0 and d.length() > 0.01:
-						acc += d.normalized() * 60.0
-			b["vel"] += acc * delta
-			b["vel"] = b["vel"].limit_length(sp)
-			node.position += b["vel"] * delta
-			node.position.y = minf(node.position.y, scene.band.x - 20)
-			b["facing"] = 1 if b["vel"].x >= 0 else -1
-			if b["state"] == "takeoff" and node.position.y < fl["sky_y"] + 40:
-				b["state"] = "sky"
-			_bset(b, "glide" if (fl["anims"].has("glide") and absf(b["vel"].y) < 12.0 and randf() < 0.01) else "fly_side")
-			if fl["state"] == "landing":
-				b["state"] = "descend"
-				b["home"] = fl["landing"] + Vector2(randf_range(-35, 35), randf_range(-6, 6))
-		"descend":
-			var d2: Vector2 = b["home"] - node.position
-			if d2.length() < 4.0:
-				node.position = b["home"]
-				b["state"] = "ground"
-				b["vel"] = Vector2.ZERO
+			b["alt"] = 0.0
+		"perch":
+			b["t"] -= delta
+			if b["t"] <= 0.0:
+				b["t"] = randf_range(1.5, 4.0)
+				b["facing"] = -b["facing"] if randf() < 0.3 else b["facing"]
 				_bset(b, "idle_side" if fl["anims"].has("idle_side") else "stand")
+		"fly":
+			var tgt: Vector3
+			var landing: bool = fl["state"] == "approach"
+			if landing:
+				tgt = b["dest"]
 			else:
-				b["vel"] = b["vel"].lerp(d2.normalized() * minf(sp, d2.length() * 2.0), 0.08)
-				node.position += b["vel"] * delta
-				b["facing"] = 1 if b["vel"].x >= 0 else -1
-				_bset(b, "land" if fl["anims"].has("land") and d2.length() < 40.0 else "fly_side")
-	# 帧动画
+				tgt = fl["c"] + b["off"]
+			var pos := Vector3(node.position.x, node.position.y, b["alt"])
+			var to: Vector3 = tgt - pos
+			var sp: float = cfg["fly"]
+			if landing:
+				sp = minf(sp, 40.0 + to.length() * 1.6)        # 快到了减速
+			var want: Vector3 = to.normalized() * sp if to.length() > 0.5 else Vector3.ZERO
+			b["vel"] = b["vel"].lerp(want, clampf(delta * (3.0 if landing else 2.2), 0.0, 1.0))
+			# 同群互相让开一点
+			for o in birds:
+				if o != b and o["flock"]["id"] == fl["id"] and o["state"] == "fly":
+					var dd := Vector2(node.position.x - o["node"].position.x, b["alt"] - o["alt"])
+					if dd.length() < 10.0 and dd.length() > 0.01:
+						b["vel"] += Vector3(dd.x, 0, dd.y).normalized() * 30.0 * delta
+			pos += b["vel"] * delta
+			pos.y = clampf(pos.y, scene.band.x - 2.0, scene.band.y + 40.0)
+			pos.z = maxf(0.0, pos.z)
+			node.position = Vector2(pos.x, pos.y)
+			b["alt"] = pos.z
+			if absf(b["vel"].x) > 4.0:
+				b["facing"] = 1 if b["vel"].x > 0 else -1
+			if landing and to.length() < 3.0:
+				node.position = Vector2(tgt.x, tgt.y)
+				b["alt"] = tgt.z
+				b["vel"] = Vector3.ZERO
+				b["state"] = fl["dest"]["kind"]
+				b["t"] = randf_range(0.5, 2.0)
+				_bset(b, "idle_side" if fl["anims"].has("idle_side") else "stand")
+			elif b["anim"] == "takeoff" and b["f"] < 4.0:
+				pass
+			elif landing and to.length() < 40.0 and fl["anims"].has("land"):
+				_bset(b, "land")
+			elif fl["anims"].has("glide") and (b["vel"].z < -15.0 or (fl["state"] == "soar" and sin(tt * 0.4 + b["off"].x) > 0.3)):
+				_bset(b, "glide")       # 下滑、盘旋时张开翅膀滑翔
+			else:
+				_bset(b, "fly_side")
+	# 帧动画；精灵抬到高度 alt 上画，节点留在地面点参与前后遮挡
 	var a: Dictionary = fl["anims"][b["anim"]]
 	b["f"] += delta * a["fps"]
 	var fr := int(b["f"])
@@ -450,8 +742,8 @@ func _bird_move(b: Dictionary, fl: Dictionary, delta: float) -> void:
 	var mirror: bool = b["facing"] < 0
 	spr.flip_h = mirror
 	spr.offset = Vector2(-(a["fw"] - float(o[0])) if mirror else -float(o[0]), -float(o[1]))
-	# 天上的鸟画在最前面（不参与地面排序）
-	node.z_index = 60 if b["state"] != "ground" else 0
+	spr.position = Vector2(0, -roundf(b["alt"]))
+	node.z_index = 0
 
 
 # ------------------------------------------------------------------ 车流
@@ -593,12 +885,12 @@ func tick(delta: float) -> void:
 		cmod.color = c.lerp(Color(1, 0.95, 0.88), 0.55) if interior else c
 	var sun := _sun()
 	var night := _night()
+	_update_sun(sun)
 	for e in shadows:
 		var s: Sprite2D = e[0]
-		var k: float = 0.16 + 0.34 * (1.0 - sun.y)      # 太阳越低，影子越长
-		s.scale = Vector2(1.0, -k)
-		s.skew = clampf(-sun.x * 0.9, -0.9, 0.9)
-		s.modulate.a = 0.32 * clampf(sun.y * 3.0, 0.0, 1.0)
+		# 楼的剪影是压缩过层高的，按 0.35 算，只在楼脚压一条随屋顶起伏的阴影，不把整条人行道盖黑
+		s.transform = _shadow_xform(s.get_meta("foot"), 0.35 if e[1] == "row" else 1.0)
+	_sync_movers()
 	for l in lights:
 		var n: PointLight2D = l["node"]
 		var e2: float = night
@@ -617,6 +909,37 @@ func tick(delta: float) -> void:
 			p.gravity = Vector2(wind * 0.7, -4)
 	_car_tick(delta)
 	_bird_tick(delta)
+
+
+func _update_sun(sun: Vector2) -> void:
+	## 太阳高度角最高约 62°；影子长度 = cot(高度角)；横向分量随方位（东 → 西）由右转到左
+	var elev: float = deg_to_rad(maxf(sun.y, 0.0) * 62.0)
+	var cot: float = 1.0 / maxf(tan(elev), 0.25)
+	var lat: float = clampf(sun.x, -1.0, 1.0)
+	sun_ax = clampf(-lat * cot, -2.4, 2.4)
+	sun_ay = clampf(sqrt(maxf(0.0, 1.0 - lat * lat)) * cot * 0.45 + 0.08, 0.1, 0.9)
+	sun_alpha = 0.34 * clampf(sun.y * 4.0, 0.0, 1.0)
+	if shade:
+		shade.self_modulate = Color(1, 1, 1, sun_alpha)
+		shade.visible = sun_alpha > 0.01
+
+
+func _sync_movers() -> void:
+	if shade == null:
+		return
+	var actors: Array = [M.player]
+	actors.append_array(M.npcs)
+	for a in actors:
+		if is_instance_valid(a) and a.spr:
+			_sync_shadow(a, a.spr, a.position, a.visible and not a.hidden_in_door and a.modulate.a > 0.5)
+	for c in cars:
+		_sync_shadow(c["node"], c["spr"], c["node"].position, true)
+	for b in birds:
+		_sync_shadow(b["node"], b["spr"], b["node"].position, b["alt"] < 1.0)
+	for k in shadow_map.keys():
+		if not is_instance_valid(k):
+			shadow_map[k].queue_free()
+			shadow_map.erase(k)
 
 
 ## 脚步：由 actor 在落脚帧调用

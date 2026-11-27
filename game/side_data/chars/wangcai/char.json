@@ -83,25 +83,29 @@
   "run_side": {
    "file": "run_side.png",
    "frames": 8,
-   "fps": 18,
-   "frame_w": 90,
-   "frame_h": 55,
+   "fps": 16,
+   "frame_w": 78,
+   "frame_h": 47,
    "origin": [
-    45,
-    54
+    36,
+    46
    ],
    "root_motion_px": [
-    3.281,
-    2.781,
-    5.531,
-    5.031,
-    5.531,
-    1.281,
-    6.031,
-    3.031
+    6.469,
+    8.469,
+    6.969,
+    5.969,
+    6.969,
+    7.969,
+    7.219,
+    5.469
    ],
    "axis": "x",
-   "loop": true
+   "loop": true,
+   "view": "side",
+   "gait": "trot",
+   "duty": 0.45,
+   "slip_mean_px": 0.73
   },
   "sit": {
    "file": "sit.png",
@@ -125,25 +129,29 @@
   "walk_side": {
    "file": "walk_side.png",
    "frames": 8,
-   "fps": 14,
-   "frame_w": 90,
-   "frame_h": 53,
+   "fps": 10,
+   "frame_w": 78,
+   "frame_h": 52,
    "origin": [
-    45,
-    52
+    36,
+    51
    ],
    "root_motion_px": [
-    2.688,
-    1.688,
-    2.688,
-    2.688,
-    3.688,
-    0.0,
-    2.688,
-    2.938
+    6.5,
+    7.0,
+    6.5,
+    5.75,
+    6.5,
+    6.5,
+    6.25,
+    7.0
    ],
    "axis": "x",
-   "loop": true
+   "loop": true,
+   "view": "side",
+   "gait": "walk",
+   "duty": 0.62,
+   "slip_mean_px": 0.25
   }
  }
 }
