@@ -26,6 +26,9 @@ var demo_i := 0
 var demo_t := 0.0
 var demo_on := false
 var demo_press := ""
+var _trace_acc := 0.0
+var demo_zoom := 1.0   # 自动演示专用：镜头放大倍数（录讲解视频看细节）
+var demo_zoom_dy := -40.0  # 放大时镜头中心 = 主角脚下 + dy
 var photo := false
 var args: Dictionary = {}
 var t_total := 0.0
@@ -218,9 +221,18 @@ func _follow_cam(delta: float) -> void:
 	if photo:
 		return
 	var look: float = 70.0 * player.facing if player.view == "side" else 0.0
-	var tx := clampf(player.position.x + look, VIEW.x / 2, maxf(VIEW.x / 2, scene.width - VIEW.x / 2))
+	var half: float = VIEW.x / 2 / cam.zoom.x   # 演示放大时可见宽度变小
+	var tx := clampf(player.position.x + look, half, maxf(half, scene.width - half))
 	cam.position.x = lerpf(cam.position.x, tx, 1.0 - exp(-delta * 3.5))
-	cam.position.y = VIEW.y / 2
+	if demo_zoom == 1.0 and cam.zoom.x == 1.0:
+		cam.position.y = VIEW.y / 2
+		return
+	var z := lerpf(cam.zoom.x, demo_zoom, 1.0 - exp(-delta * 2.5))
+	if absf(z - demo_zoom) < 0.01:
+		z = demo_zoom
+	cam.zoom = Vector2(z, z)
+	var ty: float = player.position.y + demo_zoom_dy if demo_zoom > 1.0 else VIEW.y / 2
+	cam.position.y = lerpf(cam.position.y, ty, 1.0 - exp(-delta * 3.5))
 
 
 func world_scene(sid: String) -> Dictionary:
@@ -756,6 +768,11 @@ func _shot() -> void:
 # ---------------------------------------------------------------- 自动演示（录视频用）
 ## demo.json: {start:{scene,x,y}, steps:[{x:1,y:0,run:false,t:2.0} | {act:"interact"} | {act:"wait",t:1} | {act:"photo"}]}
 func _demo_tick(delta: float) -> Array:
+	if args.has("trace_demo"):
+		_trace_acc += delta
+		if _trace_acc >= 0.5:
+			_trace_acc = 0.0
+			print("DEMO step=%d pos=%s anim=%s" % [demo_i, str(player.position), player.cur])
 	if busy or demo_i >= demo.size():
 		if demo_i >= demo.size() and not busy:
 			demo_t += delta
@@ -798,6 +815,8 @@ func _demo_tick(delta: float) -> Array:
 				demo_i += 1
 			"fast":
 				ambient.fast = bool(s.get("on", true)); demo_i += 1
+			"zoom":
+				demo_zoom = float(s.get("v", 1.0)); demo_zoom_dy = float(s.get("dy", -40.0)); demo_i += 1
 			"say_hero":
 				_bubble(player, str(s["t"]), float(s.get("secs", 2.0))); demo_i += 1
 			"stand":

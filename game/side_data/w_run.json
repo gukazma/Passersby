@@ -1,0 +1,66 @@
+{
+ "start": {
+  "scene": "binjiang",
+  "x": 150,
+  "y": 455
+ },
+ "steps": [
+  {
+   "act": "time",
+   "v": "10:00"
+  },
+  {
+   "act": "zoom",
+   "v": 2,
+   "dy": -45
+  },
+  {
+   "act": "wait",
+   "t": 1.5
+  },
+  {
+   "act": "walkto",
+   "x": 360,
+   "y": 455,
+   "max": 8
+  },
+  {
+   "act": "walkto",
+   "x": 900,
+   "y": 458,
+   "run": true,
+   "max": 8
+  },
+  {
+   "act": "wait",
+   "t": 1.0
+  },
+  {
+   "act": "walkto",
+   "x": 450,
+   "y": 455,
+   "run": true,
+   "max": 8
+  },
+  {
+   "act": "wait",
+   "t": 1.0
+  },
+  {
+   "act": "zoom",
+   "v": 1,
+   "dy": -40
+  },
+  {
+   "act": "walkto",
+   "x": 1350,
+   "y": 456,
+   "run": true,
+   "max": 10
+  },
+  {
+   "act": "wait",
+   "t": 5.0
+  }
+ ]
+}

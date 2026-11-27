@@ -1,0 +1,80 @@
+{
+ "start": {
+  "scene": "yongan_n",
+  "x": 2150,
+  "y": 460
+ },
+ "steps": [
+  {
+   "act": "time",
+   "v": "07:30"
+  },
+  {
+   "act": "zoom",
+   "v": 2,
+   "dy": -45
+  },
+  {
+   "act": "wait",
+   "t": 2.5
+  },
+  {
+   "act": "fast",
+   "on": true
+  },
+  {
+   "act": "walkto",
+   "x": 2330,
+   "y": 462,
+   "max": 6
+  },
+  {
+   "act": "wait",
+   "t": 3.0
+  },
+  {
+   "act": "walkto",
+   "x": 2200,
+   "y": 462,
+   "max": 6
+  },
+  {
+   "act": "wait",
+   "t": 4.0
+  },
+  {
+   "act": "walkto",
+   "x": 2380,
+   "y": 462,
+   "max": 6
+  },
+  {
+   "act": "wait",
+   "t": 4.0
+  },
+  {
+   "act": "walkto",
+   "x": 2250,
+   "y": 462,
+   "max": 6
+  },
+  {
+   "act": "wait",
+   "t": 4.0
+  },
+  {
+   "act": "fast",
+   "on": false
+  },
+  {
+   "act": "walkto",
+   "x": 2400,
+   "y": 462,
+   "max": 8
+  },
+  {
+   "act": "wait",
+   "t": 2.0
+  }
+ ]
+}

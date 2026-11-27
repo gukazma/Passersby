@@ -19,6 +19,7 @@ var shadow_map: Dictionary = {}   # 角色/车/地上的鸟 -> 影子 Sprite2D
 var sun_ax := 0.0                 # 每 1 px 高度，影子在屏幕上的横向偏移（正 = 向右）
 var sun_ay := 0.3                 # 每 1 px 高度，影子在屏幕上向下（朝镜头）的长度
 var sun_alpha := 0.3
+const SHADOW_ALPHA := 0.46        # 调参：正午影子浓度（A1.5 试玩前 0.34 偏淡，人影看不出来）
 var perches: Array = []           # 能落鸟的点 {p: Vector3(x, 纵深, 高度), g: 组}：画面里的屋脊、路灯顶、牌子顶、栏杆、树冠
 var lights: Array = []            # {node, base, kind:"lamp"|"shop"|"car", flicker}
 var cars: Array = []              # {node, spr, data, v, dir, lane_y, lights:[]}
@@ -918,7 +919,7 @@ func _update_sun(sun: Vector2) -> void:
 	var lat: float = clampf(sun.x, -1.0, 1.0)
 	sun_ax = clampf(-lat * cot, -2.4, 2.4)
 	sun_ay = clampf(sqrt(maxf(0.0, 1.0 - lat * lat)) * cot * 0.45 + 0.08, 0.1, 0.9)
-	sun_alpha = 0.34 * clampf(sun.y * 4.0, 0.0, 1.0)
+	sun_alpha = SHADOW_ALPHA * clampf(sun.y * 4.0, 0.0, 1.0)
 	if shade:
 		shade.self_modulate = Color(1, 1, 1, sun_alpha)
 		shade.visible = sun_alpha > 0.01
