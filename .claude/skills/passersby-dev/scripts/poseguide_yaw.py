@@ -36,7 +36,7 @@ def curve(kp, p):
     t = (p - xs[i]) / (xs[i + 1] - xs[i]); p1, p2 = ys[i], ys[i + 1]
     return 0.5 * ((2 * p1) + (-p0 + p2) * t + (2 * p0 - 5 * p1 + 4 * p2 - p3) * t * t + (-p0 + 3 * p1 - 3 * p2 + p3) * t ** 3)
 def joint(pct):
-    h = 10 + (curve(HIP, pct) - 10) * PF["stride"]; k = curve(KNEE, pct)
+    h = (curve(HIP, pct) - PF.get("tilt", 10)) * PF["stride"]   # 髋角相对骨盆；骨盆前倾约 10°，大腿相对竖直 = 髋角 − 前倾; k = curve(KNEE, pct)
     k *= PF["knee_swing"] if 55 <= pct % 100 <= 95 else PF["knee_load"]
     return h, k, curve(ANK, pct) * PF["ankle"]
 u = H / 7.0; L = PF["leg_len"]
@@ -73,7 +73,7 @@ for i in range(N):
         items.append(((zh + za) / 2, lambda hp=hp, kn=kn, ak=ak, he=he, to=to, c=c: (cap(hp, kn, W, c), cap(kn, ak, W * .85, c), cap(he, to, W * .55, c), cap(ak, he, W * .5, c))))
         # 手臂：肩在髋上方 torso；摆角与同侧腿反向
         mode = PF["arm_mode"]
-        sw = -0.6 * PF["arm_swing"] * (joint(pct)[0] - 10) + lean
+        sw = -0.6 * PF["arm_swing"] * joint(pct)[0] + lean
         sh_down = -2.0 * u * PF["torso"]
         shp, zs = P3(base, math.sin(math.radians(lean)) * 2.0 * u, side * hw * 1.9, sh_down)
         if mode == "behind_back":
@@ -84,7 +84,7 @@ for i in range(N):
             lat2 = side * hw * 1.5
         else:
             if mode == "bag_near" and side > 0:
-                sw = -0.15 * (joint(pct)[0] - 10)
+                sw = -0.15 * joint(pct)[0]
             e = V(sw, 1.05 * u); hnd = V(sw + PF["elbow"] + max(0, sw) * 0.6, 0.95 * u)
             elf, eld = e[0], sh_down + e[1]; hdf, hdd = e[0] + hnd[0], sh_down + e[1] + hnd[1]
             lat2 = side * hw * 1.9

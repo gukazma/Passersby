@@ -13,6 +13,7 @@ var talking := false
 var greet := ""
 var greet_cd := 0.0
 var talk: Array = []
+var mood := "neutral"             # happy / neutral / tired / busy / annoyed / sleepy
 var scene_ref: Node = null       # 所在场景（查门的位置）
 var say_cb: Callable             # 冒气泡：say_cb.call(self, text, secs)
 var player_ref: Node2D = null
@@ -24,6 +25,7 @@ func setup_brain(cfg: Dictionary) -> void:
 	loop = cfg.get("loop", [])
 	greet = cfg.get("greet", "")
 	talk = cfg.get("talk", [])
+	mood = cfg.get("mood", "neutral")
 	speed_scale = float(cfg.get("speed_scale", 1.0))
 	if cfg.has("special"):
 		play_special(cfg["special"])
@@ -47,6 +49,7 @@ func _face(f: String) -> void:
 ## 被摸（狗）：转向对方，播开心动画
 func petted_by(who: Node2D, secs: float) -> void:
 	talking = true
+	mood = "happy"
 	facing = 1 if who.position.x > position.x else -1
 	view = "side"
 	if anims.has("happy"):
@@ -54,6 +57,10 @@ func petted_by(who: Node2D, secs: float) -> void:
 	var tw := create_tween()
 	tw.tween_interval(secs)
 	tw.tween_callback(func(): stop_special(); talking = false)
+
+
+func mood_face() -> String:
+	return {"happy": "happy", "tired": "sad", "busy": "surprised", "annoyed": "angry", "sleepy": "sad"}.get(mood, "neutral")
 
 
 func face_to(p: Vector2) -> void:
@@ -78,21 +85,8 @@ func tick(delta: float) -> void:
 	var c: Array = loop[step_i % loop.size()]
 	match c[0]:
 		"walk":
-			var tgt := Vector2(c[1], c[2])
-			var d := tgt - position
-			var want := Vector2(signf(d.x) if absf(d.x) > 2.0 else 0.0, signf(d.y) if absf(d.y) > 1.5 else 0.0)
-			if want == Vector2.ZERO:
+			if walk_to(Vector2(c[1], c[2]), delta):
 				_next()
-			else:
-				var mv := drive(want, false, delta)
-				if mv == Vector2.ZERO:
-					t += delta              # 被挡住：等一会儿再绕到另一条深度
-					if t > 0.8:
-						var alt := clampf(position.y + (14.0 if position.y < (band.x + band.y) / 2 else -14.0), band.x, band.y)
-						loop.insert(step_i % loop.size(), ["walk", position.x, alt])
-						t = 0.0
-				else:
-					t = 0.0
 		"wait":
 			drive(Vector2.ZERO, false, delta)
 			t += delta
@@ -114,7 +108,7 @@ func tick(delta: float) -> void:
 			var tgt := Vector2(dx, band.x + 2)
 			var d := tgt - position
 			if absf(d.x) > 2.0 or absf(d.y) > 1.5:
-				drive(Vector2(signf(d.x) if absf(d.x) > 2.0 else 0.0, signf(d.y) if absf(d.y) > 1.5 else 0.0), false, delta)
+				walk_to(tgt, delta)
 			else:
 				view = "back"; _play("walk_back" if anims.has("walk_back") else "idle_side")
 				t += delta
@@ -155,14 +149,17 @@ func tick(delta: float) -> void:
 				_next(); return
 			if special == "":
 				var tgt := Vector2(sp["x"], sp["y"])
-				var d := tgt - position
-				if absf(d.x) > 2.0 or absf(d.y) > 1.5:
-					if main_ref.spot_taken(c[1], self):
-						t += delta
-						drive(Vector2.ZERO, false, delta)
-						if t > 4.0: _next()
-						return
-					drive(Vector2(signf(d.x) if absf(d.x) > 2.0 else 0.0, signf(d.y) if absf(d.y) > 1.5 else 0.0), false, delta)
+				if main_ref.spot_taken(c[1], self):
+					t += delta
+					drive(Vector2.ZERO, false, delta)
+					if t > 4.0: _next()
+					return
+				var d0 := tgt - position
+				if absf(d0.x) > 2.0 or absf(d0.y) > 1.5:
+					var before := stuck_log.size()
+					walk_to(tgt, delta)
+					if stuck_log.size() > before:
+						_next()
 					return
 				facing = int(sp.get("face", 1)); view = "side"
 				var an: String = c[3] if c.size() > 3 else sp.get("anim", "sit_bench")
@@ -184,7 +181,10 @@ func tick(delta: float) -> void:
 				var tgt := dog.position + Vector2(-side * 30.0, 0)
 				var d := tgt - position
 				if absf(d.x) > 3.0 or absf(d.y) > 2.0:
-					drive(Vector2(signf(d.x) if absf(d.x) > 3.0 else 0.0, signf(d.y) if absf(d.y) > 2.0 else 0.0), false, delta)
+					var before2 := stuck_log.size()
+					walk_to(tgt, delta, 3.0)
+					if stuck_log.size() > before2:
+						_next()
 					return
 				facing = int(side); view = "side"
 				play_special("pet_dog"); t = 0.0
@@ -194,6 +194,40 @@ func tick(delta: float) -> void:
 				stop_special(); _next()
 		_:
 			_next()
+
+
+var stuck_t := 0.0
+var detour := 0.0                 # 绕行时临时的纵深偏移
+var stuck_log: Array = []         # 自动测试用：卡住记录
+
+
+## 走向目标：到了返回 true。被挡住 0.5 秒后换一条纵深绕行，累计 3 秒仍到不了 → 记录并放弃（返回 true）
+func walk_to(tgt: Vector2, delta: float, tol := 2.0) -> bool:
+	var goal := Vector2(tgt.x, clampf(tgt.y + detour, band.x, band.y))
+	var d := goal - position
+	if absf(d.x) <= tol and absf(d.y) <= 1.5:
+		if detour != 0.0:
+			detour = 0.0
+			return false
+		stuck_t = 0.0
+		return true
+	var want := Vector2(signf(d.x) if absf(d.x) > tol else 0.0, signf(d.y) if absf(d.y) > 1.5 else 0.0)
+	var mv := drive(want, false, delta)
+	if mv.length() < 0.05:
+		stuck_t += delta
+		if stuck_t > 0.5 and detour == 0.0:
+			var mid := (band.x + band.y) / 2.0
+			detour = 22.0 if position.y < mid else -22.0
+		elif stuck_t > 1.6 and absf(detour) < 30.0:
+			detour = -detour * 1.6
+		if stuck_t > 3.0:
+			stuck_log.append({"t": Time.get_ticks_msec(), "pos": position, "tgt": tgt, "cmd": str(loop[step_i % loop.size()]) if loop.size() else ""})
+			stuck_t = 0.0
+			detour = 0.0
+			return true
+	else:
+		stuck_t = maxf(0.0, stuck_t - delta * 0.5)
+	return false
 
 
 func _next() -> void:

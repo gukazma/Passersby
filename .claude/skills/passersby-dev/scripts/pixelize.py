@@ -184,7 +184,8 @@ def keep_layout(a, out: pathlib.Path, cells: dict, offs: dict, pal: np.ndarray, 
     big = {}
     for (r, c), (small, alpha) in cells.items():
         alpha = alpha.copy()
-        alpha[:2], alpha[-2:], alpha[:, :2], alpha[:, -2:] = False, False, False, False  # 格子线残留（提示词要求内容不碰格边）
+        if not getattr(a, "no_border_clear", False):
+            alpha[:2], alpha[-2:], alpha[:, :2], alpha[:, -2:] = False, False, False, False  # 格子线残留（提示词要求内容不碰格边）
         alpha = main_body(remove_orphans(alpha), a.keep)
         lab = ((small[..., None, :].astype(int) - pal[None, None].astype(int)) ** 2).sum(-1).argmin(-1)
         h, w = alpha.shape
@@ -245,6 +246,7 @@ def main() -> None:
     ap.add_argument("--uniform", action="store_true", help="等分切格（模型按等分网格画的，如攻击表）")
     ap.add_argument("--layout", choices=["center", "keep"], default="center",
                     help="center = 按脚底+上半身重新居中（行走）；keep = 保留角色在格子里的原位置（攻击：特效在身体外，身体前冲也要保留）")
+    ap.add_argument("--no-border-clear", action="store_true", help="不清格子四周 2 像素（按间隙切帧时用，避免脚尖被当格边清掉）")
     ap.add_argument("--keep", type=float, default=0.04, help="小于最大连通块该比例的碎块删掉；攻击特效（叶子、火星）要调小")
     a = ap.parse_args()
     out = pathlib.Path(a.out)

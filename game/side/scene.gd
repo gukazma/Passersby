@@ -15,6 +15,7 @@ var par_layers: Array = []       # [sprite, parallax, x0]
 var doors: Array = []
 var zebras: Array = []
 var exits: Dictionary = {}
+var x_range := Vector2(-1e9, 1e9)   # 可走的横向范围（室内 = 房间内）
 
 
 func build(path: String) -> void:
@@ -26,6 +27,9 @@ func build(path: String) -> void:
 	doors = data.get("doors", [])
 	zebras = data.get("zebras", [])
 	exits = data.get("exits", {})
+	var xr: Array = data.get("x_range", [])
+	if xr.size() == 2:
+		x_range = Vector2(xr[0], xr[1])
 	for L in data.get("layers", []):
 		var s := _sprite(L["img"])
 		if s == null:
@@ -59,14 +63,19 @@ func add_prop(P: Dictionary) -> void:
 	## world.json 里补充的道具（凳子等），格式同场景 props；img 可以是 res:// 绝对路径
 	var s: Sprite2D
 	if str(P["img"]).begins_with("res://"):
-		s = Sprite2D.new(); s.centered = false; s.texture = load(P["img"])
+		s = Sprite2D.new(); s.centered = false
+		var pth: String = P["img"]
+		s.texture = load(pth) if ResourceLoader.exists(pth) else (ImageTexture.create_from_image(Image.load_from_file(pth)) if FileAccess.file_exists(pth) else null)
+		if s.texture == null:
+			push_error("补摆道具缺图 " + pth)
+			return
 	else:
 		s = _sprite(P["img"])
 	if s == null:
 		return
 	var holder := Node2D.new()
 	holder.position = Vector2(P["x"], P["y_foot"])
-	s.position = Vector2(-s.texture.get_width() / 2.0, -s.texture.get_height())
+	s.position = Vector2(-s.texture.get_width() / 2.0, -s.texture.get_height() - float(P.get("lift", 0)))
 	holder.add_child(s)
 	ysort.add_child(holder)
 	var so: Array = P.get("solid", [])

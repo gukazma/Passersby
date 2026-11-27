@@ -29,7 +29,7 @@ def curve(kp, p):
     t = (p - xs[i]) / (xs[i + 1] - xs[i]); p1, p2 = ys[i], ys[i + 1]
     return 0.5 * ((2 * p1) + (-p0 + p2) * t + (2 * p0 - 5 * p1 + 4 * p2 - p3) * t * t + (-p0 + 3 * p1 - 3 * p2 + p3) * t ** 3)
 def joint(pct):
-    h = 10 + (curve(HIP, pct) - 10) * PF["stride"]; k = curve(KNEE, pct)
+    h = (curve(HIP, pct) - PF.get("tilt", 10)) * PF["stride"]   # 髋角相对骨盆；骨盆前倾约 10°，大腿相对竖直 = 髋角 − 前倾; k = curve(KNEE, pct)
     k *= PF["knee_swing"] if 55 <= pct % 100 <= 95 else PF["knee_load"]
     return h, k, curve(ANK, pct) * PF["ankle"]
 u = H / 7.0; L = PF["leg_len"]
@@ -79,7 +79,7 @@ for i in range(N):
     def draw_arm(lat, pct_leg, c):
         mode = PF["arm_mode"]
         if mode == "swing" or (mode == "bag_near" and lat < 0):
-            sw = -0.6 * PF["arm_swing"] * (joint(pct_leg)[0] - 10)
+            sw = -0.6 * PF["arm_swing"] * joint(pct_leg)[0]
         else:
             sw = 0
         shp = (base[0] + lat * 1.9, sh_y + u * .1)

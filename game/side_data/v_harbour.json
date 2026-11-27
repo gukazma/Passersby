@@ -1,0 +1,41 @@
+{
+ "start": {
+  "scene": "binjiang",
+  "x": 200,
+  "y": 440
+ },
+ "steps": [
+  {
+   "act": "time",
+   "v": "17:20"
+  },
+  {
+   "act": "wait",
+   "t": 2.0
+  },
+  {
+   "act": "walkto",
+   "x": 700,
+   "y": 440,
+   "run": true,
+   "max": 8
+  },
+  {
+   "act": "walkto",
+   "x": 1300,
+   "y": 440,
+   "max": 12
+  },
+  {
+   "act": "wait",
+   "t": 2.0
+  },
+  {
+   "act": "take_photo"
+  },
+  {
+   "act": "wait",
+   "t": 3.0
+  }
+ ]
+}

@@ -1,0 +1,77 @@
+{
+ "start": {
+  "scene": "yongan_s",
+  "x": 180,
+  "y": 440
+ },
+ "steps": [
+  {
+   "act": "time",
+   "v": "10:30"
+  },
+  {
+   "act": "wait",
+   "t": 2.0
+  },
+  {
+   "act": "walkto",
+   "x": 470,
+   "y": 446
+  },
+  {
+   "act": "wait",
+   "t": 0.4
+  },
+  {
+   "act": "walkto",
+   "x": 640,
+   "y": 446
+  },
+  {
+   "act": "wait",
+   "t": 2.5
+  },
+  {
+   "act": "walkto",
+   "x": 1050,
+   "y": 440
+  },
+  {
+   "act": "approach",
+   "npc": "wangcai",
+   "dx": 40,
+   "max": 10
+  },
+  {
+   "act": "interact"
+  },
+  {
+   "act": "wait",
+   "t": 3.6
+  },
+  {
+   "act": "walkto",
+   "x": 1340,
+   "y": 410
+  },
+  {
+   "act": "interact"
+  },
+  {
+   "act": "wait",
+   "t": 3.5
+  },
+  {
+   "act": "stand"
+  },
+  {
+   "act": "walkto",
+   "x": 1460,
+   "y": 430
+  },
+  {
+   "act": "wait",
+   "t": 3.0
+  }
+ ]
+}

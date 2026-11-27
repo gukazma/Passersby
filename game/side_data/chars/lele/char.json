@@ -19,22 +19,22 @@
   "walk_side": {
    "file": "walk_side.png",
    "frames": 8,
-   "fps": 15,
+   "fps": 10.5,
    "frame_w": 100,
-   "frame_h": 84,
+   "frame_h": 86,
    "origin": [
     50,
-    83
+    85
    ],
    "root_motion_px": [
-    5.188,
-    5.938,
-    6.438,
-    6.438,
     5.438,
-    5.188,
-    5.938,
-    6.438
+    7.438,
+    6.438,
+    6.438,
+    4.438,
+    7.938,
+    6.938,
+    5.938
    ],
    "axis": "x",
    "qc": {
@@ -63,7 +63,7 @@
   "walk_front": {
    "file": "walk_front.png",
    "frames": 8,
-   "fps": 15,
+   "fps": 10.0,
    "frame_w": 64,
    "frame_h": 84,
    "origin": [
@@ -107,7 +107,7 @@
   "walk_back": {
    "file": "walk_back.png",
    "frames": 8,
-   "fps": 15,
+   "fps": 10.0,
    "frame_w": 64,
    "frame_h": 84,
    "origin": [

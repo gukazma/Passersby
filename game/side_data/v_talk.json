@@ -1,0 +1,43 @@
+{
+ "start": {
+  "scene": "yongan_n",
+  "x": 2300,
+  "y": 440
+ },
+ "steps": [
+  {
+   "act": "time",
+   "v": "15:00"
+  },
+  {
+   "act": "wait",
+   "t": 1.0
+  },
+  {
+   "act": "approach",
+   "npc": "huangli",
+   "max": 20
+  },
+  {
+   "act": "talk",
+   "each": 3.2
+  },
+  {
+   "act": "wait",
+   "t": 0.8
+  },
+  {
+   "act": "approach",
+   "npc": "luobo",
+   "max": 25
+  },
+  {
+   "act": "talk",
+   "each": 3.0
+  },
+  {
+   "act": "wait",
+   "t": 1.0
+  }
+ ]
+}

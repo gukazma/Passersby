@@ -1,0 +1,251 @@
+{
+ "step_sneaker": {
+  "files": [
+   "step_sneaker_1.ogg",
+   "step_sneaker_2.ogg",
+   "step_sneaker_3.ogg",
+   "step_sneaker_4.ogg",
+   "step_sneaker_5.ogg",
+   "step_sneaker_6.ogg"
+  ],
+  "loop": false,
+  "volume_db": -6,
+  "max_distance_px": 380
+ },
+ "step_leather": {
+  "files": [
+   "step_leather_1.ogg",
+   "step_leather_2.ogg",
+   "step_leather_3.ogg",
+   "step_leather_4.ogg",
+   "step_leather_5.ogg",
+   "step_leather_6.ogg"
+  ],
+  "loop": false,
+  "volume_db": -6,
+  "max_distance_px": 380
+ },
+ "step_slipper": {
+  "files": [
+   "step_slipper_1.ogg",
+   "step_slipper_2.ogg",
+   "step_slipper_3.ogg",
+   "step_slipper_4.ogg",
+   "step_slipper_5.ogg",
+   "step_slipper_6.ogg"
+  ],
+  "loop": false,
+  "volume_db": -6,
+  "max_distance_px": 380
+ },
+ "step_kid": {
+  "files": [
+   "step_kid_1.ogg",
+   "step_kid_2.ogg",
+   "step_kid_3.ogg",
+   "step_kid_4.ogg"
+  ],
+  "loop": false,
+  "volume_db": -6,
+  "max_distance_px": 380
+ },
+ "step_paw": {
+  "files": [
+   "step_paw_1.ogg",
+   "step_paw_2.ogg",
+   "step_paw_3.ogg",
+   "step_paw_4.ogg"
+  ],
+  "loop": false,
+  "volume_db": -10,
+  "max_distance_px": 380
+ },
+ "step_tile": {
+  "files": [
+   "step_tile_1.ogg",
+   "step_tile_2.ogg",
+   "step_tile_3.ogg",
+   "step_tile_4.ogg"
+  ],
+  "loop": false,
+  "volume_db": -6,
+  "max_distance_px": 380
+ },
+ "taxi_horn": {
+  "files": [
+   "taxi_horn_1.ogg",
+   "taxi_horn_2.ogg"
+  ],
+  "loop": false,
+  "volume_db": -6,
+  "max_distance_px": 900
+ },
+ "bike_bell": {
+  "files": [
+   "bike_bell_1.ogg",
+   "bike_bell_2.ogg"
+  ],
+  "loop": false,
+  "volume_db": -8,
+  "max_distance_px": 600
+ },
+ "seagull_call": {
+  "files": [
+   "seagull_call_1.ogg",
+   "seagull_call_2.ogg",
+   "seagull_call_3.ogg"
+  ],
+  "loop": false,
+  "volume_db": -8,
+  "max_distance_px": 1100
+ },
+ "pigeon_coo": {
+  "files": [
+   "pigeon_coo_1.ogg",
+   "pigeon_coo_2.ogg",
+   "pigeon_coo_3.ogg"
+  ],
+  "loop": false,
+  "volume_db": -10,
+  "max_distance_px": 600
+ },
+ "pigeon_wings_takeoff": {
+  "files": [
+   "pigeon_wings_takeoff_1.ogg",
+   "pigeon_wings_takeoff_2.ogg"
+  ],
+  "loop": false,
+  "volume_db": -10,
+  "max_distance_px": 600
+ },
+ "sparrow_chirp": {
+  "files": [
+   "sparrow_chirp_1.ogg",
+   "sparrow_chirp_2.ogg",
+   "sparrow_chirp_3.ogg"
+  ],
+  "loop": false,
+  "volume_db": -10,
+  "max_distance_px": 500
+ },
+ "cat_meow": {
+  "files": [
+   "cat_meow_1.ogg",
+   "cat_meow_2.ogg"
+  ],
+  "loop": false,
+  "volume_db": -8,
+  "max_distance_px": 450
+ },
+ "dog_bark_small": {
+  "files": [
+   "dog_bark_small_1.ogg",
+   "dog_bark_small_2.ogg"
+  ],
+  "loop": false,
+  "volume_db": -8,
+  "max_distance_px": 600
+ },
+ "camera_shutter": {
+  "files": [
+   "camera_shutter_1.ogg"
+  ],
+  "loop": false,
+  "volume_db": -4,
+  "max_distance_px": 300
+ },
+ "door_bell_shop": {
+  "files": [
+   "door_bell_shop_1.ogg"
+  ],
+  "loop": false,
+  "volume_db": -6,
+  "max_distance_px": 450
+ },
+ "car_passby": {
+  "files": [
+   "car_passby_1.ogg",
+   "car_passby_2.ogg",
+   "car_passby_3.ogg"
+  ],
+  "loop": false,
+  "volume_db": -4,
+  "max_distance_px": 900
+ },
+ "motorbike_passby": {
+  "files": [
+   "motorbike_passby_1.ogg",
+   "motorbike_passby_2.ogg"
+  ],
+  "loop": false,
+  "volume_db": -4,
+  "max_distance_px": 900
+ },
+ "car_engine_idle_loop": {
+  "files": [
+   "car_engine_idle_loop.ogg"
+  ],
+  "loop": true,
+  "volume_db": -4,
+  "max_distance_px": 900
+ },
+ "bicycle_chain_loop": {
+  "files": [
+   "bicycle_chain_loop.ogg"
+  ],
+  "loop": true,
+  "volume_db": -8,
+  "max_distance_px": 600
+ },
+ "steam_hiss_loop": {
+  "files": [
+   "steam_hiss_loop.ogg"
+  ],
+  "loop": true,
+  "volume_db": -10,
+  "max_distance_px": 300
+ },
+ "amb_street_oldtown": {
+  "files": [
+   "amb_street_oldtown.ogg"
+  ],
+  "loop": true,
+  "volume_db": -14,
+  "max_distance_px": null
+ },
+ "amb_harbour": {
+  "files": [
+   "amb_harbour.ogg"
+  ],
+  "loop": true,
+  "volume_db": -14,
+  "max_distance_px": null
+ },
+ "amb_noodle_shop": {
+  "files": [
+   "amb_noodle_shop.ogg"
+  ],
+  "loop": true,
+  "volume_db": -14,
+  "max_distance_px": null
+ },
+ "_shoe_map": {
+  "hero": "step_sneaker",
+  "luobo": "step_leather",
+  "yeyonghe": "step_slipper",
+  "huangli": "step_sneaker",
+  "lele": "step_kid",
+  "yejun": "step_sneaker",
+  "chenqide": "step_tile",
+  "diner": "step_sneaker",
+  "wangcai": "step_paw",
+  "_indoor_override": "step_tile 用于 kind=interior 场景里穿运动鞋的人"
+ },
+ "_scene_ambience": {
+  "yongan_n": "amb_street_oldtown",
+  "yongan_s": "amb_street_oldtown",
+  "binjiang": "amb_harbour",
+  "chenji": "amb_noodle_shop"
+ },
+ "_notes": "单声道片段由游戏做距离衰减（max_distance_px 外静音，线性或平方衰减）；环境音为立体声全局循环，建议 volume_db 在 BGM 下方 6 dB 左右；脚步在行走动画的触地帧播放（侧走 8 帧里的第 0、4 帧）。"
+}

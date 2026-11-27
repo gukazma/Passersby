@@ -6,22 +6,22 @@
   "walk_side": {
    "file": "walk_side.png",
    "frames": 8,
-   "fps": 12.0,
-   "frame_w": 100,
-   "frame_h": 111,
+   "fps": 8.5,
+   "frame_w": 120,
+   "frame_h": 114,
    "origin": [
-    50,
-    110
+    60,
+    113
    ],
    "root_motion_px": [
-    4.281,
-    6.781,
-    5.781,
-    7.531,
-    4.281,
-    5.781,
-    4.781,
-    9.281
+    8.938,
+    8.938,
+    8.688,
+    8.938,
+    7.688,
+    8.938,
+    10.438,
+    8.438
    ],
    "axis": "x",
    "qc": {
@@ -32,7 +32,7 @@
   "walk_front": {
    "file": "walk_front.png",
    "frames": 8,
-   "fps": 12.0,
+   "fps": 8.5,
    "frame_w": 70,
    "frame_h": 111,
    "origin": [
@@ -58,7 +58,7 @@
   "walk_back": {
    "file": "walk_back.png",
    "frames": 8,
-   "fps": 12.0,
+   "fps": 8.5,
    "frame_w": 70,
    "frame_h": 110,
    "origin": [
@@ -84,7 +84,7 @@
   "walk_diagf": {
    "file": "walk_diagf.png",
    "frames": 8,
-   "fps": 12.0,
+   "fps": 8.5,
    "frame_w": 80,
    "frame_h": 117,
    "origin": [
@@ -114,7 +114,7 @@
   "walk_diagb": {
    "file": "walk_diagb.png",
    "frames": 8,
-   "fps": 12.0,
+   "fps": 8.5,
    "frame_w": 80,
    "frame_h": 113,
    "origin": [
@@ -144,22 +144,22 @@
   "run_side": {
    "file": "run_side.png",
    "frames": 8,
-   "fps": 14.0,
-   "frame_w": 110,
-   "frame_h": 114,
+   "fps": 11,
+   "frame_w": 120,
+   "frame_h": 132,
    "origin": [
-    55,
-    113
+    60,
+    131
    ],
    "root_motion_px": [
-    8.688,
-    9.688,
-    8.688,
-    8.688,
-    8.938,
-    9.188,
-    8.188,
-    8.938
+    15.892,
+    16.892,
+    15.142,
+    16.212,
+    14.892,
+    15.392,
+    15.642,
+    16.212
    ],
    "axis": "x",
    "qc": {

@@ -1,0 +1,110 @@
+{
+ "id": "seagull",
+ "name": "海鸥",
+ "kind": "bird",
+ "height_px": 19,
+ "anims": {
+  "idle_side": {
+   "frames": 2,
+   "fps": 2,
+   "frame_w": 34,
+   "frame_h": 21,
+   "origin": [
+    17,
+    20
+   ],
+   "root_motion_px": [
+    0,
+    0
+   ],
+   "axis": "x",
+   "loop": true,
+   "view": "side",
+   "file": "idle_side.png"
+  },
+  "stand": {
+   "frames": 2,
+   "fps": 2,
+   "frame_w": 34,
+   "frame_h": 21,
+   "origin": [
+    17,
+    20
+   ],
+   "root_motion_px": [
+    0,
+    0
+   ],
+   "axis": "x",
+   "loop": true,
+   "view": "side",
+   "file": "stand.png"
+  },
+  "land": {
+   "frames": 3,
+   "fps": 8,
+   "frame_w": 36,
+   "frame_h": 32,
+   "origin": [
+    18,
+    17
+   ],
+   "root_motion_px": [
+    0,
+    0,
+    0
+   ],
+   "axis": "x",
+   "loop": false,
+   "view": "side",
+   "file": "land.png"
+  },
+  "fly_side": {
+   "frames": 6,
+   "fps": 8,
+   "frame_w": 36,
+   "frame_h": 30,
+   "origin": [
+    18,
+    16
+   ],
+   "root_motion_px": [],
+   "axis": "x",
+   "loop": true,
+   "view": "side",
+   "file": "fly_side.png"
+  },
+  "glide": {
+   "frames": 2,
+   "fps": 2,
+   "frame_w": 60,
+   "frame_h": 15,
+   "origin": [
+    30,
+    8
+   ],
+   "root_motion_px": [],
+   "axis": "x",
+   "loop": true,
+   "view": "side",
+   "file": "glide.png"
+  },
+  "fly_far": {
+   "frames": 2,
+   "fps": 6,
+   "frame_w": 20,
+   "frame_h": 8,
+   "origin": [
+    10,
+    5
+   ],
+   "root_motion_px": [],
+   "axis": "x",
+   "loop": true,
+   "view": "side",
+   "note": "远景小海鸥剪影（远处海面上空成群用）",
+   "file": "fly_far.png"
+  }
+ },
+ "fly_speed_px_s": 90
+}

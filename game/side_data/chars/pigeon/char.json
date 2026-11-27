@@ -1,0 +1,102 @@
+{
+ "id": "pigeon",
+ "name": "鸽子",
+ "kind": "bird",
+ "height_px": 13,
+ "anims": {
+  "walk_peck": {
+   "frames": 8,
+   "fps": 9,
+   "frame_w": 26,
+   "frame_h": 15,
+   "origin": [
+    13,
+    14
+   ],
+   "root_motion_px": [
+    2,
+    2,
+    2,
+    2,
+    1,
+    0,
+    1,
+    2
+   ],
+   "axis": "x",
+   "loop": true,
+   "view": "side",
+   "file": "walk_peck.png"
+  },
+  "idle_side": {
+   "frames": 2,
+   "fps": 2,
+   "frame_w": 24,
+   "frame_h": 16,
+   "origin": [
+    12,
+    15
+   ],
+   "root_motion_px": [
+    0,
+    0
+   ],
+   "axis": "x",
+   "loop": true,
+   "view": "side",
+   "file": "idle_side.png"
+  },
+  "takeoff": {
+   "frames": 4,
+   "fps": 10,
+   "frame_w": 26,
+   "frame_h": 17,
+   "origin": [
+    13,
+    9
+   ],
+   "root_motion_px": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "axis": "x",
+   "loop": false,
+   "view": "side",
+   "note": "起飞时由代码同时向上、向前移动",
+   "file": "takeoff.png"
+  },
+  "fly_side": {
+   "frames": 6,
+   "fps": 12,
+   "frame_w": 24,
+   "frame_h": 18,
+   "origin": [
+    12,
+    10
+   ],
+   "root_motion_px": [],
+   "axis": "x",
+   "loop": true,
+   "view": "side",
+   "file": "fly_side.png"
+  },
+  "glide": {
+   "frames": 2,
+   "fps": 3,
+   "frame_w": 36,
+   "frame_h": 14,
+   "origin": [
+    18,
+    8
+   ],
+   "root_motion_px": [],
+   "axis": "x",
+   "loop": true,
+   "view": "side",
+   "file": "glide.png"
+  }
+ },
+ "fly_speed_px_s": 110
+}

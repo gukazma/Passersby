@@ -61,21 +61,31 @@
   },
   "eat": {
    "file": "eat.png",
-   "frames": 4,
-   "fps": 4.0,
-   "frame_w": 90,
-   "frame_h": 85,
+   "frames": 6,
+   "fps": 5,
+   "frame_w": 100,
+   "frame_h": 82,
    "origin": [
-    45,
-    84
+    44,
+    81
    ],
    "root_motion_px": [
     0,
     0,
     0,
+    0,
+    0,
     0
    ],
-   "axis": "x"
+   "axis": "x",
+   "loop": true,
+   "view": "side",
+   "bowl_point": [
+    35,
+    -47
+   ],
+   "table_offset_x": 53,
+   "note": "人和红凳在精灵里（场景里这个位置不要放凳子）；桌子 table.png 中心放在 origin.x+table_offset_x、与人同一 y_foot（桌稍靠后 1 px 以便人画在桌前）；碗 bowl.png 底部中心放在 origin+bowl_point（桌面离地 47 px）"
   }
  }
 }

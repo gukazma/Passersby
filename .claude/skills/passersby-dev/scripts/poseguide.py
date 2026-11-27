@@ -58,7 +58,7 @@ def add(p, v, k=1.0):
     return (p[0] + v[0] * k, p[1] + v[1] * k)
 
 def joint(pct):
-    h = 10 + (curve(HIP, pct) - 10) * PF["stride"]          # 髋绕 10° 中心缩放：步幅
+    h = (curve(HIP, pct) - PF.get("tilt", 10)) * PF["stride"]   # 髋角相对骨盆；骨盆前倾约 10°，大腿相对竖直 = 髋角 − 前倾          # 髋绕 10° 中心缩放：步幅
     k = curve(KNEE, pct)
     k = k * (PF["knee_swing"] if 55 <= pct % 100 <= 95 else PF["knee_load"])   # 摆动相膝屈 = 抬脚高度；承重相膝屈
     an = curve(ANK, pct) * PF["ankle"]
@@ -119,11 +119,11 @@ for i, (pn, pf, low, _, _) in enumerate(frames):
         if mode == "behind_back":                     # 背着手：上臂后伸，前臂折到腰后
             shf, el_add = -30, 118
         elif mode == "bag_near" and near:             # 近侧手拎袋子：手臂几乎垂直、微摆
-            shf, el_add = -0.15 * (joint(pct_leg)[0] - 10) + 3, 8
+            shf, el_add = -0.15 * joint(pct_leg)[0] + 3, 8
         elif mode == "pockets":
             shf, el_add = -8, 50
         else:
-            shf = -0.6 * PF["arm_swing"] * (joint(pct_leg)[0] - 10) + 2
+            shf = -0.6 * PF["arm_swing"] * joint(pct_leg)[0] + 2
             el_add = PF["elbow"] + max(0, shf) * 0.6
         el = add(sh, vec(shf, uarm)); hd = add(el, vec(shf + el_add, farm))
         cap(sh, el, w, c); cap(el, hd, w * .9, c); d.ellipse([hd[0] - w * .6, hd[1] - w * .6, hd[0] + w * .6, hd[1] + w * .6], fill=c)

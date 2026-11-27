@@ -21,12 +21,14 @@ var acc := 0.0
 var moving := false
 var running := false
 var band := Vector2(392, 468)    # 可走的纵深带（脚底 y 范围）
+var x_range := Vector2(-1e9, 1e9) # 可走的横向范围
 var solids: Array = []           # 场景里的脚底障碍 Rect2
 var others: Array = []           # 其他角色（软阻挡）
 var body_half := 9.0             # 脚底占地半宽
 var speed_scale := 1.0
 var special := ""                # 正在播放的特殊动画（坐、干活、吃）
 var hidden_in_door := false
+var step_cb: Callable             # 落脚帧回调（脚步声）
 
 
 func load_char(path: String) -> void:
@@ -137,6 +139,12 @@ func drive(want: Vector2, run: bool, delta: float) -> Vector2:
 	else:
 		mv.y = v * want.y * delta
 	mv = _collide(mv)
+	if mv.length() < 0.001:
+		# 被挡住：站着，不原地踏步
+		moving = false
+		_play("idle_" + view if anims.has("idle_" + view) else "idle_side")
+		_advance(delta, false)
+		return Vector2.ZERO
 	position += mv
 	_advance(delta, true)
 	return mv
@@ -151,6 +159,11 @@ func _advance(delta: float, _walking: bool) -> void:
 			special_done = true
 			break
 		frame = (frame + 1) % a["frames"]
+		# 走/跑的落脚帧（第 0 帧和半周期那一帧）发脚步声
+		if moving and special == "" and (cur.begins_with("walk") or cur.begins_with("run")) and step_cb.is_valid():
+			var half: int = maxi(1, int(a["frames"]) / 2)
+			if frame % half == 0:
+				step_cb.call(self)
 	_update_frame()
 
 
@@ -159,7 +172,7 @@ func _foot_rect(p: Vector2) -> Rect2:
 
 
 func _blocked(p: Vector2) -> bool:
-	if p.y < band.x or p.y > band.y:
+	if p.y < band.x or p.y > band.y or p.x < x_range.x or p.x > x_range.y:
 		return true
 	var r := _foot_rect(p)
 	for s in solids:

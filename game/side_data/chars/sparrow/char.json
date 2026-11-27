@@ -1,0 +1,82 @@
+{
+ "id": "sparrow",
+ "name": "麻雀",
+ "kind": "bird",
+ "height_px": 7,
+ "anims": {
+  "hop": {
+   "frames": 4,
+   "fps": 10,
+   "frame_w": 18,
+   "frame_h": 9,
+   "origin": [
+    9,
+    8
+   ],
+   "root_motion_px": [
+    0,
+    4,
+    4,
+    0
+   ],
+   "axis": "x",
+   "loop": true,
+   "view": "side",
+   "file": "hop.png"
+  },
+  "peck": {
+   "frames": 3,
+   "fps": 6,
+   "frame_w": 20,
+   "frame_h": 8,
+   "origin": [
+    10,
+    7
+   ],
+   "root_motion_px": [
+    0,
+    0,
+    0
+   ],
+   "axis": "x",
+   "loop": true,
+   "view": "side",
+   "file": "peck.png"
+  },
+  "idle_side": {
+   "frames": 3,
+   "fps": 2,
+   "frame_w": 20,
+   "frame_h": 8,
+   "origin": [
+    10,
+    7
+   ],
+   "root_motion_px": [
+    0,
+    0,
+    0
+   ],
+   "axis": "x",
+   "loop": true,
+   "view": "side",
+   "file": "idle_side.png"
+  },
+  "fly_side": {
+   "frames": 4,
+   "fps": 14,
+   "frame_w": 18,
+   "frame_h": 13,
+   "origin": [
+    9,
+    7
+   ],
+   "root_motion_px": [],
+   "axis": "x",
+   "loop": true,
+   "view": "side",
+   "file": "fly_side.png"
+  }
+ },
+ "fly_speed_px_s": 140
+}

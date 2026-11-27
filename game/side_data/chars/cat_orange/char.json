@@ -1,0 +1,112 @@
+{
+ "id": "cat_orange",
+ "name": "橘猫",
+ "kind": "cat",
+ "height_px": 27,
+ "anims": {
+  "walk_side": {
+   "frames": 8,
+   "fps": 17,
+   "frame_w": 56,
+   "frame_h": 29,
+   "origin": [
+    28,
+    28
+   ],
+   "root_motion_px": [
+    1.57,
+    1.57,
+    1.57,
+    1.57,
+    1.57,
+    1.57,
+    1.57,
+    1.57
+   ],
+   "axis": "x",
+   "loop": true,
+   "view": "side",
+   "file": "walk_side.png"
+  },
+  "idle_side": {
+   "frames": 4,
+   "fps": 5,
+   "frame_w": 44,
+   "frame_h": 29,
+   "origin": [
+    22,
+    28
+   ],
+   "root_motion_px": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "axis": "x",
+   "loop": true,
+   "view": "side",
+   "file": "idle_side.png"
+  },
+  "sit": {
+   "frames": 4,
+   "fps": 3,
+   "frame_w": 40,
+   "frame_h": 35,
+   "origin": [
+    20,
+    34
+   ],
+   "root_motion_px": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "axis": "x",
+   "loop": true,
+   "view": "side",
+   "file": "sit.png"
+  },
+  "sleep": {
+   "frames": 4,
+   "fps": 2,
+   "frame_w": 42,
+   "frame_h": 22,
+   "origin": [
+    21,
+    21
+   ],
+   "root_motion_px": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "axis": "x",
+   "loop": true,
+   "view": "side",
+   "file": "sleep.png"
+  },
+  "groom": {
+   "frames": 4,
+   "fps": 5,
+   "frame_w": 38,
+   "frame_h": 34,
+   "origin": [
+    19,
+    33
+   ],
+   "root_motion_px": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "axis": "x",
+   "loop": true,
+   "view": "side",
+   "file": "groom.png"
+  }
+ }
+}

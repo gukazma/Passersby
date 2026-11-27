@@ -1,0 +1,92 @@
+{
+ "id": "dog2",
+ "name": "小黑白狗",
+ "kind": "dog",
+ "height_px": 46,
+ "anims": {
+  "walk_side": {
+   "frames": 8,
+   "fps": 14,
+   "frame_w": 80,
+   "frame_h": 49,
+   "origin": [
+    40,
+    48
+   ],
+   "root_motion_px": [
+    2.62,
+    2.62,
+    2.62,
+    2.62,
+    2.62,
+    2.62,
+    2.62,
+    2.62
+   ],
+   "axis": "x",
+   "loop": true,
+   "view": "side",
+   "file": "walk_side.png"
+  },
+  "idle_side": {
+   "frames": 4,
+   "fps": 6,
+   "frame_w": 68,
+   "frame_h": 48,
+   "origin": [
+    34,
+    47
+   ],
+   "root_motion_px": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "axis": "x",
+   "loop": true,
+   "view": "side",
+   "file": "idle_side.png"
+  },
+  "sit": {
+   "frames": 4,
+   "fps": 4,
+   "frame_w": 60,
+   "frame_h": 53,
+   "origin": [
+    30,
+    52
+   ],
+   "root_motion_px": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "axis": "x",
+   "loop": true,
+   "view": "side",
+   "file": "sit.png"
+  },
+  "sniff": {
+   "frames": 4,
+   "fps": 4,
+   "frame_w": 66,
+   "frame_h": 45,
+   "origin": [
+    33,
+    44
+   ],
+   "root_motion_px": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "axis": "x",
+   "loop": true,
+   "view": "side",
+   "file": "sniff.png"
+  }
+ }
+}

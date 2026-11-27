@@ -1,0 +1,283 @@
+{
+ "taxi": {
+  "file": "taxi.png",
+  "frames": 4,
+  "frame_w": 299,
+  "frame_h": 105,
+  "origin": [
+   157,
+   104
+  ],
+  "length_px": 299,
+  "wheels": [
+   [
+    72.5,
+    84.0,
+    20.0
+   ],
+   [
+    241.0,
+    84.0,
+    20.0
+   ]
+  ],
+  "fps_per_100px": 12.732,
+  "lights": {
+   "front": [
+    [
+     289,
+     60
+    ],
+    [
+     289,
+     63
+    ]
+   ],
+   "rear": [
+    [
+     6,
+     59
+    ],
+    [
+     6,
+     62
+    ]
+   ]
+  },
+  "kind": "car",
+  "typical_speed_px_s": 230
+ },
+ "family": {
+  "file": "family.png",
+  "frames": 4,
+  "frame_w": 274,
+  "frame_h": 115,
+  "origin": [
+   132,
+   114
+  ],
+  "length_px": 274,
+  "wheels": [
+   [
+    45.5,
+    89.5,
+    24.5
+   ],
+   [
+    217.5,
+    89.5,
+    24.5
+   ]
+  ],
+  "fps_per_100px": 10.394,
+  "lights": {
+   "front": [
+    [
+     252,
+     55
+    ],
+    [
+     256,
+     56
+    ]
+   ],
+   "rear": [
+    [
+     14,
+     43
+    ],
+    [
+     16,
+     45
+    ]
+   ]
+  },
+  "kind": "car",
+  "typical_speed_px_s": 210
+ },
+ "van": {
+  "file": "van.png",
+  "frames": 4,
+  "frame_w": 312,
+  "frame_h": 164,
+  "origin": [
+   165,
+   163
+  ],
+  "length_px": 312,
+  "wheels": [
+   [
+    63.0,
+    140.0,
+    20.0
+   ],
+   [
+    267.0,
+    140.0,
+    20.0
+   ]
+  ],
+  "fps_per_100px": 12.732,
+  "lights": {
+   "front": [
+    [
+     299,
+     103
+    ],
+    [
+     299,
+     106
+    ]
+   ],
+   "rear": [
+    [
+     5,
+     100
+    ],
+    [
+     5,
+     104
+    ]
+   ]
+  },
+  "kind": "car",
+  "typical_speed_px_s": 190
+ },
+ "minibus": {
+  "file": "minibus.png",
+  "frames": 4,
+  "frame_w": 424,
+  "frame_h": 181,
+  "origin": [
+   234,
+   180
+  ],
+  "length_px": 424,
+  "wheels": [
+   [
+    104.0,
+    151.0,
+    26.0
+   ],
+   [
+    363.0,
+    151.0,
+    26.0
+   ]
+  ],
+  "fps_per_100px": 9.794,
+  "lights": {
+   "front": [
+    [
+     410,
+     121
+    ],
+    [
+     410,
+     118
+    ]
+   ],
+   "rear": [
+    [
+     5,
+     112
+    ],
+    [
+     5,
+     116
+    ]
+   ]
+  },
+  "kind": "car",
+  "typical_speed_px_s": 170
+ },
+ "moto": {
+  "file": "moto.png",
+  "frames": 4,
+  "frame_w": 124,
+  "frame_h": 125,
+  "origin": [
+   63,
+   124
+  ],
+  "length_px": 124,
+  "wheels": [
+   [
+    20.0,
+    109.0,
+    14.0
+   ],
+   [
+    106.0,
+    109.0,
+    14.0
+   ]
+  ],
+  "fps_per_100px": 18.189,
+  "lights": {
+   "front": [
+    [
+     96,
+     55
+    ]
+   ],
+   "rear": [
+    [
+     3,
+     76
+    ]
+   ]
+  },
+  "kind": "motorbike",
+  "typical_speed_px_s": 250
+ },
+ "cyclist": {
+  "file": "cyclist.png",
+  "frames": 8,
+  "fps_per_100px": 2.63,
+  "frame_w": 122,
+  "frame_h": 115,
+  "origin": [
+   62,
+   114
+  ],
+  "length_px": 112,
+  "wheels": [
+   [
+    28,
+    92,
+    22
+   ],
+   [
+    96,
+    92,
+    22
+   ]
+  ],
+  "lights": {
+   "front": [
+    [
+     110,
+     66
+    ]
+   ],
+   "rear": [
+    [
+     10,
+     74
+    ]
+   ]
+  },
+  "kind": "bike",
+  "typical_speed_px_s": 120,
+  "note": "8 帧 = 曲柄一圈（踩踏循环），帧速 = fps_per_100px × 速度/100；车轮辐条不单独转"
+ },
+ "_doc": {
+  "wheels": "[x,y,r] 原生像素，相对单帧左上角；车类 4 帧横排 = 轮毂每帧转 22.5°，帧速 = fps_per_100px × 速度/100",
+  "origin": "两轮中点的地面接触点（底行）",
+  "facing": "全部朝右，反方向水平镜像",
+  "lights": "前大灯/尾灯像素坐标（相对单帧左上角），夜间发光用",
+  "cyclist": "8 帧 = 曲柄一圈（踩踏），车轮辐条不单独转",
+  "shadow": "精灵不含地面影子，由游戏画"
+ }
+}

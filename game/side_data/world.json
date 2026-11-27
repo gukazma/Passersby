@@ -16,12 +16,22 @@
    "char": "chars/luobo/char.json",
    "scene": "yongan_n",
    "x": 1529,
-   "y": 412,
+   "y": 444,
    "greet": "后生仔，早啊！",
    "talk": [
-    "后生仔，新搬来的？",
-    "天这么热，喝杯凉茶降降火。",
-    "我在这条街住了五十年，街坊都认得我。"
+    {
+     "t": "后生仔，新搬来的？",
+     "face": "surprised"
+    },
+    {
+     "t": "天这么热，喝杯凉茶降降火。",
+     "face": "happy"
+    },
+    {
+     "t": "我在这条街住了五十年，街坊都认得我。",
+     "face": "laugh",
+     "emote": "music"
+    }
    ],
    "loop": [
     [
@@ -55,7 +65,7 @@
     [
      "walk",
      1529,
-     412
+     444
     ],
     [
      "wait",
@@ -69,7 +79,9 @@
      "wait",
      2
     ]
-   ]
+   ],
+   "mood": "happy",
+   "friend": 150
   },
   {
    "char": "chars/yeyonghe/char.json",
@@ -78,8 +90,18 @@
    "y": 410,
    "greet": "要买点什么？",
    "talk": [
-    "五金杂货，螺丝到水管都有。",
-    "新来的吧？以后家里有什么坏了，来找我。"
+    {
+     "t": "要买点什么？",
+     "face": "neutral"
+    },
+    {
+     "t": "螺丝、水管、灯泡，五金杂货都有。",
+     "face": "happy"
+    },
+    {
+     "t": "家里有什么坏了，来找我就行。",
+     "face": "happy"
+    }
    ],
    "loop": [
     [
@@ -119,7 +141,9 @@
      "wait",
      3
     ]
-   ]
+   ],
+   "mood": "neutral",
+   "friend": 80
   },
   {
    "char": "chars/huangli/char.json",
@@ -128,13 +152,20 @@
    "y": 440,
    "greet": "今天的烧鹅不错！",
    "talk": [
-    "何记的烧腊最好吃，晚了就卖光了。",
+    {
+     "t": "何记的烧腊最好吃，晚了就卖光了。",
+     "face": "happy"
+    },
     {
      "t": "我儿子昨天把盐当糖放进糖水里，全家喝了一口，哈哈哈！",
      "anim": "laugh",
-     "hero": "laugh"
+     "hero": "laugh",
+     "face": "laugh"
     },
-    "不跟你聊啦，我得回去做饭。"
+    {
+     "t": "不跟你聊啦，我得回去做饭。",
+     "face": "neutral"
+    }
    ],
    "loop": [
     [
@@ -169,7 +200,9 @@
      2529,
      440
     ]
-   ]
+   ],
+   "mood": "happy",
+   "friend": 120
   },
   {
    "char": "chars/lele/char.json",
@@ -180,9 +213,13 @@
    "talk": [
     {
      "t": "哥哥你看，旺财会握手！",
-     "anim": "jump"
+     "anim": "jump",
+     "face": "laugh"
     },
-    "我妈说天后诞有舞狮看！"
+    {
+     "t": "我妈说天后诞有舞狮看！",
+     "face": "happy"
+    }
    ],
    "loop": [
     [
@@ -209,7 +246,9 @@
      "wait",
      1.5
     ]
-   ]
+   ],
+   "mood": "happy",
+   "friend": 200
   },
   {
    "char": "chars/yejun/char.json",
@@ -217,8 +256,15 @@
    "x": 1700,
    "y": 448,
    "talk": [
-    "不好意思，赶单呢！",
-    "渡轮码头那边单子最多。"
+    {
+     "t": "不好意思，赶单呢！",
+     "face": "surprised",
+     "emote": "sweat"
+    },
+    {
+     "t": "渡轮码头那边单子最多，下次聊！",
+     "face": "happy"
+    }
    ],
    "loop": [
     [
@@ -241,7 +287,9 @@
      "phone",
      3
     ]
-   ]
+   ],
+   "mood": "busy",
+   "friend": 30
   },
   {
    "char": "chars/chenqide/char.json",
@@ -251,29 +299,47 @@
    "face": "front",
    "special": "work",
    "talk": [
-    "欢迎！吃点什么？",
-    "我们的云吞面用大地鱼汤底，煲了五十二年。",
-    "你是新来的？第一碗我请。"
+    {
+     "t": "欢迎！吃点什么？",
+     "face": "happy"
+    },
+    {
+     "t": "我们的云吞面用大地鱼汤底，煲了五十二年。",
+     "face": "neutral"
+    },
+    {
+     "t": "你是新来的？第一碗我请。",
+     "face": "laugh",
+     "emote": "heart"
+    }
    ],
    "band": [
     390,
     400
-   ]
+   ],
+   "mood": "neutral",
+   "friend": 260
   },
   {
    "char": "chars/diner/char.json",
    "scene": "chenji",
-   "x": 224,
-   "y": 440,
+   "x": 193,
+   "y": 437,
    "face": "right",
    "special": "eat",
    "talk": [
-    "……（他吃得太专心，没空理你）"
+    {
+     "t": "……（他吃得太专心，没空理你）",
+     "face": "neutral",
+     "emote": "dots"
+    }
    ],
    "band": [
-    438,
-    442
-   ]
+    436,
+    438
+   ],
+   "mood": "neutral",
+   "friend": 0
   },
   {
    "char": "chars/wangcai/char.json",
@@ -302,6 +368,79 @@
      3
     ]
    ]
+  },
+  {
+   "char": "chars/cat_orange/char.json",
+   "scene": "yongan_n",
+   "x": 1545,
+   "y": 398,
+   "face": "left",
+   "special": "sleep",
+   "band": [
+    396,
+    400
+   ]
+  },
+  {
+   "char": "chars/cat_calico/char.json",
+   "scene": "yongan_s",
+   "x": 1180,
+   "y": 404,
+   "loop": [
+    [
+     "walk",
+     1450,
+     402
+    ],
+    [
+     "anim",
+     "groom",
+     4
+    ],
+    [
+     "anim",
+     "sit",
+     3
+    ],
+    [
+     "walk",
+     1150,
+     406
+    ],
+    [
+     "anim",
+     "sleep",
+     6
+    ]
+   ]
+  },
+  {
+   "char": "chars/dog2/char.json",
+   "scene": "binjiang",
+   "x": 400,
+   "y": 440,
+   "loop": [
+    [
+     "walk",
+     900,
+     436
+    ],
+    [
+     "anim",
+     "sniff",
+     3
+    ],
+    [
+     "walk",
+     350,
+     444
+    ],
+    [
+     "anim",
+     "sit",
+     3
+    ]
+   ]
   }
  ],
  "extra_props": {
@@ -316,13 +455,21 @@
     "x": 1569,
     "y_foot": 398
    }
+  ],
+  "chenji": [
+   {
+    "img": "res://side_data/props/bowl.png",
+    "x": 228,
+    "y_foot": 438,
+    "lift": 47
+   }
   ]
  },
  "spots": {
   "yongan_n": [
    {
     "id": "bench_n",
-    "x": 2757,
+    "x": 2728,
     "y": 408,
     "hero_anim": "sit_bench",
     "hero_view": "front"
@@ -375,5 +522,73 @@
   "yongan_s": "bgm/yongan_day.ogg",
   "binjiang": "bgm/binjiang.ogg",
   "chenji": "bgm/noodle_shop.ogg"
+ },
+ "fx": {
+  "yongan_n": [
+   {
+    "type": "steam",
+    "x": 240,
+    "y": 196
+   }
+  ],
+  "chenji": [
+   {
+    "type": "steam",
+    "x": 572,
+    "y": 310
+   }
+  ]
+ },
+ "fauna": {
+  "yongan_n": [
+   {
+    "type": "pigeon",
+    "x": 2960,
+    "y": 450,
+    "n": 7
+   },
+   {
+    "type": "sparrow",
+    "x": 1960,
+    "y": 404,
+    "n": 4
+   }
+  ],
+  "yongan_s": [
+   {
+    "type": "pigeon",
+    "x": 560,
+    "y": 452,
+    "n": 6
+   },
+   {
+    "type": "sparrow",
+    "x": 1450,
+    "y": 402,
+    "n": 3
+   }
+  ],
+  "binjiang": [
+   {
+    "type": "seagull",
+    "x": 900,
+    "n": 7,
+    "ground": false,
+    "sky_y": 120
+   },
+   {
+    "type": "seagull",
+    "x": 1500,
+    "n": 4,
+    "ground": false,
+    "sky_y": 80
+   },
+   {
+    "type": "pigeon",
+    "x": 1300,
+    "y": 452,
+    "n": 5
+   }
+  ]
  }
 }
