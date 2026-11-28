@@ -177,6 +177,7 @@ description: 《我亦是行人》Passing Through（仓库 Passersby）的开发
 - Godot 4.6.3：114 上在 `D:\tools\godot\4.6.3\`，实验机上在 `C:\pt\godot`。
 - 录屏用 `--write-movie x.png --fixed-fps N --rendering-driver d3d12`。D3D12 swapchain 报错可以忽略。
 - 冒烟测试用无窗口运行，加 `--fixed-fps 144` 和自定义 `--trace_frames`。
+- Godot 导入生成的 `.import` / `*.uid` 文件随代码一起提交（官方建议纳入版本库；删掉会让资源引用的 uid 变动）。
 - cmd 的坑：
   - `if not exist X a & b` 会把 b 也算进 if，要用括号分组；
   - Windows 的 tar 不展开通配符、会弄坏中文名，改用 `scp -r` 或 Python。
@@ -205,6 +206,12 @@ description: 《我亦是行人》Passing Through（仓库 Passersby）的开发
   - 自己渲染的对比片段放进 AVI 时用 MJPEG（`-c:v mjpeg -q:v 2 -r 25`），不要把 H.264 拷进 AVI：时间戳会乱，成片里 4 秒后就定格（A1.5 v1 第一次合成踩过，qc 的冻结检查抓到的）。
   - 字幕在底部约 150 px：对比图、总结卡的内容都要避开这块。
   - 演示脚本只拍真实发生的事：旁白说「迎面让开」，画面里就得有；拍不到就删掉这句。
+- **录制与抽帧的坑**（A1.5，11-28）：
+  - 只在实验机日志出现「Done recording」之后才拷 AVI；拷到一半的 AVI 和超出片长的时间点都会让 ffmpeg 不出图，`grab.py` 就会默默用上一张旧的 grab.jpg。每次抽帧前先删掉旧图。
+  - 放大镜头时，跟随相机的左右夹边要用放大后的半宽 `VIEW.x/2/zoom`，否则在街道两端主角会出画。
+  - 演示路线要提前估算位置：斜走太久会走出街道左端（x<0）；撞报刊亭会被 `drive` 的滑动绕过去（这是正常行为，旁白就照实说「往旁边让一步」）。
+  - 拍鸽子要避开猫狗：旺财在 110 px 内会冲散鸽群，「人走近才惊飞」的镜头要换到没有狗的街段（w_birds2 放在 yongan_n）。
+  - 豆包 `tts_batch.py` 已有的 mp3 会跳过不重生成，改了旁白要先删旧文件。
 - **交付前检查**：`qc.py` 测响度和峰值，扫描冻结和静音，再抽帧看一遍。成品放 `D:\Lumo视频\我亦是行人\`，用 `--list` 确认归类正确。
 
 ## 8. 测试规范（11-27 用户：「做好严格测试，避免简单的 bug」「查查别人自动化测试和美术视觉测试怎么做」）
